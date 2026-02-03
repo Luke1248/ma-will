@@ -1,0 +1,2059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Organizer Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4F46E5;
+            --primary-light: #818CF8;
+            --primary-dark: #3730A3;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --info: #3B82F6;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-400: #9CA3AF;
+            --gray-500: #6B7280;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-800: #1F2937;
+            --gray-900: #111827;
+            --sidebar-width: 260px;
+            --header-height: 70px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-800);
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--gray-900) 0%, var(--gray-800) 100%);
+            color: white;
+            padding: 24px;
+            z-index: 100;
+            overflow-y: auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .nav-section {
+            margin-bottom: 32px;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--gray-400);
+            margin-bottom: 12px;
+            padding-left: 12px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 4px;
+            color: var(--gray-300);
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            height: var(--header-height);
+            padding: 0 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--gray-200);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-title h1 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .header-title p {
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--gray-100);
+            border-radius: 8px;
+            padding: 8px 16px;
+            gap: 8px;
+        }
+
+        .search-box input {
+            border: none;
+            background: none;
+            outline: none;
+            width: 200px;
+            font-size: 14px;
+        }
+
+        .search-box i {
+            color: var(--gray-400);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Page Content */
+        .page-content {
+            padding: 32px;
+        }
+
+        /* Page sections */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .stat-icon.tasks { background: rgba(79, 70, 229, 0.1); color: var(--primary); }
+        .stat-icon.goals { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .stat-icon.habits { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .stat-icon.events { background: rgba(59, 130, 246, 0.1); color: var(--info); }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            color: var(--gray-500);
+            font-size: 14px;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        .card-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--gray-200);
+            background: var(--gray-50);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-200);
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: var(--gray-100);
+            color: var(--gray-600);
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-icon:hover {
+            background: var(--gray-200);
+        }
+
+        /* Task List */
+        .task-list {
+            list-style: none;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .task-item:last-child {
+            border-bottom: none;
+        }
+
+        .task-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--gray-300);
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .task-checkbox:hover {
+            border-color: var(--primary);
+        }
+
+        .task-checkbox.checked {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .task-content {
+            flex: 1;
+        }
+
+        .task-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .task-title.completed {
+            text-decoration: line-through;
+            color: var(--gray-400);
+        }
+
+        .task-meta {
+            font-size: 13px;
+            color: var(--gray-500);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .priority-badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .priority-low { background: var(--gray-100); color: var(--gray-600); }
+        .priority-medium { background: rgba(59, 130, 246, 0.1); color: var(--info); }
+        .priority-high { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .priority-urgent { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+
+        /* Goals */
+        .goal-item {
+            padding: 16px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .goal-item:last-child {
+            border-bottom: none;
+        }
+
+        .goal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .goal-title {
+            font-weight: 500;
+        }
+
+        .goal-progress-bar {
+            height: 8px;
+            background: var(--gray-200);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .goal-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        /* Habits */
+        .habit-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .habit-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: var(--gray-50);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .habit-card:hover {
+            background: var(--gray-100);
+        }
+
+        .habit-card.completed {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .habit-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .habit-info {
+            flex: 1;
+        }
+
+        .habit-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .habit-streak {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        .habit-check {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid var(--gray-300);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .habit-card.completed .habit-check {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        /* Notes */
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .note-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 4px solid var(--primary);
+        }
+
+        .note-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .note-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .note-content {
+            color: var(--gray-600);
+            font-size: 14px;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .note-meta {
+            margin-top: 16px;
+            font-size: 12px;
+            color: var(--gray-400);
+        }
+
+        /* Calendar */
+        .calendar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .calendar-month {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .calendar-day-header {
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gray-500);
+            padding: 8px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            position: relative;
+        }
+
+        .calendar-day:hover {
+            background: var(--gray-100);
+        }
+
+        .calendar-day.today {
+            background: var(--primary);
+            color: white;
+        }
+
+        .calendar-day.has-event::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--primary);
+        }
+
+        .calendar-day.today.has-event::after {
+            background: white;
+        }
+
+        .event-list {
+            margin-top: 24px;
+        }
+
+        .event-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--gray-50);
+            border-radius: 10px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .event-time {
+            text-align: center;
+            min-width: 60px;
+        }
+
+        .event-time-hour {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .event-time-period {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .event-details {
+            flex: 1;
+        }
+
+        .event-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .event-location {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        /* Chat Assistant */
+        .chat-container {
+            height: calc(100vh - var(--header-height) - 64px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        .message {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            max-width: 80%;
+        }
+
+        .message.user {
+            margin-left: auto;
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .message.assistant .message-avatar {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+        }
+
+        .message.user .message-avatar {
+            background: var(--gray-300);
+            color: white;
+        }
+
+        .message-content {
+            padding: 12px 16px;
+            border-radius: 12px;
+            line-height: 1.5;
+        }
+
+        .message.assistant .message-content {
+            background: var(--gray-100);
+        }
+
+        .message.user .message-content {
+            background: var(--primary);
+            color: white;
+        }
+
+        .chat-input-container {
+            padding: 24px;
+            border-top: 1px solid var(--gray-200);
+            background: white;
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 14px 20px;
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .chat-input:focus {
+            border-color: var(--primary);
+        }
+
+        .chat-send-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.2s;
+        }
+
+        .chat-send-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(-20px);
+            transition: transform 0.2s;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            background: var(--gray-100);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-500);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--gray-700);
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            border-color: var(--primary);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--gray-500);
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: var(--gray-300);
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            color: var(--gray-700);
+            margin-bottom: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--gray-100);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gray-300);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gray-400);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-compass"></i>
+            </div>
+            <span class="logo-text">Life Organizer</span>
+        </div>
+
+        <nav class="nav-section">
+            <div class="nav-label">Main</div>
+            <div class="nav-item active" data-page="dashboard">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </div>
+            <div class="nav-item" data-page="tasks">
+                <i class="fas fa-check-square"></i>
+                <span>Tasks</span>
+            </div>
+            <div class="nav-item" data-page="goals">
+                <i class="fas fa-bullseye"></i>
+                <span>Goals</span>
+            </div>
+            <div class="nav-item" data-page="habits">
+                <i class="fas fa-fire"></i>
+                <span>Habits</span>
+            </div>
+        </nav>
+
+        <nav class="nav-section">
+            <div class="nav-label">Organization</div>
+            <div class="nav-item" data-page="notes">
+                <i class="fas fa-sticky-note"></i>
+                <span>Notes</span>
+            </div>
+            <div class="nav-item" data-page="calendar">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Calendar</span>
+            </div>
+        </nav>
+
+        <nav class="nav-section">
+            <div class="nav-label">Assistant</div>
+            <div class="nav-item" data-page="assistant">
+                <i class="fas fa-robot"></i>
+                <span>AI Assistant</span>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-title">
+                <h1 id="page-title">Dashboard</h1>
+                <p id="page-subtitle">Welcome back! Here's your overview</p>
+            </div>
+            <div class="header-actions">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search...">
+                </div>
+                <div class="user-avatar">U</div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="page-content">
+            <!-- Dashboard Page -->
+            <div class="page active" id="page-dashboard">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon tasks">
+                                <i class="fas fa-check-square"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="stat-tasks">0</div>
+                        <div class="stat-label">Pending Tasks</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon goals">
+                                <i class="fas fa-bullseye"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="stat-goals">0</div>
+                        <div class="stat-label">Active Goals</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon habits">
+                                <i class="fas fa-fire"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="stat-habits">0/0</div>
+                        <div class="stat-label">Habits Today</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon events">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="stat-events">0</div>
+                        <div class="stat-label">Upcoming Events</div>
+                    </div>
+                </div>
+
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Recent Tasks</h3>
+                            <button class="btn btn-sm btn-secondary" onclick="showPage('tasks')">View All</button>
+                        </div>
+                        <div class="card-body">
+                            <ul class="task-list" id="dashboard-tasks">
+                                <div class="empty-state">
+                                    <i class="fas fa-check-circle"></i>
+                                    <h3>No tasks yet</h3>
+                                    <p>Add your first task to get started</p>
+                                </div>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Today's Habits</h3>
+                            <button class="btn btn-sm btn-secondary" onclick="showPage('habits')">View All</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="habit-grid" id="dashboard-habits">
+                                <div class="empty-state">
+                                    <i class="fas fa-fire"></i>
+                                    <h3>No habits yet</h3>
+                                    <p>Start building good habits</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tasks Page -->
+            <div class="page" id="page-tasks">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">All Tasks</h3>
+                        <button class="btn btn-primary" onclick="openModal('task')">
+                            <i class="fas fa-plus"></i> Add Task
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <ul class="task-list" id="tasks-list">
+                            <div class="empty-state">
+                                <i class="fas fa-check-circle"></i>
+                                <h3>No tasks yet</h3>
+                                <p>Add your first task to get started</p>
+                            </div>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Goals Page -->
+            <div class="page" id="page-goals">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Your Goals</h3>
+                        <button class="btn btn-primary" onclick="openModal('goal')">
+                            <i class="fas fa-plus"></i> Add Goal
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div id="goals-list">
+                            <div class="empty-state">
+                                <i class="fas fa-bullseye"></i>
+                                <h3>No goals yet</h3>
+                                <p>Set your first goal to track your progress</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Habits Page -->
+            <div class="page" id="page-habits">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Your Habits</h3>
+                        <button class="btn btn-primary" onclick="openModal('habit')">
+                            <i class="fas fa-plus"></i> Add Habit
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="habit-grid" id="habits-list">
+                            <div class="empty-state" style="grid-column: 1 / -1;">
+                                <i class="fas fa-fire"></i>
+                                <h3>No habits yet</h3>
+                                <p>Start building good habits today</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes Page -->
+            <div class="page" id="page-notes">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Your Notes</h3>
+                        <button class="btn btn-primary" onclick="openModal('note')">
+                            <i class="fas fa-plus"></i> Add Note
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="notes-grid" id="notes-list">
+                            <div class="empty-state" style="grid-column: 1 / -1;">
+                                <i class="fas fa-sticky-note"></i>
+                                <h3>No notes yet</h3>
+                                <p>Capture your thoughts and ideas</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendar Page -->
+            <div class="page" id="page-calendar">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Calendar</h3>
+                        <button class="btn btn-primary" onclick="openModal('event')">
+                            <i class="fas fa-plus"></i> Add Event
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="calendar-header">
+                            <div class="calendar-nav">
+                                <button class="btn-icon" onclick="changeMonth(-1)">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <span class="calendar-month" id="calendar-month">January 2026</span>
+                                <button class="btn-icon" onclick="changeMonth(1)">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                            <button class="btn btn-secondary" onclick="goToToday()">Today</button>
+                        </div>
+                        <div class="calendar-grid" id="calendar-grid">
+                            <div class="calendar-day-header">Sun</div>
+                            <div class="calendar-day-header">Mon</div>
+                            <div class="calendar-day-header">Tue</div>
+                            <div class="calendar-day-header">Wed</div>
+                            <div class="calendar-day-header">Thu</div>
+                            <div class="calendar-day-header">Fri</div>
+                            <div class="calendar-day-header">Sat</div>
+                        </div>
+                        <div class="event-list" id="event-list">
+                            <h4 style="margin-bottom: 16px; color: var(--gray-600);">Upcoming Events</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Assistant Page -->
+            <div class="page" id="page-assistant">
+                <div class="card chat-container">
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="message assistant animate-fade-in">
+                            <div class="message-avatar">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="message-content">
+                                Hello! I'm your Life Organizer Assistant. I can help you manage your tasks, track goals, build habits, and stay organized. What would you like to work on today?
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-input-container">
+                        <div class="chat-input-wrapper">
+                            <input type="text" class="chat-input" id="chat-input" placeholder="Ask me anything..." onkeypress="handleChatKeypress(event)">
+                            <button class="chat-send-btn" onclick="sendMessage()">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Task Modal -->
+    <div class="modal-overlay" id="modal-task">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Task</h3>
+                <button class="modal-close" onclick="closeModal('task')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="task-form">
+                    <div class="form-group">
+                        <label class="form-label">Title *</label>
+                        <input type="text" class="form-input" id="task-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-textarea" id="task-description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Priority</label>
+                        <select class="form-select" id="task-priority">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                            <option value="urgent">Urgent</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Due Date</label>
+                        <input type="date" class="form-input" id="task-due-date">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Category</label>
+                        <input type="text" class="form-input" id="task-category" placeholder="e.g., Work, Personal, Health">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('task')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveTask()">Save Task</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Goal Modal -->
+    <div class="modal-overlay" id="modal-goal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Goal</h3>
+                <button class="modal-close" onclick="closeModal('goal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="goal-form">
+                    <div class="form-group">
+                        <label class="form-label">Goal Title *</label>
+                        <input type="text" class="form-input" id="goal-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-textarea" id="goal-description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Category</label>
+                        <select class="form-select" id="goal-category">
+                            <option value="personal">Personal</option>
+                            <option value="career">Career</option>
+                            <option value="health">Health</option>
+                            <option value="finance">Finance</option>
+                            <option value="education">Education</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Target Date</label>
+                        <input type="date" class="form-input" id="goal-target-date">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('goal')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveGoal()">Save Goal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Habit Modal -->
+    <div class="modal-overlay" id="modal-habit">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Habit</h3>
+                <button class="modal-close" onclick="closeModal('habit')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="habit-form">
+                    <div class="form-group">
+                        <label class="form-label">Habit Name *</label>
+                        <input type="text" class="form-input" id="habit-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-textarea" id="habit-description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Icon</label>
+                        <select class="form-select" id="habit-icon">
+                            <option value="fas fa-running">Running</option>
+                            <option value="fas fa-dumbbell">Exercise</option>
+                            <option value="fas fa-book">Reading</option>
+                            <option value="fas fa-water">Hydration</option>
+                            <option value="fas fa-bed">Sleep</option>
+                            <option value="fas fa-apple-alt">Nutrition</option>
+                            <option value="fas fa-brain">Meditation</option>
+                            <option value="fas fa-code">Coding</option>
+                            <option value="fas fa-music">Music</option>
+                            <option value="fas fa-pencil-alt">Writing</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Color</label>
+                        <input type="color" class="form-input" id="habit-color" value="#4F46E5" style="height: 50px;">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('habit')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveHabit()">Save Habit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Note Modal -->
+    <div class="modal-overlay" id="modal-note">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Note</h3>
+                <button class="modal-close" onclick="closeModal('note')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="note-form">
+                    <div class="form-group">
+                        <label class="form-label">Title</label>
+                        <input type="text" class="form-input" id="note-title">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Content *</label>
+                        <textarea class="form-textarea" id="note-content" required style="min-height: 150px;"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Category</label>
+                        <input type="text" class="form-input" id="note-category" placeholder="e.g., Ideas, Work, Personal">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('note')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveNote()">Save Note</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event Modal -->
+    <div class="modal-overlay" id="modal-event">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Event</h3>
+                <button class="modal-close" onclick="closeModal('event')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="event-form">
+                    <div class="form-group">
+                        <label class="form-label">Event Title *</label>
+                        <input type="text" class="form-input" id="event-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-textarea" id="event-description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Start Date & Time *</label>
+                        <input type="datetime-local" class="form-input" id="event-start" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">End Date & Time</label>
+                        <input type="datetime-local" class="form-input" id="event-end">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Location</label>
+                        <input type="text" class="form-input" id="event-location">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('event')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveEvent()">Save Event</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API Base URL
+        const API_BASE = '';
+
+        // Current state
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+        let events = [];
+
+        // Page Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const page = item.dataset.page;
+                showPage(page);
+            });
+        });
+
+        function showPage(pageId) {
+            // Update nav
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.page === pageId);
+            });
+
+            // Update pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.toggle('active', page.id === `page-${pageId}`);
+            });
+
+            // Update header
+            const titles = {
+                dashboard: { title: 'Dashboard', subtitle: "Welcome back! Here's your overview" },
+                tasks: { title: 'Tasks', subtitle: 'Manage your to-do list' },
+                goals: { title: 'Goals', subtitle: 'Track your objectives' },
+                habits: { title: 'Habits', subtitle: 'Build your daily routines' },
+                notes: { title: 'Notes', subtitle: 'Capture your thoughts' },
+                calendar: { title: 'Calendar', subtitle: 'Schedule your events' },
+                assistant: { title: 'AI Assistant', subtitle: 'Get help organizing your life' }
+            };
+
+            document.getElementById('page-title').textContent = titles[pageId]?.title || 'Dashboard';
+            document.getElementById('page-subtitle').textContent = titles[pageId]?.subtitle || '';
+        }
+
+        // Modal Functions
+        function openModal(type) {
+            document.getElementById(`modal-${type}`).classList.add('active');
+        }
+
+        function closeModal(type) {
+            document.getElementById(`modal-${type}`).classList.remove('active');
+            // Clear form
+            document.getElementById(`${type}-form`)?.reset();
+        }
+
+        // Close modal when clicking outside
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('active');
+                }
+            });
+        });
+
+        // API Functions
+        async function fetchData(endpoint) {
+            const response = await fetch(`${API_BASE}/api/${endpoint}`);
+            return response.json();
+        }
+
+        async function postData(endpoint, data) {
+            const response = await fetch(`${API_BASE}/api/${endpoint}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            return response.json();
+        }
+
+        async function putData(endpoint, data) {
+            const response = await fetch(`${API_BASE}/api/${endpoint}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            return response.json();
+        }
+
+        async function deleteData(endpoint) {
+            await fetch(`${API_BASE}/api/${endpoint}`, { method: 'DELETE' });
+        }
+
+        // Load Dashboard Data
+        async function loadDashboard() {
+            try {
+                const stats = await fetchData('dashboard/stats');
+                document.getElementById('stat-tasks').textContent = stats.tasks.pending;
+                document.getElementById('stat-goals').textContent = stats.goals.active;
+                document.getElementById('stat-habits').textContent = `${stats.habits.completed_today}/${stats.habits.total}`;
+                document.getElementById('stat-events').textContent = stats.events.upcoming;
+            } catch (e) {
+                console.error('Error loading dashboard stats:', e);
+            }
+
+            loadTasks();
+            loadHabits();
+        }
+
+        // Tasks
+        async function loadTasks() {
+            try {
+                const tasks = await fetchData('tasks');
+                renderTasks(tasks, 'tasks-list');
+                renderTasks(tasks.slice(0, 5), 'dashboard-tasks');
+            } catch (e) {
+                console.error('Error loading tasks:', e);
+            }
+        }
+
+        function renderTasks(tasks, containerId) {
+            const container = document.getElementById(containerId);
+            if (tasks.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-check-circle"></i>
+                        <h3>No tasks yet</h3>
+                        <p>Add your first task to get started</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = tasks.map(task => `
+                <li class="task-item">
+                    <div class="task-checkbox ${task.completed ? 'checked' : ''}" onclick="toggleTask(${task.id}, ${!task.completed})">
+                        ${task.completed ? '<i class="fas fa-check"></i>' : ''}
+                    </div>
+                    <div class="task-content">
+                        <div class="task-title ${task.completed ? 'completed' : ''}">${task.title}</div>
+                        <div class="task-meta">
+                            <span class="priority-badge priority-${task.priority}">${task.priority}</span>
+                            ${task.due_date ? `<span><i class="far fa-calendar"></i> ${new Date(task.due_date).toLocaleDateString()}</span>` : ''}
+                            ${task.category ? `<span><i class="fas fa-tag"></i> ${task.category}</span>` : ''}
+                        </div>
+                    </div>
+                    <button class="btn-icon" onclick="deleteTask(${task.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </li>
+            `).join('');
+        }
+
+        async function saveTask() {
+            const task = {
+                title: document.getElementById('task-title').value,
+                description: document.getElementById('task-description').value,
+                priority: document.getElementById('task-priority').value,
+                due_date: document.getElementById('task-due-date').value || null,
+                category: document.getElementById('task-category').value
+            };
+
+            await postData('tasks', task);
+            closeModal('task');
+            loadTasks();
+            loadDashboard();
+        }
+
+        async function toggleTask(id, completed) {
+            await putData(`tasks/${id}`, { completed });
+            loadTasks();
+            loadDashboard();
+        }
+
+        async function deleteTask(id) {
+            if (confirm('Are you sure you want to delete this task?')) {
+                await deleteData(`tasks/${id}`);
+                loadTasks();
+                loadDashboard();
+            }
+        }
+
+        // Goals
+        async function loadGoals() {
+            try {
+                const goals = await fetchData('goals');
+                renderGoals(goals);
+            } catch (e) {
+                console.error('Error loading goals:', e);
+            }
+        }
+
+        function renderGoals(goals) {
+            const container = document.getElementById('goals-list');
+            if (goals.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-bullseye"></i>
+                        <h3>No goals yet</h3>
+                        <p>Set your first goal to track your progress</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = goals.map(goal => `
+                <div class="goal-item">
+                    <div class="goal-header">
+                        <div>
+                            <div class="goal-title">${goal.title}</div>
+                            <div style="font-size: 13px; color: var(--gray-500);">
+                                ${goal.category ? `<span style="text-transform: capitalize;">${goal.category}</span>` : ''}
+                                ${goal.target_date ? ` - Target: ${new Date(goal.target_date).toLocaleDateString()}` : ''}
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <span style="font-weight: 600; color: var(--primary);">${goal.progress}%</span>
+                            <input type="range" min="0" max="100" value="${goal.progress}"
+                                onchange="updateGoalProgress(${goal.id}, this.value)"
+                                style="width: 100px;">
+                            <button class="btn-icon" onclick="deleteGoal(${goal.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="goal-progress-bar">
+                        <div class="goal-progress-fill" style="width: ${goal.progress}%"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function saveGoal() {
+            const goal = {
+                title: document.getElementById('goal-title').value,
+                description: document.getElementById('goal-description').value,
+                category: document.getElementById('goal-category').value,
+                target_date: document.getElementById('goal-target-date').value || null
+            };
+
+            await postData('goals', goal);
+            closeModal('goal');
+            loadGoals();
+            loadDashboard();
+        }
+
+        async function updateGoalProgress(id, progress) {
+            await putData(`goals/${id}`, { progress: parseInt(progress) });
+            loadGoals();
+        }
+
+        async function deleteGoal(id) {
+            if (confirm('Are you sure you want to delete this goal?')) {
+                await deleteData(`goals/${id}`);
+                loadGoals();
+                loadDashboard();
+            }
+        }
+
+        // Habits
+        async function loadHabits() {
+            try {
+                const habits = await fetchData('habits');
+                renderHabits(habits, 'habits-list');
+                renderHabits(habits.slice(0, 4), 'dashboard-habits');
+            } catch (e) {
+                console.error('Error loading habits:', e);
+            }
+        }
+
+        function renderHabits(habits, containerId) {
+            const container = document.getElementById(containerId);
+            if (habits.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <i class="fas fa-fire"></i>
+                        <h3>No habits yet</h3>
+                        <p>Start building good habits today</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = habits.map(habit => `
+                <div class="habit-card ${habit.completed_today ? 'completed' : ''}" onclick="toggleHabit(${habit.id})">
+                    <div class="habit-icon" style="background: ${habit.color}20; color: ${habit.color}">
+                        <i class="${habit.icon || 'fas fa-star'}"></i>
+                    </div>
+                    <div class="habit-info">
+                        <div class="habit-name">${habit.name}</div>
+                        <div class="habit-streak">
+                            <i class="fas fa-fire"></i> ${habit.streak} day streak
+                        </div>
+                    </div>
+                    <div class="habit-check">
+                        ${habit.completed_today ? '<i class="fas fa-check"></i>' : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function saveHabit() {
+            const habit = {
+                name: document.getElementById('habit-name').value,
+                description: document.getElementById('habit-description').value,
+                icon: document.getElementById('habit-icon').value,
+                color: document.getElementById('habit-color').value
+            };
+
+            await postData('habits', habit);
+            closeModal('habit');
+            loadHabits();
+            loadDashboard();
+        }
+
+        async function toggleHabit(id) {
+            await postData(`habits/${id}/toggle`, {});
+            loadHabits();
+            loadDashboard();
+        }
+
+        // Notes
+        async function loadNotes() {
+            try {
+                const notes = await fetchData('notes');
+                renderNotes(notes);
+            } catch (e) {
+                console.error('Error loading notes:', e);
+            }
+        }
+
+        function renderNotes(notes) {
+            const container = document.getElementById('notes-list');
+            if (notes.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <i class="fas fa-sticky-note"></i>
+                        <h3>No notes yet</h3>
+                        <p>Capture your thoughts and ideas</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = notes.map(note => `
+                <div class="note-card" onclick="viewNote(${note.id})">
+                    <div class="note-title">${note.title || 'Untitled'}</div>
+                    <div class="note-content">${note.content}</div>
+                    <div class="note-meta">
+                        ${note.category ? `<span><i class="fas fa-tag"></i> ${note.category}</span> - ` : ''}
+                        ${new Date(note.updated_at).toLocaleDateString()}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function saveNote() {
+            const note = {
+                title: document.getElementById('note-title').value,
+                content: document.getElementById('note-content').value,
+                category: document.getElementById('note-category').value
+            };
+
+            await postData('notes', note);
+            closeModal('note');
+            loadNotes();
+        }
+
+        function viewNote(id) {
+            // TODO: Implement note viewing/editing
+            console.log('View note:', id);
+        }
+
+        // Calendar
+        async function loadEvents() {
+            try {
+                events = await fetchData('events');
+                renderCalendar();
+                renderEventList();
+            } catch (e) {
+                console.error('Error loading events:', e);
+            }
+        }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            const today = new Date();
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startingDay = firstDay.getDay();
+
+            // Clear existing days (keep headers)
+            grid.innerHTML = `
+                <div class="calendar-day-header">Sun</div>
+                <div class="calendar-day-header">Mon</div>
+                <div class="calendar-day-header">Tue</div>
+                <div class="calendar-day-header">Wed</div>
+                <div class="calendar-day-header">Thu</div>
+                <div class="calendar-day-header">Fri</div>
+                <div class="calendar-day-header">Sat</div>
+            `;
+
+            // Add empty cells for days before first day of month
+            for (let i = 0; i < startingDay; i++) {
+                grid.innerHTML += '<div class="calendar-day"></div>';
+            }
+
+            // Add days
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const isToday = day === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear();
+                const hasEvent = events.some(e => e.start_datetime.startsWith(dateStr));
+
+                grid.innerHTML += `
+                    <div class="calendar-day ${isToday ? 'today' : ''} ${hasEvent ? 'has-event' : ''}" onclick="selectDate('${dateStr}')">
+                        ${day}
+                    </div>
+                `;
+            }
+
+            // Update month display
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                               'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById('calendar-month').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+        }
+
+        function renderEventList() {
+            const container = document.getElementById('event-list');
+            const upcomingEvents = events.filter(e => new Date(e.start_datetime) >= new Date())
+                                         .slice(0, 5);
+
+            if (upcomingEvents.length === 0) {
+                container.innerHTML = `
+                    <h4 style="margin-bottom: 16px; color: var(--gray-600);">Upcoming Events</h4>
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h3>No upcoming events</h3>
+                        <p>Schedule your first event</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <h4 style="margin-bottom: 16px; color: var(--gray-600);">Upcoming Events</h4>
+                ${upcomingEvents.map(event => {
+                    const date = new Date(event.start_datetime);
+                    const hours = date.getHours();
+                    const minutes = String(date.getMinutes()).padStart(2, '0');
+                    const period = hours >= 12 ? 'PM' : 'AM';
+                    const displayHours = hours % 12 || 12;
+
+                    return `
+                        <div class="event-item" style="border-left-color: ${event.color}">
+                            <div class="event-time">
+                                <div class="event-time-hour">${displayHours}:${minutes}</div>
+                                <div class="event-time-period">${period}</div>
+                            </div>
+                            <div class="event-details">
+                                <div class="event-title">${event.title}</div>
+                                ${event.location ? `<div class="event-location"><i class="fas fa-map-marker-alt"></i> ${event.location}</div>` : ''}
+                            </div>
+                            <button class="btn-icon" onclick="deleteEvent(${event.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                }).join('')}
+            `;
+        }
+
+        function changeMonth(delta) {
+            currentMonth += delta;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            } else if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar();
+        }
+
+        function goToToday() {
+            const today = new Date();
+            currentMonth = today.getMonth();
+            currentYear = today.getFullYear();
+            renderCalendar();
+        }
+
+        function selectDate(dateStr) {
+            document.getElementById('event-start').value = dateStr + 'T09:00';
+            openModal('event');
+        }
+
+        async function saveEvent() {
+            const event = {
+                title: document.getElementById('event-title').value,
+                description: document.getElementById('event-description').value,
+                start_datetime: document.getElementById('event-start').value,
+                end_datetime: document.getElementById('event-end').value || null,
+                location: document.getElementById('event-location').value
+            };
+
+            await postData('events', event);
+            closeModal('event');
+            loadEvents();
+            loadDashboard();
+        }
+
+        async function deleteEvent(id) {
+            if (confirm('Are you sure you want to delete this event?')) {
+                await deleteData(`events/${id}`);
+                loadEvents();
+                loadDashboard();
+            }
+        }
+
+        // Chat Assistant
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const messagesContainer = document.getElementById('chat-messages');
+
+            // Add user message
+            messagesContainer.innerHTML += `
+                <div class="message user animate-fade-in">
+                    <div class="message-avatar">U</div>
+                    <div class="message-content">${escapeHtml(message)}</div>
+                </div>
+            `;
+
+            input.value = '';
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            try {
+                const response = await postData('chat', { message });
+
+                // Add assistant message
+                messagesContainer.innerHTML += `
+                    <div class="message assistant animate-fade-in">
+                        <div class="message-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="message-content">${formatMessage(response.assistant_message.content)}</div>
+                    </div>
+                `;
+            } catch (e) {
+                messagesContainer.innerHTML += `
+                    <div class="message assistant animate-fade-in">
+                        <div class="message-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="message-content">Sorry, I encountered an error. Please try again.</div>
+                    </div>
+                `;
+            }
+
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function handleChatKeypress(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatMessage(text) {
+            return escapeHtml(text)
+                .replace(/\n/g, '<br>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDashboard();
+            loadGoals();
+            loadNotes();
+            loadEvents();
+        });
+    </script>
+</body>
+</html>
