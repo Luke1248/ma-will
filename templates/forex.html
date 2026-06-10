@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forex Trading Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0d1117; --panel: #161b22; --panel2: #1c2333; --border: #2d333b;
+    --text: #e6edf3; --muted: #8b949e; --green: #2ea96f; --red: #e5534b;
+    --blue: #4d8df0; --amber: #d4a72c;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+  a { color: var(--blue); }
+
+  header { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 14px 24px; background: var(--panel); border-bottom: 1px solid var(--border); }
+  header h1 { font-size: 1.15rem; margin-right: auto; }
+  header h1 span { color: var(--blue); }
+  .acct { display: flex; gap: 22px; flex-wrap: wrap; }
+  .acct div { text-align: right; }
+  .acct .lbl { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .acct .val { font-size: 0.98rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .reset-btn { background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 6px; padding: 5px 10px; cursor: pointer; font-size: 0.75rem; }
+  .reset-btn:hover { color: var(--red); border-color: var(--red); }
+
+  .tickers { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; padding: 14px 24px 0; }
+  .ticker { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; cursor: pointer; transition: border-color .15s; }
+  .ticker.active { border-color: var(--blue); }
+  .ticker .pair { font-weight: 700; font-size: 0.9rem; letter-spacing: 0.04em; }
+  .ticker .rate { font-size: 1.45rem; font-weight: 700; font-variant-numeric: tabular-nums; margin: 2px 0; }
+  .ticker .sub { font-size: 0.75rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .up { color: var(--green); } .down { color: var(--red); } .flat { color: var(--muted); }
+
+  nav.tabs { display: flex; gap: 4px; padding: 14px 24px 0; }
+  nav.tabs button { background: none; border: none; color: var(--muted); padding: 9px 18px; font-size: 0.88rem; cursor: pointer; border-radius: 8px 8px 0 0; border-bottom: 2px solid transparent; }
+  nav.tabs button.active { color: var(--text); border-bottom-color: var(--blue); background: var(--panel); }
+
+  main { padding: 18px 24px 40px; }
+  .tab { display: none; } .tab.active { display: block; }
+  .grid2 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; align-items: start; }
+  @media (max-width: 950px) { .grid2 { grid-template-columns: 1fr; } }
+
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin-bottom: 16px; }
+  .card h2 { font-size: 0.95rem; margin-bottom: 14px; color: var(--text); }
+  .card h2 small { color: var(--muted); font-weight: 400; }
+
+  label { display: block; font-size: 0.74rem; color: var(--muted); margin: 10px 0 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+  input, select, textarea { width: 100%; background: var(--panel2); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; font-size: 0.9rem; font-family: inherit; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--blue); }
+  textarea { resize: vertical; min-height: 90px; }
+
+  .btn-row { display: flex; gap: 10px; margin-top: 14px; }
+  .btn { flex: 1; border: none; border-radius: 8px; padding: 11px; font-size: 0.92rem; font-weight: 700; cursor: pointer; color: #fff; }
+  .btn.buy { background: var(--green); } .btn.sell { background: var(--red); }
+  .btn.primary { background: var(--blue); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-sm { background: var(--panel2); border: 1px solid var(--border); color: var(--text); border-radius: 6px; padding: 4px 12px; font-size: 0.78rem; cursor: pointer; }
+  .btn-sm:hover { border-color: var(--blue); }
+  .btn-sm.danger:hover { border-color: var(--red); color: var(--red); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+  th { text-align: left; color: var(--muted); font-weight: 500; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+  td { padding: 8px; border-bottom: 1px solid var(--border); font-variant-numeric: tabular-nums; }
+  tr:last-child td { border-bottom: none; }
+
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; }
+  .badge.buy, .badge.bullish { background: rgba(46,169,111,.15); color: var(--green); }
+  .badge.sell, .badge.bearish { background: rgba(229,83,75,.15); color: var(--red); }
+  .badge.neutral { background: rgba(139,148,158,.15); color: var(--muted); }
+
+  .gauge-row { display: flex; flex-direction: column; gap: 12px; }
+  .gauge { background: var(--panel2); border-radius: 8px; padding: 12px 14px; }
+  .gauge .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 0.85rem; font-weight: 600; }
+  .bar { position: relative; height: 8px; background: linear-gradient(90deg, var(--red), #555 50%, var(--green)); border-radius: 4px; }
+  .bar .marker { position: absolute; top: -4px; width: 4px; height: 16px; background: #fff; border-radius: 2px; transform: translateX(-50%); }
+
+  .fund-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
+  .fund-card h3 { font-size: 1rem; margin-bottom: 8px; }
+  .fund-card .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin: 6px 0; font-size: 0.82rem; }
+  .fund-card .row span:first-child { color: var(--muted); }
+  .fund-card input { width: 90px; padding: 4px 8px; text-align: right; font-size: 0.82rem; }
+
+  .component { background: var(--panel2); border-radius: 8px; padding: 10px 12px; margin: 8px 0; font-size: 0.82rem; }
+  .component .head { display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 4px; }
+  .component .detail { color: var(--muted); font-size: 0.78rem; line-height: 1.45; }
+
+  .entry { background: var(--panel2); border-radius: 8px; padding: 12px 14px; margin-bottom: 10px; }
+  .entry .head { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; flex-wrap: wrap; }
+  .entry .src { color: var(--muted); font-size: 0.76rem; }
+  .entry .txt { font-size: 0.85rem; line-height: 1.5; }
+  .entry .terms { margin-top: 6px; font-size: 0.73rem; color: var(--muted); }
+  .entry .del { margin-left: auto; }
+
+  .toast { position: fixed; bottom: 22px; right: 22px; background: var(--panel2); border: 1px solid var(--border); border-left: 4px solid var(--blue); border-radius: 8px; padding: 12px 18px; font-size: 0.86rem; max-width: 360px; opacity: 0; transform: translateY(8px); transition: all .25s; pointer-events: none; z-index: 50; }
+  .toast.show { opacity: 1; transform: none; }
+  .toast.err { border-left-color: var(--red); }
+  .toast.ok { border-left-color: var(--green); }
+
+  .disclaimer { margin-top: 6px; font-size: 0.72rem; color: var(--muted); padding: 0 24px 24px; }
+  .pill { font-size: 0.68rem; border: 1px solid var(--border); border-radius: 20px; padding: 2px 9px; color: var(--muted); }
+  .empty { color: var(--muted); font-size: 0.85rem; padding: 12px 4px; }
+  .stat-line { display: flex; gap: 26px; margin-bottom: 14px; flex-wrap: wrap; }
+  .stat-line div .lbl { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; }
+  .stat-line div .val { font-size: 1.1rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+  #chart-wrap { height: 320px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>FX<span>Desk</span> — Forex Trading Dashboard <span class="pill" id="feed-status">connecting…</span></h1>
+  <div class="acct">
+    <div><div class="lbl">Balance</div><div class="val" id="acct-balance">—</div></div>
+    <div><div class="lbl">Equity</div><div class="val" id="acct-equity">—</div></div>
+    <div><div class="lbl">Open P&amp;L</div><div class="val" id="acct-pnl">—</div></div>
+    <div><div class="lbl">Free Margin</div><div class="val" id="acct-margin">—</div></div>
+  </div>
+  <button class="reset-btn" onclick="resetAccount()">Reset account</button>
+</header>
+
+<div class="tickers" id="tickers"></div>
+
+<nav class="tabs">
+  <button class="active" data-tab="trade" onclick="showTab('trade')">Trade</button>
+  <button data-tab="sentiment" onclick="showTab('sentiment')">Sentiment</button>
+  <button data-tab="fundamentals" onclick="showTab('fundamentals')">Fundamentals</button>
+  <button data-tab="history" onclick="showTab('history')">History</button>
+</nav>
+
+<main>
+  <!-- ============ TRADE TAB ============ -->
+  <section class="tab active" id="tab-trade">
+    <div class="grid2">
+      <div>
+        <div class="card">
+          <h2 id="chart-title">USDTRY</h2>
+          <div id="chart-wrap"><canvas id="price-chart"></canvas></div>
+        </div>
+        <div class="card">
+          <h2>Open Positions</h2>
+          <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Pair</th><th>Side</th><th>Units</th><th>Entry</th><th>Current</th><th>SL</th><th>TP</th><th>P&amp;L (USD)</th><th></th></tr></thead>
+            <tbody id="positions-body"><tr><td colspan="9" class="empty">No open positions</td></tr></tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h2>New Order</h2>
+          <label>Pair</label>
+          <select id="order-pair">
+            <option>USDTRY</option><option>USDCNH</option><option>USDINR</option>
+          </select>
+          <label>Units (USD notional)</label>
+          <input type="number" id="order-units" value="10000" min="1000" max="1000000" step="1000">
+          <label>Stop Loss (rate, optional)</label>
+          <input type="number" id="order-sl" step="0.0001" placeholder="e.g. 41.2000">
+          <label>Take Profit (rate, optional)</label>
+          <input type="number" id="order-tp" step="0.0001" placeholder="e.g. 42.5000">
+          <div class="btn-row">
+            <button class="btn buy" onclick="placeOrder('buy')">BUY <span id="ask-preview"></span></button>
+            <button class="btn sell" onclick="placeOrder('sell')">SELL <span id="bid-preview"></span></button>
+          </div>
+          <p style="margin-top:10px;font-size:0.74rem;color:var(--muted)">Leverage 20:1 — margin required is 5% of notional. Buys fill at the ask, sells at the bid.</p>
+        </div>
+        <div class="card">
+          <h2>Combined Signal <small>(60% fundamentals / 40% sentiment)</small></h2>
+          <div class="gauge-row" id="signal-gauges"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SENTIMENT TAB ============ -->
+  <section class="tab" id="tab-sentiment">
+    <div class="grid2">
+      <div>
+        <div class="card">
+          <h2>Market Sentiment by Pair <small>(recency-weighted average of analyzed news)</small></h2>
+          <div class="gauge-row" id="sentiment-gauges"></div>
+        </div>
+        <div class="card">
+          <h2>Analyzed News</h2>
+          <div id="sentiment-entries"><p class="empty">No news analyzed yet. Paste a headline or article excerpt on the right.</p></div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h2>Analyze News / Commentary</h2>
+          <label>Pair</label>
+          <select id="sent-pair" onchange="syncSubjectOptions()">
+            <option>USDTRY</option><option>USDCNH</option><option>USDINR</option>
+          </select>
+          <label>News is mainly about</label>
+          <select id="sent-subject"></select>
+          <label>Source (optional)</label>
+          <input type="text" id="sent-source" placeholder="e.g. Reuters, CBRT statement">
+          <label>Text</label>
+          <textarea id="sent-text" placeholder="Paste a headline, central bank statement, or article excerpt…"></textarea>
+          <div class="btn-row">
+            <button class="btn primary" onclick="analyzeSentiment()">Analyze &amp; Save</button>
+          </div>
+          <p style="margin-top:10px;font-size:0.74rem;color:var(--muted)">A forex-specific lexicon scores the text toward the selected currency, then maps it to a bullish/bearish reading for the pair (bullish = pair rises = USD strengthens).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FUNDAMENTALS TAB ============ -->
+  <section class="tab" id="tab-fundamentals">
+    <div class="card">
+      <h2>Economic Indicators <small>(editable — update with the latest prints, then re-score)</small></h2>
+      <div class="fund-grid" id="fund-cards"></div>
+    </div>
+    <div class="card">
+      <h2>Pair Analysis</h2>
+      <div class="fund-grid" id="fund-analysis"></div>
+    </div>
+  </section>
+
+  <!-- ============ HISTORY TAB ============ -->
+  <section class="tab" id="tab-history">
+    <div class="card">
+      <h2>Closed Trades</h2>
+      <div class="stat-line">
+        <div><div class="lbl">Realized P&amp;L</div><div class="val" id="hist-pnl">—</div></div>
+        <div><div class="lbl">Trades</div><div class="val" id="hist-count">—</div></div>
+        <div><div class="lbl">Win rate</div><div class="val" id="hist-win">—</div></div>
+      </div>
+      <div style="overflow-x:auto">
+      <table>
+        <thead><tr><th>Pair</th><th>Side</th><th>Units</th><th>Entry</th><th>Exit</th><th>Reason</th><th>P&amp;L (USD)</th><th>Closed</th></tr></thead>
+        <tbody id="history-body"><tr><td colspan="8" class="empty">No closed trades yet</td></tr></tbody>
+      </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<p class="disclaimer">Paper-trading simulator for education only — simulated fills, indicative rates (CNH proxied by onshore CNY when live data is available), heuristic sentiment/fundamental models. Not investment advice.</p>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const PAIRS = ['USDTRY', 'USDCNH', 'USDINR'];
+const COUNTER = { USDTRY: 'TRY', USDCNH: 'CNH', USDINR: 'INR' };
+let selectedPair = 'USDTRY';
+let latestRates = null;
+let priceChart = null;
+
+const $ = id => document.getElementById(id);
+const fmt = (n, d = 2) => n == null ? '—' : Number(n).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+const fmtRate = n => n == null ? '—' : Number(n).toFixed(4);
+
+function toast(msg, type = '') {
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+async function api(path, opts = {}) {
+  const res = await fetch(path, { headers: { 'Content-Type': 'application/json' }, ...opts });
+  if (res.status === 204) return null;
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || ('Request failed (' + res.status + ')'));
+  return data;
+}
+
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav.tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+  $('tab-' + name).classList.add('active');
+  if (name === 'sentiment') loadSentiment();
+  if (name === 'fundamentals') loadFundamentals();
+  if (name === 'history') loadHistory();
+}
+
+/* ---------- Rates & tickers ---------- */
+
+function renderTickers() {
+  const box = $('tickers');
+  box.innerHTML = '';
+  for (const pair of PAIRS) {
+    const info = latestRates?.pairs?.[pair];
+    const div = document.createElement('div');
+    div.className = 'ticker' + (pair === selectedPair ? ' active' : '');
+    const cls = !info ? 'flat' : info.change_pct > 0 ? 'up' : info.change_pct < 0 ? 'down' : 'flat';
+    const arrow = !info ? '' : info.change_pct > 0 ? '▲' : info.change_pct < 0 ? '▼' : '•';
+    div.innerHTML = `
+      <div class="pair">${pair} <span class="${cls}" style="font-size:.75rem">${arrow} ${info ? info.change_pct.toFixed(2) + '%' : ''}</span></div>
+      <div class="rate ${cls}">${info ? fmtRate(info.mid) : '—'}</div>
+      <div class="sub">bid ${info ? fmtRate(info.bid) : '—'} / ask ${info ? fmtRate(info.ask) : '—'}</div>`;
+    div.onclick = () => { selectedPair = pair; $('order-pair').value = pair; renderTickers(); updateChart(); };
+    box.appendChild(div);
+  }
+  const info = latestRates?.pairs?.[$('order-pair').value];
+  $('ask-preview').textContent = info ? '@ ' + fmtRate(info.ask) : '';
+  $('bid-preview').textContent = info ? '@ ' + fmtRate(info.bid) : '';
+}
+
+function updateChart() {
+  $('chart-title').textContent = selectedPair;
+  if (typeof Chart === 'undefined' || !latestRates) return;
+  const hist = latestRates.pairs[selectedPair].history || [];
+  const labels = hist.map(p => new Date(p.t * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+  const data = hist.map(p => p.rate);
+  if (!priceChart) {
+    priceChart = new Chart($('price-chart'), {
+      type: 'line',
+      data: { labels, datasets: [{ data, borderColor: '#4d8df0', backgroundColor: 'rgba(77,141,240,0.08)', fill: true, pointRadius: 0, borderWidth: 1.6, tension: 0.25 }] },
+      options: {
+        responsive: true, maintainAspectRatio: false, animation: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { ticks: { color: '#8b949e', maxTicksLimit: 8 }, grid: { color: 'rgba(45,51,59,.5)' } },
+          y: { ticks: { color: '#8b949e' }, grid: { color: 'rgba(45,51,59,.5)' } }
+        }
+      }
+    });
+  } else {
+    priceChart.data.labels = labels;
+    priceChart.data.datasets[0].data = data;
+    priceChart.update('none');
+  }
+}
+
+async function refreshRates() {
+  try {
+    latestRates = await api('/api/rates');
+    $('feed-status').textContent = latestRates.live ? 'live rates' : 'simulated rates';
+    renderTickers();
+    updateChart();
+  } catch (e) {
+    $('feed-status').textContent = 'offline';
+  }
+}
+
+/* ---------- Account & positions ---------- */
+
+async function refreshAccount() {
+  try {
+    const a = await api('/api/account');
+    $('acct-balance').textContent = '$' + fmt(a.balance);
+    $('acct-equity').textContent = '$' + fmt(a.equity);
+    const pnlEl = $('acct-pnl');
+    pnlEl.textContent = (a.open_pnl >= 0 ? '+$' : '-$') + fmt(Math.abs(a.open_pnl));
+    pnlEl.className = 'val ' + (a.open_pnl > 0 ? 'up' : a.open_pnl < 0 ? 'down' : '');
+    $('acct-margin').textContent = '$' + fmt(a.free_margin);
+  } catch (e) { /* feed status already shows offline */ }
+}
+
+async function refreshPositions() {
+  try {
+    const trades = await api('/api/trades');
+    const body = $('positions-body');
+    if (!trades.length) {
+      body.innerHTML = '<tr><td colspan="9" class="empty">No open positions</td></tr>';
+      return;
+    }
+    body.innerHTML = trades.map(t => `
+      <tr>
+        <td>${t.pair}</td>
+        <td><span class="badge ${t.side}">${t.side}</span></td>
+        <td>${fmt(t.units, 0)}</td>
+        <td>${fmtRate(t.entry_rate)}</td>
+        <td>${fmtRate(t.current_rate)}</td>
+        <td>${t.stop_loss ? fmtRate(t.stop_loss) : '—'}</td>
+        <td>${t.take_profit ? fmtRate(t.take_profit) : '—'}</td>
+        <td class="${t.unrealized_pnl > 0 ? 'up' : t.unrealized_pnl < 0 ? 'down' : ''}">${(t.unrealized_pnl >= 0 ? '+' : '') + fmt(t.unrealized_pnl)}</td>
+        <td><button class="btn-sm danger" onclick="closeTrade(${t.id})">Close</button></td>
+      </tr>`).join('');
+  } catch (e) { /* ignore transient errors */ }
+}
+
+async function placeOrder(side) {
+  try {
+    const body = {
+      pair: $('order-pair').value,
+      side,
+      units: parseFloat($('order-units').value),
+      stop_loss: $('order-sl').value || null,
+      take_profit: $('order-tp').value || null,
+    };
+    const t = await api('/api/trades', { method: 'POST', body: JSON.stringify(body) });
+    toast(`${side.toUpperCase()} ${fmt(t.units, 0)} ${t.pair} filled @ ${fmtRate(t.entry_rate)}`, 'ok');
+    $('order-sl').value = ''; $('order-tp').value = '';
+    refreshPositions(); refreshAccount();
+  } catch (e) { toast(e.message, 'err'); }
+}
+
+async function closeTrade(id) {
+  try {
+    const t = await api(`/api/trades/${id}/close`, { method: 'POST' });
+    toast(`Closed ${t.pair} @ ${fmtRate(t.exit_rate)} — P&L ${(t.pnl >= 0 ? '+$' : '-$') + fmt(Math.abs(t.pnl))}`, t.pnl >= 0 ? 'ok' : 'err');
+    refreshPositions(); refreshAccount();
+  } catch (e) { toast(e.message, 'err'); }
+}
+
+async function resetAccount() {
+  if (!confirm('Reset the paper account to $100,000 and delete all trades?')) return;
+  await api('/api/account/reset', { method: 'POST' });
+  toast('Account reset to $100,000', 'ok');
+  refreshPositions(); refreshAccount(); loadHistory();
+}
+
+/* ---------- Gauges ---------- */
+
+function gauge(title, score, label, extra = '') {
+  const pct = Math.max(0, Math.min(100, (score + 1) * 50));
+  return `
+    <div class="gauge">
+      <div class="top"><span>${title}</span><span><span class="badge ${label}">${label}</span> <span style="color:var(--muted);font-size:.78rem">${(score >= 0 ? '+' : '') + score.toFixed(2)}</span></span></div>
+      <div class="bar"><div class="marker" style="left:${pct}%"></div></div>
+      ${extra}
+    </div>`;
+}
+
+async function refreshSignals() {
+  try {
+    const s = await api('/api/signal');
+    $('signal-gauges').innerHTML = PAIRS.map(p => {
+      const v = s[p];
+      const extra = `<div style="margin-top:6px;font-size:.74rem;color:var(--muted)">fundamentals ${(v.fundamental >= 0 ? '+' : '') + v.fundamental.toFixed(2)} · sentiment ${(v.sentiment >= 0 ? '+' : '') + v.sentiment.toFixed(2)}</div>`;
+      return gauge(p, v.combined, v.bias, extra);
+    }).join('');
+  } catch (e) { /* ignore */ }
+}
+
+/* ---------- Sentiment ---------- */
+
+function syncSubjectOptions() {
+  const pair = $('sent-pair').value;
+  $('sent-subject').innerHTML = `<option value="USD">USD (the dollar)</option><option value="${COUNTER[pair]}">${COUNTER[pair]} (counter currency)</option>`;
+}
+
+async function analyzeSentiment() {
+  try {
+    const entry = await api('/api/sentiment/analyze', {
+      method: 'POST',
+      body: JSON.stringify({
+        pair: $('sent-pair').value,
+        subject_currency: $('sent-subject').value,
+        source: $('sent-source').value,
+        text: $('sent-text').value,
+      })
+    });
+    toast(`Scored ${entry.label.toUpperCase()} for ${entry.pair} (${(entry.pair_score >= 0 ? '+' : '') + entry.pair_score.toFixed(2)})`, 'ok');
+    $('sent-text').value = ''; $('sent-source').value = '';
+    loadSentiment(); refreshSignals();
+  } catch (e) { toast(e.message, 'err'); }
+}
+
+async function deleteSentiment(id) {
+  await api(`/api/sentiment/${id}`, { method: 'DELETE' });
+  loadSentiment(); refreshSignals();
+}
+
+async function loadSentiment() {
+  try {
+    const data = await api('/api/sentiment');
+    $('sentiment-gauges').innerHTML = PAIRS.map(p => {
+      const agg = data.aggregates[p];
+      return gauge(`${p} (${agg.count} item${agg.count === 1 ? '' : 's'})`, agg.score, agg.label);
+    }).join('');
+    const box = $('sentiment-entries');
+    if (!data.entries.length) {
+      box.innerHTML = '<p class="empty">No news analyzed yet. Paste a headline or article excerpt on the right.</p>';
+      return;
+    }
+    box.innerHTML = data.entries.map(e => `
+      <div class="entry">
+        <div class="head">
+          <strong>${e.pair}</strong>
+          <span class="badge ${e.label}">${e.label}</span>
+          <span style="color:var(--muted);font-size:.78rem">${(e.pair_score >= 0 ? '+' : '') + e.pair_score.toFixed(2)} · about ${e.subject_currency}</span>
+          <span class="src">${e.source ? e.source + ' · ' : ''}${new Date(e.created_at + 'Z').toLocaleString()}</span>
+          <button class="btn-sm danger del" onclick="deleteSentiment(${e.id})">Delete</button>
+        </div>
+        <div class="txt">${escapeHtml(e.text)}</div>
+        ${e.matched_terms.length ? `<div class="terms">Matched: ${e.matched_terms.map(escapeHtml).join(', ')}</div>` : ''}
+      </div>`).join('');
+  } catch (e) { /* ignore */ }
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+/* ---------- Fundamentals ---------- */
+
+const FUND_FIELDS = [
+  ['interest_rate', 'Policy rate (%)'],
+  ['inflation', 'Inflation YoY (%)'],
+  ['gdp_growth', 'GDP growth (%)'],
+  ['unemployment', 'Unemployment (%)'],
+  ['current_account_gdp', 'Current acct (% GDP)'],
+  ['govt_debt_gdp', 'Govt debt (% GDP)'],
+  ['fx_reserves_bn', 'FX reserves ($bn)'],
+];
+const CCY_NAMES = { USD: 'US Dollar', TRY: 'Turkish Lira', CNH: 'Chinese Yuan (offshore)', INR: 'Indian Rupee' };
+
+async function loadFundamentals() {
+  try {
+    const data = await api('/api/fundamentals');
+    $('fund-cards').innerHTML = Object.values(data).map(f => `
+      <div class="card fund-card" style="margin:0">
+        <h3>${f.currency} <small style="color:var(--muted);font-weight:400">${CCY_NAMES[f.currency] || ''}</small></h3>
+        ${FUND_FIELDS.map(([k, lbl]) => `
+          <div class="row"><span>${lbl}</span>
+            <input type="number" step="0.1" id="fund-${f.currency}-${k}" value="${f[k] ?? ''}"></div>`).join('')}
+        <div class="btn-row"><button class="btn primary" onclick="saveFundamental('${f.currency}')">Save ${f.currency}</button></div>
+      </div>`).join('');
+    loadFundAnalysis();
+  } catch (e) { /* ignore */ }
+}
+
+async function saveFundamental(ccy) {
+  try {
+    const body = {};
+    for (const [k] of FUND_FIELDS) body[k] = parseFloat($(`fund-${ccy}-${k}`).value);
+    await api(`/api/fundamentals/${ccy}`, { method: 'PUT', body: JSON.stringify(body) });
+    toast(`${ccy} indicators saved — analysis re-scored`, 'ok');
+    loadFundAnalysis(); refreshSignals();
+  } catch (e) { toast(e.message, 'err'); }
+}
+
+async function loadFundAnalysis() {
+  try {
+    const data = await api('/api/fundamentals/analysis');
+    $('fund-analysis').innerHTML = PAIRS.map(p => {
+      const a = data[p];
+      if (!a) return '';
+      return `
+        <div class="card" style="margin:0">
+          <h3 style="display:flex;justify-content:space-between;align-items:center;font-size:1rem;margin-bottom:4px">
+            ${p} <span><span class="badge ${a.bias}">${a.bias}</span> <strong>${(a.score >= 0 ? '+' : '') + a.score}</strong></span>
+          </h3>
+          <p style="font-size:.8rem;color:var(--muted);margin-bottom:8px">${a.outlook} (score range −100 to +100; positive favors USD)</p>
+          ${a.components.map(c => `
+            <div class="component">
+              <div class="head"><span>${c.name}</span><span class="${c.value > 0 ? 'up' : c.value < 0 ? 'down' : 'flat'}">${(c.value >= 0 ? '+' : '') + c.value.toFixed(2)} × w${c.weight}</span></div>
+              <div class="detail">${c.detail}</div>
+            </div>`).join('')}
+        </div>`;
+    }).join('');
+  } catch (e) { /* ignore */ }
+}
+
+/* ---------- History ---------- */
+
+async function loadHistory() {
+  try {
+    const data = await api('/api/trades/history');
+    const pnlEl = $('hist-pnl');
+    pnlEl.textContent = (data.total_pnl >= 0 ? '+$' : '-$') + fmt(Math.abs(data.total_pnl));
+    pnlEl.className = 'val ' + (data.total_pnl > 0 ? 'up' : data.total_pnl < 0 ? 'down' : '');
+    $('hist-count').textContent = data.count;
+    $('hist-win').textContent = data.win_rate + '%';
+    const body = $('history-body');
+    if (!data.trades.length) {
+      body.innerHTML = '<tr><td colspan="8" class="empty">No closed trades yet</td></tr>';
+      return;
+    }
+    body.innerHTML = data.trades.map(t => `
+      <tr>
+        <td>${t.pair}</td>
+        <td><span class="badge ${t.side}">${t.side}</span></td>
+        <td>${fmt(t.units, 0)}</td>
+        <td>${fmtRate(t.entry_rate)}</td>
+        <td>${fmtRate(t.exit_rate)}</td>
+        <td>${(t.close_reason || '').replace('_', ' ')}</td>
+        <td class="${t.pnl > 0 ? 'up' : t.pnl < 0 ? 'down' : ''}">${(t.pnl >= 0 ? '+' : '') + fmt(t.pnl)}</td>
+        <td>${t.closed_at ? new Date(t.closed_at + 'Z').toLocaleString() : '—'}</td>
+      </tr>`).join('');
+  } catch (e) { /* ignore */ }
+}
+
+/* ---------- Init ---------- */
+
+$('order-pair').addEventListener('change', e => { selectedPair = e.target.value; renderTickers(); updateChart(); });
+syncSubjectOptions();
+refreshRates(); refreshAccount(); refreshPositions(); refreshSignals();
+setInterval(() => { refreshRates(); refreshAccount(); refreshPositions(); }, 5000);
+setInterval(refreshSignals, 30000);
+</script>
+</body>
+</html>
