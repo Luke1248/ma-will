@@ -1,0 +1,24 @@
+; FundamentalSentimentEA preset — USDINR
+; Thesis: ecological/climate stress weighs on India => structural long USD vs INR
+; NOTE: many retail brokers quote USDINR indicative-only; the EA skips
+; symbols that are not in full trading mode.
+InpSignalURL=http://127.0.0.1:5001/api/signal/plain
+InpRefreshSeconds=60
+InpPairOverride=
+InpAllowThesisOnly=true
+InpThesisBias=0.8
+InpSignalWeight=0.6
+InpThesisWeight=0.4
+InpEntryThreshold=0.30
+InpExitThreshold=0.10
+InpAllowLong=true
+InpAllowShort=true
+InpReverseOnFlip=true
+InpRiskPercent=1.0
+InpMaxLots=5.0
+InpATRTimeframe=16388
+InpATRPeriod=14
+InpSL_ATR_Mult=2.0
+InpTP_ATR_Mult=3.0
+InpMaxSpreadPoints=400
+InpMagicNumber=20260613
