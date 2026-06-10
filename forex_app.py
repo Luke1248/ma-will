@@ -676,8 +676,7 @@ def api_fundamental_analysis():
 
 # ----- Combined Signal -----
 
-@app.route('/api/signal', methods=['GET'])
-def api_signal():
+def compute_signals():
     """Blend sentiment and fundamentals into one directional signal per pair."""
     sentiment = {}
     entries = SentimentEntry.query.order_by(SentimentEntry.created_at.desc()).limit(100).all()
@@ -701,7 +700,22 @@ def api_signal():
             'combined': round(combined, 3),
             'bias': 'bullish' if combined > 0.1 else 'bearish' if combined < -0.1 else 'neutral',
         }
-    return jsonify(result)
+    return result
+
+
+@app.route('/api/signal', methods=['GET'])
+def api_signal():
+    return jsonify(compute_signals())
+
+
+@app.route('/api/signal/plain', methods=['GET'])
+def api_signal_plain():
+    """CSV signal feed for the MetaTrader EA: one line per pair as
+    PAIR,combined,fundamental,sentiment,bias"""
+    signals = compute_signals()
+    lines = [f"{pair},{v['combined']},{v['fundamental']},{v['sentiment']},{v['bias']}"
+             for pair, v in signals.items()]
+    return '\n'.join(lines) + '\n', 200, {'Content-Type': 'text/plain; charset=utf-8'}
 
 
 with app.app_context():

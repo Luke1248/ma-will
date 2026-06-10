@@ -18,3 +18,7 @@ python forex_app.py   # serves on http://localhost:5001
 ```
 
 This is a simulator for education/practice only — no real money is traded and nothing in it is financial advice.
+
+### MetaTrader 5 Expert Advisor
+
+`metatrader/FundamentalSentimentEA.mq5` brings the dashboard's signal to live/demo MT5 trading: it polls `/api/signal/plain` via WebRequest, blends it with a per-chart thesis bias, and manages ATR-stopped, risk-sized positions on USDTRY, USDCNH, and USDINR. Setup instructions and per-pair presets are in `metatrader/README.md`.
