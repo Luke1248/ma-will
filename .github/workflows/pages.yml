@@ -1,0 +1,47 @@
+name: Deploy Bluebook PWA to GitHub Pages
+
+# Publishes the contents of ./docs (the installable web app) to GitHub Pages.
+# One-time setup: in the repo, go to Settings → Pages → Build and deployment →
+# Source: "GitHub Actions". After that, every push here redeploys automatically.
+
+on:
+  push:
+    branches:
+      - main
+      - claude/bluebook-citation-tester-db1euu
+    paths:
+      - 'docs/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment; cancel in-progress runs for the same ref.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload app artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

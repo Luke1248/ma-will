@@ -51,6 +51,23 @@ python bluebook_app.py
 # then open http://localhost:5001
 ```
 
+### Install on your phone (PWA)
+
+The app in [`docs/`](docs/) is an installable **Progressive Web App** — add it to
+your home screen and it runs full‑screen and offline, just like a native app.
+
+**Hosting (one‑time):** in this repo, open **Settings → Pages → Build and
+deployment → Source: "GitHub Actions."** The included workflow
+(`.github/workflows/pages.yml`) then publishes `docs/` automatically. Your URL
+will be:
+
+```
+https://luke1248.github.io/ma-will/
+```
+
+**On your iPhone:** open that URL in **Safari**, tap **Share**, then **Add to
+Home Screen**. (On Android/Chrome, use the **Install app** prompt.)
+
 ### iOS app
 
 A native **SwiftUI** version lives in [`ios/`](ios/) as a ready-to-open Xcode
