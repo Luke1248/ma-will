@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+  <title>HSK Flashcards</title>
+  <meta name="description" content="Spaced-repetition flashcards for HSK 1–6 Chinese vocabulary." />
+
+  <!-- PWA / iOS home-screen install -->
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#b81d1d" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="HSK" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" href="icons/icon-192.png" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- ===== Home / Dashboard ===== -->
+    <section id="view-home" class="view active">
+      <header class="topbar">
+        <h1 class="brand">HSK <span>Flashcards</span></h1>
+        <button class="icon-btn" id="open-settings" aria-label="Settings">⚙︎</button>
+      </header>
+
+      <div class="hero">
+        <div class="due-ring">
+          <div class="due-count" id="due-count">0</div>
+          <div class="due-label">cards due</div>
+        </div>
+        <button class="btn btn-primary btn-lg" id="start-review">Start studying</button>
+        <p class="hero-sub" id="hero-sub"></p>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat"><div class="stat-num" id="stat-new">0</div><div class="stat-lbl">New today</div></div>
+        <div class="stat"><div class="stat-num" id="stat-learning">0</div><div class="stat-lbl">Learning</div></div>
+        <div class="stat"><div class="stat-num" id="stat-known">0</div><div class="stat-lbl">Learned</div></div>
+        <div class="stat"><div class="stat-num" id="stat-streak">0</div><div class="stat-lbl">Day streak</div></div>
+      </div>
+
+      <h2 class="section-title">Levels</h2>
+      <div class="level-list" id="level-list"></div>
+
+      <p class="footer-note">Progress is saved on this device. Add to your Home Screen to use offline.</p>
+    </section>
+
+    <!-- ===== Study ===== -->
+    <section id="view-study" class="view">
+      <header class="topbar study-bar">
+        <button class="icon-btn" id="study-back" aria-label="Back">‹</button>
+        <div class="progress"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="queue-count" id="queue-count">0</div>
+      </header>
+
+      <div class="card-stage" id="card-stage">
+        <div class="flashcard" id="flashcard">
+          <div class="card-level" id="card-level"></div>
+          <div class="card-prompt" id="card-prompt"></div>
+          <div class="card-answer hidden" id="card-answer">
+            <div class="ans-pinyin" id="ans-pinyin"></div>
+            <div class="ans-english" id="ans-english"></div>
+          </div>
+          <button class="speak-btn" id="speak-btn" aria-label="Play pronunciation">🔊</button>
+        </div>
+      </div>
+
+      <div class="study-controls">
+        <button class="btn btn-reveal" id="reveal-btn">Show answer</button>
+        <div class="grade-row hidden" id="grade-row">
+          <button class="btn grade grade-again" data-grade="again"><span>Again</span><em id="t-again"></em></button>
+          <button class="btn grade grade-hard"  data-grade="hard"><span>Hard</span><em id="t-hard"></em></button>
+          <button class="btn grade grade-good"  data-grade="good"><span>Good</span><em id="t-good"></em></button>
+          <button class="btn grade grade-easy"  data-grade="easy"><span>Easy</span><em id="t-easy"></em></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Session complete ===== -->
+    <section id="view-done" class="view">
+      <div class="done-wrap">
+        <div class="done-emoji">🎉</div>
+        <h2>Session complete</h2>
+        <p id="done-summary" class="done-summary"></p>
+        <button class="btn btn-primary btn-lg" id="done-home">Back to home</button>
+        <button class="btn btn-ghost" id="done-more">Study more</button>
+      </div>
+    </section>
+
+    <!-- ===== Settings ===== -->
+    <section id="view-settings" class="view">
+      <header class="topbar">
+        <button class="icon-btn" id="settings-back" aria-label="Back">‹</button>
+        <h1 class="brand">Settings</h1>
+        <span style="width:40px"></span>
+      </header>
+
+      <div class="settings-body">
+        <h2 class="section-title">Study levels</h2>
+        <div class="level-checks" id="level-checks"></div>
+
+        <h2 class="section-title">New cards per day</h2>
+        <div class="seg" id="newlimit-seg"></div>
+
+        <h2 class="section-title">Card direction</h2>
+        <div class="seg" id="direction-seg"></div>
+
+        <label class="toggle-row">
+          <span>Show pinyin on front</span>
+          <input type="checkbox" id="opt-pinyin-front" />
+        </label>
+        <label class="toggle-row">
+          <span>Auto-play pronunciation</span>
+          <input type="checkbox" id="opt-autospeak" />
+        </label>
+
+        <h2 class="section-title">Data</h2>
+        <button class="btn btn-block" id="export-btn">Export progress</button>
+        <button class="btn btn-block" id="import-btn">Import progress</button>
+        <input type="file" id="import-file" accept="application/json" hidden />
+        <button class="btn btn-block btn-danger" id="reset-btn">Reset all progress</button>
+
+        <p class="footer-note">Vocabulary: HSK 2.0 word lists (5,000 words) · definitions from CC-CEDICT.</p>
+      </div>
+    </section>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
