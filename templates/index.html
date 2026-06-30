@@ -2,8 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Life Organizer Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Life Organizer</title>
+
+    <!-- PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Life Org">
+    <meta name="theme-color" content="#4F46E5">
+    <link rel="manifest" href="/static/manifest.json">
+    <link rel="apple-touch-icon" href="/static/icon-192.png">
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -921,19 +930,93 @@
 
         @media (max-width: 768px) {
             .sidebar {
-                transform: translateX(-100%);
+                position: fixed;
+                left: 0;
+                right: 0;
+                top: auto;
+                bottom: 0;
+                width: 100%;
+                height: auto;
+                padding: 0;
+                padding-bottom: env(safe-area-inset-bottom);
+                transform: none;
+                z-index: 1000;
+                background: var(--gray-900);
+            }
+
+            .logo, .nav-label {
+                display: none;
+            }
+
+            .nav-section {
+                margin: 0;
+                display: flex;
+                justify-content: space-around;
+            }
+
+            .nav-item {
+                flex-direction: column;
+                padding: 12px 8px;
+                margin: 0;
+                font-size: 10px;
+                gap: 4px;
+                border-radius: 0;
+            }
+
+            .nav-item i {
+                font-size: 20px;
             }
 
             .main-content {
                 margin-left: 0;
+                padding-bottom: 80px;
+            }
+
+            .header {
+                padding: 0 16px;
+                padding-top: env(safe-area-inset-top);
+            }
+
+            .header-title h1 {
+                font-size: 20px;
+            }
+
+            .search-box {
+                display: none;
+            }
+
+            .page-content {
+                padding: 16px;
             }
 
             .stats-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .stat-card {
+                padding: 16px;
+            }
+
+            .stat-value {
+                font-size: 24px;
             }
 
             .cards-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .habit-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal {
+                margin: 16px;
+                max-height: calc(100vh - 32px);
+            }
+
+            .chat-container {
+                height: calc(100vh - var(--header-height) - 100px);
             }
         }
 
@@ -2054,6 +2137,13 @@
             loadNotes();
             loadEvents();
         });
+
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/static/sw.js')
+                .then(reg => console.log('SW registered'))
+                .catch(err => console.log('SW registration failed'));
+        }
     </script>
 </body>
 </html>
