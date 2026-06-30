@@ -1,8 +1,10 @@
 /* Service worker: precache the app shell + all vocabulary so the app works
  * fully offline once it has been opened once. */
-const CACHE = 'hsk-flashcards-v1';
+const CACHE = 'hsk-flashcards-v2';
 const ASSETS = [
-  './',
+  // NOTE: no bare './' here — CDNs like jsDelivr don't serve a directory index,
+  // and cache.addAll() is atomic (one 404 fails the whole install). Reference
+  // index.html explicitly so the app caches on every host.
   'index.html',
   'styles.css',
   'app.js',
@@ -49,7 +51,11 @@ self.addEventListener('fetch', (event) => {
           }
           return res;
         })
-        .catch(() => cached);
+        .catch(() => {
+          // Offline fallback: any navigation resolves to the cached app shell.
+          if (req.mode === 'navigate') return caches.match('index.html');
+          return cached;
+        });
     })
   );
 });
