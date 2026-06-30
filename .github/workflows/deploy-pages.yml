@@ -34,11 +34,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Configure Pages
-        # enablement: true turns Pages on automatically (source = GitHub Actions)
-        # so no manual repo-settings step is required for the first deploy.
+        # NOTE: Pages must be enabled once by hand (Settings -> Pages ->
+        # Source: GitHub Actions). The workflow's GITHUB_TOKEN cannot create
+        # the Pages site itself, so `enablement: true` is intentionally omitted.
         uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       - name: Upload app as Pages artifact
         uses: actions/upload-pages-artifact@v3

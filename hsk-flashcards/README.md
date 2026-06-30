@@ -24,12 +24,19 @@ App Store, no install, no account.
 
 This repo includes a **GitHub Actions workflow**
 (`.github/workflows/deploy-pages.yml`) that **auto-deploys the app to GitHub
-Pages** on every push that touches `hsk-flashcards/`. It also turns Pages on
-automatically (no manual settings step), so:
+Pages** on every push that touches `hsk-flashcards/`.
 
-1. Merge this branch (or push it) — the **Deploy HSK Flashcards to GitHub Pages**
-   workflow runs under the repo's **Actions** tab.
-2. When it finishes (~1 minute), your app is live at:
+**One-time setup** (GitHub doesn't let the workflow enable Pages by itself):
+
+1. In this repo on GitHub, go to **Settings → Pages**.
+2. Under **Build and deployment → Source**, choose **GitHub Actions**.
+
+That's the only manual step. From then on:
+
+3. Any push to `main` (or this branch) runs the **Deploy HSK Flashcards to
+   GitHub Pages** workflow under the **Actions** tab. Re-run the latest run once
+   after enabling Pages so the first deploy goes out.
+4. When it finishes (~1 minute), your app is live at:
 
    ```
    https://<your-username>.github.io/<repo>/
@@ -38,13 +45,9 @@ automatically (no manual settings step), so:
    For this repo that's `https://Luke1248.github.io/ma-will/`. The exact URL is
    shown in the workflow run summary (the `github-pages` environment) and under
    **Settings → Pages**.
-3. **On your iPhone/iPad**, open that URL in **Safari** (must be Safari for
+5. **On your iPhone/iPad**, open that URL in **Safari** (must be Safari for
    install to work), tap the **Share** button (the square with an arrow), then
    **Add to Home Screen**. Tap **Add**.
-
-> If the very first run fails to enable Pages automatically (some org settings
-> block auto-enablement), go to **Settings → Pages → Build and deployment** and
-> set **Source = GitHub Actions**, then re-run the workflow.
 
 You'll get an "HSK" icon on your Home Screen that opens full-screen, runs
 offline, and keeps your progress between sessions.
