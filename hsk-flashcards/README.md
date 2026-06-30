@@ -5,6 +5,25 @@ A spaced-repetition flashcard app for memorizing **HSK 1–6** Chinese vocabular
 your iPhone/iPad Home Screen and use it **fully offline** like a native app — no
 App Store, no install, no account.
 
+## 📲 Install it now (no setup)
+
+The repo is public, so the app is already served over HTTPS by the **jsDelivr**
+CDN — no GitHub Pages step, no hosting to configure. On your **iPhone/iPad**,
+open this link in **Safari**:
+
+```
+https://cdn.jsdelivr.net/gh/Luke1248/ma-will@83fd2a3/hsk-flashcards/index.html
+```
+
+Then tap **Share** (the square-with-an-arrow) → **Add to Home Screen** → **Add**.
+You'll get an "HSK" icon that opens full-screen and works offline.
+
+> Backup link (if jsDelivr is slow on your network), same app:
+> `https://raw.githack.com/Luke1248/ma-will/83fd2a3/hsk-flashcards/index.html`
+>
+> The `@83fd2a3` part pins a fixed version (a commit). For your own clean,
+> always-latest URL, see **Hosting on GitHub Pages** below.
+
 ## What it does
 
 - **Spaced repetition (SM-2 algorithm)** — the same memory-over-time system Anki
