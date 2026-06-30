@@ -1,0 +1,29 @@
+{
+  "source": "HSK 2.0 wordlists + CC-CEDICT",
+  "levels": {
+    "1": {
+      "total": 150,
+      "resolved": 150
+    },
+    "2": {
+      "total": 150,
+      "resolved": 150
+    },
+    "3": {
+      "total": 300,
+      "resolved": 300
+    },
+    "4": {
+      "total": 600,
+      "resolved": 600
+    },
+    "5": {
+      "total": 1300,
+      "resolved": 1300
+    },
+    "6": {
+      "total": 2500,
+      "resolved": 2500
+    }
+  }
+}
