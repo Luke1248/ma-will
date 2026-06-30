@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bluebook Citation Accuracy Tester &mdash; 22nd Edition</title>
+<style>
+  :root {
+    --navy: #0b2545;
+    --navy-2: #13315c;
+    --gold: #b08d57;
+    --bg: #f4f1ea;
+    --card: #ffffff;
+    --red: #c0182b;
+    --green: #1a7d3c;
+    --muted: #5b6470;
+    --line: #e3ded3;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    background: var(--bg);
+    color: #1b1b1b;
+    line-height: 1.5;
+  }
+  header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
+    color: #fff;
+    padding: 28px 20px 22px;
+    border-bottom: 4px solid var(--gold);
+    text-align: center;
+  }
+  header h1 { margin: 0; font-size: 1.9rem; letter-spacing: .3px; }
+  header p { margin: 6px 0 0; color: #cdd6e4; font-size: .95rem; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 22px 18px 60px; }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 20px;
+  }
+  .ctrl-group { display: flex; flex-direction: column; gap: 6px; }
+  .ctrl-group label {
+    font-size: .72rem; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--muted); font-family: Arial, sans-serif; font-weight: 700;
+  }
+  select, button {
+    font-family: Arial, sans-serif; font-size: .92rem;
+    padding: 8px 12px; border-radius: 7px; border: 1px solid #c7cdd6;
+    background: #fff; cursor: pointer;
+  }
+  .ctrl-group select { min-width: 170px; }
+
+  .stats {
+    margin-left: auto; display: flex; gap: 18px; align-items: center;
+    font-family: Arial, sans-serif;
+  }
+  .stat { text-align: center; }
+  .stat .num { font-size: 1.5rem; font-weight: 700; color: var(--navy); display: block; }
+  .stat .lbl { font-size: .68rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-top: 5px solid var(--gold);
+    border-radius: 10px;
+    padding: 24px 26px 26px;
+    box-shadow: 0 4px 18px rgba(11,37,69,.06);
+  }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 18px; }
+  .tag {
+    font-family: Arial, sans-serif; font-size: .72rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .8px;
+    padding: 4px 10px; border-radius: 20px;
+  }
+  .tag.cat { background: #e7edf6; color: var(--navy-2); }
+  .tag.rule { background: #f0e9dd; color: #6b5733; }
+  .stars { color: var(--gold); font-size: 1.05rem; letter-spacing: 2px; margin-left: auto; }
+  .stars .dim { color: #d9d2c4; }
+
+  .prompt { font-family: Arial, sans-serif; font-size: .9rem; color: var(--muted); margin-bottom: 8px; }
+
+  .cite {
+    font-size: 1.3rem; line-height: 1.7; padding: 18px 20px;
+    background: #fbfaf6; border: 1px solid var(--line); border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  .cite .err.show { color: var(--red); text-decoration: line-through; text-decoration-thickness: 1.5px; }
+  .cite .checkmark { font-size: 1.2rem; margin-left: 8px; }
+
+  .answer-buttons { display: flex; gap: 12px; margin-bottom: 4px; }
+  .btn-answer {
+    flex: 1; padding: 13px; font-size: 1rem; font-weight: 700;
+    font-family: Arial, sans-serif; border-width: 2px;
+  }
+  .btn-correct { border-color: var(--green); color: var(--green); }
+  .btn-correct:hover { background: var(--green); color: #fff; }
+  .btn-incorrect { border-color: var(--red); color: var(--red); }
+  .btn-incorrect:hover { background: var(--red); color: #fff; }
+
+  .feedback { margin-top: 18px; display: none; }
+  .feedback.show { display: block; }
+  .verdict {
+    font-family: Arial, sans-serif; font-weight: 700; font-size: 1.05rem;
+    padding: 12px 16px; border-radius: 8px; margin-bottom: 14px;
+  }
+  .verdict.right { background: #e6f4ea; color: var(--green); border: 1px solid #b8e0c4; }
+  .verdict.wrong { background: #fbe7e9; color: var(--red); border: 1px solid #f1c2c7; }
+
+  .fix-line { margin: 12px 0; }
+  .fix-line .label {
+    font-family: Arial, sans-serif; font-size: .72rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px; color: var(--muted);
+    display: block; margin-bottom: 3px;
+  }
+  .fix-line .corrected { font-size: 1.12rem; color: var(--green); }
+  .explain {
+    font-family: Arial, sans-serif; font-size: .92rem; color: #2a2f37;
+    background: #f6f4ee; border-left: 3px solid var(--gold);
+    padding: 12px 14px; border-radius: 0 6px 6px 0; margin-top: 12px;
+  }
+  .explain b { color: var(--navy-2); }
+
+  .nav-row { display: flex; gap: 12px; margin-top: 20px; align-items: center; }
+  .btn-next {
+    margin-left: auto; background: var(--navy); color: #fff; border: none;
+    padding: 12px 24px; font-weight: 700; font-family: Arial, sans-serif;
+  }
+  .btn-next:hover { background: var(--navy-2); }
+  .btn-ghost { background: #fff; color: var(--muted); border: 1px solid #c7cdd6; padding: 12px 18px; font-family: Arial, sans-serif; }
+  .progress-text { font-family: Arial, sans-serif; font-size: .85rem; color: var(--muted); }
+
+  .empty { text-align: center; padding: 40px; color: var(--muted); font-family: Arial, sans-serif; }
+  footer { text-align: center; font-family: Arial, sans-serif; font-size: .78rem; color: var(--muted); padding: 10px 20px 40px; }
+  footer .disc { max-width: 700px; margin: 8px auto 0; line-height: 1.5; }
+  i.title { font-style: italic; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Bluebook Citation Accuracy Tester</h1>
+  <p>The Bluebook: A Uniform System of Citation &mdash; 22nd Edition &nbsp;&bull;&nbsp; Real cases &amp; sources, difficulty 1&ndash;5</p>
+</header>
+
+<div class="wrap">
+  <div class="controls">
+    <div class="ctrl-group">
+      <label for="catFilter">Source category</label>
+      <select id="catFilter"></select>
+    </div>
+    <div class="ctrl-group">
+      <label for="diffFilter">Difficulty</label>
+      <select id="diffFilter">
+        <option value="all">All levels</option>
+        <option value="1">&#9733; 1 &mdash; Introductory</option>
+        <option value="2">&#9733;&#9733; 2 &mdash; Easy</option>
+        <option value="3">&#9733;&#9733;&#9733; 3 &mdash; Moderate</option>
+        <option value="4">&#9733;&#9733;&#9733;&#9733; 4 &mdash; Hard</option>
+        <option value="5">&#9733;&#9733;&#9733;&#9733;&#9733; 5 &mdash; Expert</option>
+      </select>
+    </div>
+    <div class="stats">
+      <div class="stat"><span class="num" id="scoreNum">0</span><span class="lbl">Correct</span></div>
+      <div class="stat"><span class="num" id="seenNum">0</span><span class="lbl">Answered</span></div>
+      <div class="stat"><span class="num" id="pctNum">&mdash;</span><span class="lbl">Accuracy</span></div>
+    </div>
+  </div>
+
+  <div id="cardHost"></div>
+
+  <footer>
+    <div>Built for legal-writing study &amp; citation drills.</div>
+    <div class="disc">Educational tool. Citation forms reflect widely&ndash;taught Bluebook conventions for the listed
+      authorities. Always confirm against the current printed Bluebook for graded or filed work, as local court rules
+      and editorial updates may govern.</div>
+  </footer>
+</div>
+
+<script>
+/* ============================================================
+   QUESTION BANK
+   Each item:
+     cat   - source category (Bluebook rule area)
+     rule  - governing Bluebook rule
+     diff  - difficulty 1..5
+     correct - true if the displayed citation is already correct
+     seg[] - citation segments. A segment may be:
+               {t:"text"}                      normal text
+               {t:"text", i:true}              italicized (titles)
+               {t:"wrong", err:true, fix:"x"}  the INCORRECT portion (shown red) + its fix
+     why   - explanation referencing the Bluebook rule
+   ============================================================ */
+const QUESTIONS = [
+
+  /* ---------- CASES (Rule 10) ---------- */
+  {
+    cat:"Cases", rule:"Rule 10", diff:1, correct:true,
+    seg:[{t:"Brown v. Board of Education, 347 U.S. 483 (1954)."}],
+    why:"Textbook full case citation: <b>case name</b>, <b>volume U.S. page</b> (<b>year</b>). U.S. Supreme Court cases are cited to the <i>United States Reports</i> (U.S.). Rule 10.3.1 &amp; T1."
+  },
+  {
+    cat:"Cases", rule:"Rule 10.3.2", diff:2, correct:false,
+    seg:[{t:"Marbury v. Madison, "},{t:"5 U.S. 137", err:true, fix:"5 U.S. (1 Cranch) 137"},{t:" (1803)."}],
+    why:"Early Supreme Court volumes are cited with the <b>nominative reporter</b> in parentheses after the U.S. volume. Rule 10.3.2 &amp; T1 require: <i>5 U.S. (1 Cranch) 137</i>."
+  },
+  {
+    cat:"Cases", rule:"Rule 10.2.2 / T10", diff:3, correct:false,
+    seg:[{t:"New York Times Co.", err:true, fix:"N.Y. Times Co."},{t:" v. Sullivan, 376 U.S. 254 (1964)."}],
+    why:"A geographic word inside a party's name is abbreviated per Table T10: &ldquo;New York&rdquo; &rarr; <b>N.Y.</b> The Bluebook&rsquo;s own canonical form is <i>N.Y. Times Co. v. Sullivan</i>. Rule 10.2.2."
+  },
+  {
+    cat:"Cases", rule:"Rule 10.3.1 / T1", diff:2, correct:false,
+    seg:[{t:"Gideon v. Wainwright, 372 U.S. 335"},{t:", 83 S. Ct. 792", err:true, fix:""},{t:" (1963)."}],
+    why:"For U.S. Supreme Court cases, cite <b>only</b> to <i>U.S.</i> when available &mdash; do not add a parallel <i>S. Ct.</i> or <i>L. Ed.</i> citation. T1.1 &amp; Rule 10.3.1."
+  },
+  {
+    cat:"Cases", rule:"Rule 10.2.1(c) / T6", diff:4, correct:false,
+    seg:[{t:"Erie "},{t:"Railroad", err:true, fix:"R.R."},{t:" Co. v. Tompkins, 304 U.S. 64 (1938)."}],
+    why:"Words in a case name listed in Table T6 are abbreviated even mid&ndash;name: &ldquo;Railroad&rdquo; &rarr; <b>R.R.</b> Correct: <i>Erie R.R. Co. v. Tompkins</i>. Rule 10.2.1(c) &amp; 10.2.2."
+  },
+  {
+    cat:"Cases", rule:"Rule 10.4(a) / T1", diff:5, correct:true,
+    seg:[{t:"United States v. Microsoft Corp., 253 F.3d 34 (D.C. Cir. 2001)."}],
+    why:"Lower&ndash;court citation done right: regional reporter (<i>F.3d</i>) with the <b>court and year</b> in the parenthetical. &ldquo;United States&rdquo; is <b>not</b> abbreviated as a named party (Rule 10.2.1(c)); &ldquo;Corporation&rdquo; &rarr; Corp. (T6); &ldquo;D.C. Cir.&rdquo; per T1/T7."
+  },
+  {
+    cat:"Cases", rule:"Rule 10.5 / B10.1.2", diff:3, correct:false,
+    seg:[{t:"Roe v. Wade, 410 U.S. 113 ("},{t:"1973, U.S.", err:true, fix:"1973"},{t:")."}],
+    why:"The date parenthetical for a U.S. Supreme Court case holds the <b>year only</b>; the court (U.S.) is already shown by the <i>U.S.</i> reporter, so it is not repeated. Rule 10.4(a)."
+  },
+
+  /* ---------- CONSTITUTIONS (Rule 11) ---------- */
+  {
+    cat:"Constitutions", rule:"Rule 11", diff:1, correct:true,
+    seg:[{t:"U.S. Const. art. III, § 2, cl. 1."}],
+    why:"Constitutional citation: <b>U.S. Const.</b>, then subdivisions &mdash; article (roman), section (§), clause. No date for a currently&ndash;effective provision. Rule 11."
+  },
+  {
+    cat:"Constitutions", rule:"Rule 11", diff:2, correct:false,
+    seg:[{t:"U.S. Const. amend. XIV, § 1"},{t:" (1868)", err:true, fix:""},{t:"."}],
+    why:"Do <b>not</b> give a date for a provision currently in force. A date is added only for a <b>repealed</b> or superseded provision. Rule 11."
+  },
+  {
+    cat:"Constitutions", rule:"Rule 11 / Rule 6", diff:3, correct:false,
+    seg:[{t:"U.S. Const. "},{t:"Amend. 14", err:true, fix:"amend. XIV"},{t:"."}],
+    why:"Two errors: the subdivision abbreviation is lowercase &mdash; <b>amend.</b> &mdash; and amendments take <b>roman numerals</b>: XIV, not 14. Rule 11 &amp; Rule 6/8 numbering conventions."
+  },
+
+  /* ---------- STATUTES (Rule 12) ---------- */
+  {
+    cat:"Statutes", rule:"Rule 12.3", diff:1, correct:true,
+    seg:[{t:"42 U.S.C. § 1983 (2018)."}],
+    why:"Federal statute in the U.S. Code: <b>title U.S.C. § section (year of code)</b>. Rule 12.3 &amp; T1.1."
+  },
+  {
+    cat:"Statutes", rule:"Rule 12.3 / T1", diff:2, correct:false,
+    seg:[{t:"42 "},{t:"USC", err:true, fix:"U.S.C."},{t:" § 1983 (2018)."}],
+    why:"The code is abbreviated with periods: <b>U.S.C.</b>, not &ldquo;USC.&rdquo; T1 &amp; Rule 12.3."
+  },
+  {
+    cat:"Statutes", rule:"Rule 12.3 / Rule 6.2(c)", diff:3, correct:false,
+    seg:[{t:"Civil Rights Act of 1964, "},{t:"42 U.S.C. 2000e", err:true, fix:"42 U.S.C. § 2000e"},{t:" (2018)."}],
+    why:"A section citation requires the <b>section symbol §</b> before the number: <i>42 U.S.C. § 2000e</i>. Rule 12.3 &amp; Rule 6.2(c)."
+  },
+  {
+    cat:"Statutes", rule:"Rule 3.3 / 6.2(c)", diff:4, correct:true,
+    seg:[{t:"Sherman Antitrust Act, 15 U.S.C. §§ 1–7 (2018)."}],
+    why:"A span of consecutive sections uses the <b>double section symbol §§</b> and an inclusive range. Rule 3.3(b) &amp; 6.2(c)."
+  },
+  {
+    cat:"Statutes", rule:"Rule 12.2.1", diff:5, correct:false,
+    seg:[{t:"Americans with Disabilities Act of 1990, "},{t:"Pub. L. 101-336", err:true, fix:"Pub. L. No. 101-336"},{t:", 104 Stat. 327."}],
+    why:"A session&ndash;law citation uses <b>Pub. L. No.</b> &mdash; the &ldquo;No.&rdquo; is required &mdash; followed by the <i>Statutes at Large</i> volume and page. Rule 12.4."
+  },
+
+  /* ---------- LEGISLATIVE MATERIALS (Rule 13) ---------- */
+  {
+    cat:"Legislative Materials", rule:"Rule 13.2", diff:2, correct:true,
+    seg:[{t:"H.R. 1, 117th Cong. (2021)."}],
+    why:"An unenacted federal bill: <b>chamber abbrev., number, Congress (year)</b>. Rule 13.2."
+  },
+  {
+    cat:"Legislative Materials", rule:"Rule 13.2", diff:3, correct:false,
+    seg:[{t:"S. 47, 116th "},{t:"Congress", err:true, fix:"Cong."},{t:" (2019)."}],
+    why:"&ldquo;Congress&rdquo; is abbreviated <b>Cong.</b> in legislative citations. Rule 13.2 &amp; T9."
+  },
+  {
+    cat:"Legislative Materials", rule:"Rule 13.4", diff:4, correct:true,
+    seg:[{t:"S. Rep. No. 116-48, at 5 (2019)."}],
+    why:"A numbered committee report: <b>S. Rep. No. Congress&ndash;number, at page (year)</b>. The pincite uses &ldquo;at.&rdquo; Rule 13.4."
+  },
+
+  /* ---------- ADMINISTRATIVE / REGULATORY (Rule 14) ---------- */
+  {
+    cat:"Administrative &amp; Regulatory", rule:"Rule 14.2", diff:2, correct:true,
+    seg:[{t:"29 C.F.R. § 1604.11 (2023)."}],
+    why:"A federal regulation: <b>title C.F.R. § section (year)</b>. Rule 14.2 &amp; T1.2."
+  },
+  {
+    cat:"Administrative &amp; Regulatory", rule:"Rule 14.2 / T1", diff:3, correct:false,
+    seg:[{t:"29 "},{t:"CFR", err:true, fix:"C.F.R."},{t:" § 1604.11 (2023)."}],
+    why:"The Code of Federal Regulations is abbreviated with periods: <b>C.F.R.</b> T1.2 &amp; Rule 14.2."
+  },
+  {
+    cat:"Administrative &amp; Regulatory", rule:"Rule 14.2", diff:5, correct:true,
+    seg:[{t:"Endangered and Threatened Wildlife and Plants, 78 Fed. Reg. 60,024 (Sept. 30, 2013)."}],
+    why:"A <i>Federal Register</i> notice: <b>title, volume Fed. Reg. page (exact date)</b>. Five&ndash;plus&ndash;digit page numbers keep the comma (Rule 6.2). Rule 14.2."
+  },
+
+  /* ---------- BOOKS / TREATISES (Rule 15) ---------- */
+  {
+    cat:"Books &amp; Treatises", rule:"Rule 15", diff:2, correct:true,
+    seg:[{t:"Charles Alan Wright &amp; Arthur R. Miller, "},{t:"Federal Practice and Procedure",i:true},{t:" § 1029 (4th ed. 2015)."}],
+    why:"A treatise: <b>author(s), title, pincite (edition year)</b>. Multiple authors are joined by <b>&amp;</b>; the title is italicized. Rule 15.1&ndash;15.4."
+  },
+  {
+    cat:"Books &amp; Treatises", rule:"Rule 15.1", diff:3, correct:false,
+    seg:[{t:"Antonin Scalia "},{t:"and", err:true, fix:"&amp;"},{t:" Bryan A. Garner, "},{t:"Reading Law: The Interpretation of Legal Texts",i:true},{t:" 56 (2012)."}],
+    why:"Two authors are joined with an <b>ampersand (&amp;)</b>, never the word &ldquo;and.&rdquo; Rule 15.1(b)."
+  },
+  {
+    cat:"Books &amp; Treatises", rule:"Rule 15.8", diff:4, correct:true,
+    seg:[{t:"Black's Law Dictionary 305 (11th ed. 2019).",i:true}],
+    why:"A well&ndash;known reference work cited by title, pincite page, and edition/year. The title is italicized; no author is needed for an institutional/edited work. Rule 15.1 &amp; 15.8."
+  },
+
+  /* ---------- PERIODICALS / LAW REVIEWS (Rule 16) ---------- */
+  {
+    cat:"Periodicals (Law Reviews)", rule:"Rule 16", diff:2, correct:true,
+    seg:[{t:"Samuel D. Warren &amp; Louis D. Brandeis, "},{t:"The Right to Privacy",i:true},{t:", 4 Harv. L. Rev. 193 (1890)."}],
+    why:"Consecutively&ndash;paginated journal article: <b>author(s), title, volume Journal page (year)</b>. Article title italicized; journal abbreviated per T13. Rule 16.5 &amp; 16.6."
+  },
+  {
+    cat:"Periodicals (Law Reviews)", rule:"Rule 16 / T13", diff:3, correct:false,
+    seg:[{t:"Samuel D. Warren &amp; Louis D. Brandeis, "},{t:"The Right to Privacy",i:true},{t:", 4 "},{t:"Harvard Law Review", err:true, fix:"Harv. L. Rev."},{t:" 193 (1890)."}],
+    why:"Journal names are abbreviated using Table T13: &ldquo;Harvard Law Review&rdquo; &rarr; <b>Harv. L. Rev.</b> Rule 16.6 &amp; T13."
+  },
+  {
+    cat:"Periodicals (Law Reviews)", rule:"Rule 16.5", diff:4, correct:false,
+    seg:[{t:"Herbert Wechsler, "},{t:"Toward Neutral Principles of Constitutional Law",i:true},{t:", "},{t:"Harv. L. Rev. 73, 1", err:true, fix:"73 Harv. L. Rev. 1"},{t:" (1959)."}],
+    why:"Order is <b>volume &mdash; journal &mdash; first page</b>: <i>73 Harv. L. Rev. 1</i>. The volume precedes the journal abbreviation, not the other way around. Rule 16.5."
+  },
+
+  /* ---------- INTERNET / ELECTRONIC (Rule 18) ---------- */
+  {
+    cat:"Internet &amp; Electronic", rule:"Rule 18.2.2", diff:3, correct:true,
+    seg:[{t:"About LII, "},{t:"Legal Info. Inst.",i:true},{t:", https://www.law.cornell.edu/lii/about/about_lii (last visited June 1, 2024)."}],
+    why:"A static web page with no clear date uses a <b>(last visited &hellip;)</b> parenthetical after the full URL. Rule 18.2.2."
+  },
+  {
+    cat:"Internet &amp; Electronic", rule:"Rule 18.2.2", diff:4, correct:false,
+    seg:[{t:"About LII, "},{t:"Legal Info. Inst.",i:true},{t:", "},{t:"www.law.cornell.edu/lii/about/about_lii", err:true, fix:"https://www.law.cornell.edu/lii/about/about_lii"},{t:" (last visited June 1, 2024)."}],
+    why:"Provide the <b>full URL including the protocol</b> (https://). A bare host/path is incomplete. Rule 18.2.2."
+  },
+
+  /* ---------- COURT &amp; LITIGATION DOCUMENTS (Bluepages B17) ---------- */
+  {
+    cat:"Court Documents", rule:"Bluepages B17", diff:4, correct:true,
+    seg:[{t:"Compl. ¶ 5, Doe v. Roe, No. 1:20-cv-01234 (S.D.N.Y. filed Mar. 1, 2020)."}],
+    why:"A litigation document: <b>abbreviated document name, pincite (¶ for paragraphs), case name, docket no. (court date)</b>. Bluepages B17 &amp; BT1."
+  },
+  {
+    cat:"Court Documents", rule:"Bluepages B17 / BT1", diff:5, correct:false,
+    seg:[{t:"Plaintiff's "},{t:"Complaint", err:true, fix:"Compl."},{t:" ¶ 5, Doe v. Roe, No. 1:20-cv-01234 (S.D.N.Y. filed Mar. 1, 2020)."}],
+    why:"Court&ndash;document titles are abbreviated per Bluepages Table BT1: &ldquo;Complaint&rdquo; &rarr; <b>Compl.</b> Bluepages B17.1.2."
+  }
+];
+
+/* ============================================================
+   APP LOGIC
+   ============================================================ */
+const catFilter = document.getElementById('catFilter');
+const diffFilter = document.getElementById('diffFilter');
+const cardHost = document.getElementById('cardHost');
+const scoreNum = document.getElementById('scoreNum');
+const seenNum = document.getElementById('seenNum');
+const pctNum = document.getElementById('pctNum');
+
+let pool = [];
+let idx = 0;
+let answered = 0;
+let correctCount = 0;
+let currentAnswered = false;
+
+// Build category dropdown
+(function buildCats(){
+  const cats = Array.from(new Set(QUESTIONS.map(q => q.cat)));
+  const opt = document.createElement('option');
+  opt.value = 'all'; opt.innerHTML = 'All categories';
+  catFilter.appendChild(opt);
+  cats.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c; o.innerHTML = c;
+    catFilter.appendChild(o);
+  });
+})();
+
+function buildPool(){
+  const c = catFilter.value, d = diffFilter.value;
+  pool = QUESTIONS.filter(q =>
+    (c === 'all' || q.cat === c) &&
+    (d === 'all' || String(q.diff) === d)
+  );
+  idx = 0;
+  render();
+}
+
+function stars(n){
+  let s = '';
+  for (let i = 1; i <= 5; i++) s += i <= n ? '★' : '<span class="dim">★</span>';
+  return s;
+}
+
+function citeHTML(q, reveal){
+  return q.seg.map(s => {
+    let txt = s.t;
+    if (s.i) txt = '<i class="title">' + txt + '</i>';
+    if (s.err) {
+      return '<span class="err' + (reveal ? ' show' : '') + '">' + txt + '</span>';
+    }
+    return txt;
+  }).join('');
+}
+
+function correctedHTML(q){
+  return q.seg.map(s => {
+    if (s.err) return s.fix ? ('<b>' + s.fix + '</b>') : '';
+    let txt = s.t;
+    if (s.i) txt = '<i class="title">' + txt + '</i>';
+    return txt;
+  }).join('').replace(/\s+\./g, '.').replace(/\s{2,}/g, ' ').trim();
+}
+
+function updateStats(){
+  scoreNum.textContent = correctCount;
+  seenNum.textContent = answered;
+  pctNum.innerHTML = answered ? Math.round(correctCount / answered * 100) + '%' : '&mdash;';
+}
+
+function render(){
+  currentAnswered = false;
+  if (pool.length === 0){
+    cardHost.innerHTML = '<div class="card"><div class="empty">No citations match this filter. Try a different category or difficulty.</div></div>';
+    return;
+  }
+  const q = pool[idx];
+  cardHost.innerHTML = `
+    <div class="card">
+      <div class="meta-row">
+        <span class="tag cat">${q.cat}</span>
+        <span class="tag rule">${q.rule}</span>
+        <span class="stars">${stars(q.diff)}</span>
+      </div>
+      <div class="prompt">Is this citation correct under <i>The Bluebook</i> (22nd ed.)?</div>
+      <div class="cite" id="citeBox">${citeHTML(q, false)}</div>
+      <div class="answer-buttons">
+        <button class="btn-answer btn-correct" id="btnCorrect">&#10003;&nbsp; Correct</button>
+        <button class="btn-answer btn-incorrect" id="btnIncorrect">&#10007;&nbsp; Has an error</button>
+      </div>
+      <div class="feedback" id="feedback"></div>
+      <div class="nav-row">
+        <span class="progress-text">${idx + 1} of ${pool.length}</span>
+        <button class="btn-ghost" id="btnPrev">&larr; Prev</button>
+        <button class="btn-next" id="btnNext">Next &rarr;</button>
+      </div>
+    </div>`;
+
+  document.getElementById('btnCorrect').onclick = () => answer(true);
+  document.getElementById('btnIncorrect').onclick = () => answer(false);
+  document.getElementById('btnNext').onclick = next;
+  document.getElementById('btnPrev').onclick = prev;
+}
+
+function answer(userSaysCorrect){
+  if (currentAnswered) return;
+  currentAnswered = true;
+  const q = pool[idx];
+  const right = (userSaysCorrect === q.correct);
+  answered++;
+  if (right) correctCount++;
+  updateStats();
+
+  // Reveal red error portions in the citation
+  const citeBox = document.getElementById('citeBox');
+  citeBox.innerHTML = citeHTML(q, true) + (q.correct ? ' <span class="checkmark">✅</span>' : '');
+
+  // Build feedback
+  const fb = document.getElementById('feedback');
+  let html = '';
+  html += '<div class="verdict ' + (right ? 'right' : 'wrong') + '">'
+        + (right ? '✅ Correct &mdash; you got it.' : '❌ Not quite.')
+        + ' This citation is <b>' + (q.correct ? 'properly formatted' : 'INCORRECT') + '</b>.</div>';
+
+  if (!q.correct){
+    html += '<div class="fix-line"><span class="label">Corrected Bluebook form</span>'
+          + '<span class="corrected">' + correctedHTML(q) + ' ✅</span></div>';
+  }
+  html += '<div class="explain">' + q.why + '</div>';
+  fb.innerHTML = html;
+  fb.classList.add('show');
+}
+
+function next(){ if (pool.length){ idx = (idx + 1) % pool.length; render(); } }
+function prev(){ if (pool.length){ idx = (idx - 1 + pool.length) % pool.length; render(); } }
+
+catFilter.onchange = buildPool;
+diffFilter.onchange = buildPool;
+
+buildPool();
+updateStats();
+</script>
+</body>
+</html>
