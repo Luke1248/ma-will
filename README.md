@@ -57,9 +57,9 @@ The app in [`docs/`](docs/) is an installable **Progressive Web App** — add it
 your home screen and it runs full‑screen and offline, just like a native app.
 
 **Hosting (one‑time):** in this repo, open **Settings → Pages → Build and
-deployment → Source: "GitHub Actions."** The included workflow
-(`.github/workflows/pages.yml`) then publishes `docs/` automatically. Your URL
-will be:
+deployment**, set **Source: "Deploy from a branch,"** choose the branch
+`claude/bluebook-citation-tester-db1euu` (or `main` once merged) and folder
+**`/docs`**, then **Save**. After a minute your app is live at:
 
 ```
 https://luke1248.github.io/ma-will/
