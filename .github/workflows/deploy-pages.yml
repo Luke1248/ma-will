@@ -1,0 +1,50 @@
+name: Deploy HSK Flashcards to GitHub Pages
+
+# Publishes the hsk-flashcards/ PWA to GitHub Pages. The site is served at the
+# repository's Pages root, e.g. https://<user>.github.io/<repo>/
+on:
+  push:
+    branches:
+      - main
+      - claude/hsk-flashcard-app-j6fqvh
+    paths:
+      - "hsk-flashcards/**"
+      - ".github/workflows/deploy-pages.yml"
+  workflow_dispatch: {}
+
+# Permissions needed for the deploy-pages action to publish.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment; don't cancel an in-progress run.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Pages
+        # enablement: true turns Pages on automatically (source = GitHub Actions)
+        # so no manual repo-settings step is required for the first deploy.
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload app as Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./hsk-flashcards
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
