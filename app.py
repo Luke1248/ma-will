@@ -3,7 +3,7 @@ Life Organizer Dashboard - Main Application
 A comprehensive dashboard to organize your life with tasks, goals, habits, notes, and an AI assistant.
 """
 
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from datetime import datetime, date
@@ -195,6 +195,27 @@ class ChatMessage(db.Model):
 def index():
     """Main dashboard page"""
     return render_template('index.html')
+
+
+# ----- PWA Routes -----
+@app.route('/manifest.webmanifest')
+def manifest():
+    """Web app manifest for installability"""
+    return send_from_directory(
+        app.static_folder, 'manifest.webmanifest',
+        mimetype='application/manifest+json'
+    )
+
+
+@app.route('/sw.js')
+def service_worker():
+    """Service worker, served from root so its scope covers the whole app"""
+    response = send_from_directory(
+        app.static_folder, 'sw.js', mimetype='application/javascript'
+    )
+    response.headers['Service-Worker-Allowed'] = '/'
+    response.headers['Cache-Control'] = 'no-cache'
+    return response
 
 
 # ----- Task Routes -----
