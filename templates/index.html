@@ -912,6 +912,10 @@
             margin-bottom: 8px;
         }
 
+        /* Mobile bottom navigation (hidden on desktop) */
+        .bottom-nav { display: none; }
+        .bottom-nav-overlay { display: none; }
+
         /* Responsive */
         @media (max-width: 1200px) {
             .stats-grid {
@@ -934,6 +938,124 @@
 
             .cards-grid {
                 grid-template-columns: 1fr;
+            }
+
+            /* Tighten the header for small screens */
+            .header {
+                padding: 0 16px;
+            }
+
+            .search-box {
+                display: none;
+            }
+
+            /* Leave room for the bottom bar */
+            .page-content {
+                padding: 20px 16px calc(84px + env(safe-area-inset-bottom));
+            }
+
+            /* Bottom tab bar */
+            .bottom-nav {
+                display: flex;
+                position: fixed;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                height: 64px;
+                background: white;
+                border-top: 1px solid var(--gray-200);
+                box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.06);
+                padding-bottom: env(safe-area-inset-bottom);
+                z-index: 200;
+            }
+
+            .bottom-nav-item {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 4px;
+                background: none;
+                border: none;
+                color: var(--gray-500);
+                font-family: inherit;
+                font-size: 11px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: color 0.2s;
+            }
+
+            .bottom-nav-item i {
+                font-size: 20px;
+            }
+
+            .bottom-nav-item.active {
+                color: var(--primary);
+            }
+
+            /* "More" sheet */
+            .bottom-nav-overlay {
+                display: block;
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.45);
+                z-index: 300;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.25s ease;
+            }
+
+            .bottom-nav-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .more-sheet {
+                position: fixed;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: white;
+                border-radius: 20px 20px 0 0;
+                padding: 8px 16px calc(24px + env(safe-area-inset-bottom));
+                transform: translateY(100%);
+                transition: transform 0.25s ease-out;
+            }
+
+            .bottom-nav-overlay.active .more-sheet {
+                transform: translateY(0);
+            }
+
+            .more-sheet-handle {
+                width: 40px;
+                height: 4px;
+                background: var(--gray-300);
+                border-radius: 2px;
+                margin: 8px auto 16px;
+            }
+
+            .more-sheet-item {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                padding: 16px 12px;
+                border-radius: 10px;
+                color: var(--gray-700);
+                font-size: 16px;
+                font-weight: 500;
+                cursor: pointer;
+            }
+
+            .more-sheet-item:active {
+                background: var(--gray-100);
+            }
+
+            .more-sheet-item i {
+                width: 24px;
+                text-align: center;
+                font-size: 18px;
+                color: var(--primary);
             }
         }
 
@@ -986,21 +1108,9 @@
                 <i class="fas fa-check-square"></i>
                 <span>Tasks</span>
             </div>
-            <div class="nav-item" data-page="goals">
-                <i class="fas fa-bullseye"></i>
-                <span>Goals</span>
-            </div>
             <div class="nav-item" data-page="habits">
                 <i class="fas fa-fire"></i>
                 <span>Habits</span>
-            </div>
-        </nav>
-
-        <nav class="nav-section">
-            <div class="nav-label">Organization</div>
-            <div class="nav-item" data-page="notes">
-                <i class="fas fa-sticky-note"></i>
-                <span>Notes</span>
             </div>
             <div class="nav-item" data-page="calendar">
                 <i class="fas fa-calendar-alt"></i>
@@ -1009,7 +1119,15 @@
         </nav>
 
         <nav class="nav-section">
-            <div class="nav-label">Assistant</div>
+            <div class="nav-label">More</div>
+            <div class="nav-item" data-page="goals">
+                <i class="fas fa-bullseye"></i>
+                <span>Goals</span>
+            </div>
+            <div class="nav-item" data-page="notes">
+                <i class="fas fa-sticky-note"></i>
+                <span>Notes</span>
+            </div>
             <div class="nav-item" data-page="assistant">
                 <i class="fas fa-robot"></i>
                 <span>AI Assistant</span>
@@ -1260,6 +1378,49 @@
         </div>
     </main>
 
+    <!-- Mobile Bottom Navigation -->
+    <nav class="bottom-nav">
+        <button class="bottom-nav-item active" data-page="dashboard">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </button>
+        <button class="bottom-nav-item" data-page="tasks">
+            <i class="fas fa-check-square"></i>
+            <span>Tasks</span>
+        </button>
+        <button class="bottom-nav-item" data-page="habits">
+            <i class="fas fa-fire"></i>
+            <span>Habits</span>
+        </button>
+        <button class="bottom-nav-item" data-page="calendar">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Calendar</span>
+        </button>
+        <button class="bottom-nav-item" id="more-nav-btn">
+            <i class="fas fa-ellipsis-h"></i>
+            <span>More</span>
+        </button>
+    </nav>
+
+    <!-- Mobile "More" Sheet -->
+    <div class="bottom-nav-overlay" id="more-overlay">
+        <div class="more-sheet">
+            <div class="more-sheet-handle"></div>
+            <div class="more-sheet-item" data-page="goals">
+                <i class="fas fa-bullseye"></i>
+                <span>Goals</span>
+            </div>
+            <div class="more-sheet-item" data-page="notes">
+                <i class="fas fa-sticky-note"></i>
+                <span>Notes</span>
+            </div>
+            <div class="more-sheet-item" data-page="assistant">
+                <i class="fas fa-robot"></i>
+                <span>AI Assistant</span>
+            </div>
+        </div>
+    </div>
+
     <!-- Task Modal -->
     <div class="modal-overlay" id="modal-task">
         <div class="modal">
@@ -1475,19 +1636,46 @@
         let currentYear = new Date().getFullYear();
         let events = [];
 
-        // Page Navigation
-        document.querySelectorAll('.nav-item').forEach(item => {
+        // Pages reachable from the "More" sheet on mobile
+        const moreNavPages = ['goals', 'notes', 'assistant'];
+
+        // Page Navigation (sidebar + bottom bar + more sheet)
+        document.querySelectorAll('.nav-item, .bottom-nav-item[data-page], .more-sheet-item').forEach(item => {
             item.addEventListener('click', () => {
-                const page = item.dataset.page;
-                showPage(page);
+                showPage(item.dataset.page);
+                closeMoreSheet();
             });
         });
 
+        // "More" sheet toggle
+        const moreOverlay = document.getElementById('more-overlay');
+        document.getElementById('more-nav-btn').addEventListener('click', () => {
+            moreOverlay.classList.add('active');
+        });
+        moreOverlay.addEventListener('click', (e) => {
+            if (e.target === moreOverlay) closeMoreSheet();
+        });
+
+        function closeMoreSheet() {
+            moreOverlay.classList.remove('active');
+        }
+
         function showPage(pageId) {
-            // Update nav
+            // Update sidebar nav
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.toggle('active', item.dataset.page === pageId);
             });
+
+            // Update bottom bar: highlight the matching tab, or "More" for overflow pages
+            document.querySelectorAll('.bottom-nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            const directTab = document.querySelector(`.bottom-nav-item[data-page="${pageId}"]`);
+            if (directTab) {
+                directTab.classList.add('active');
+            } else if (moreNavPages.includes(pageId)) {
+                document.getElementById('more-nav-btn').classList.add('active');
+            }
 
             // Update pages
             document.querySelectorAll('.page').forEach(page => {
