@@ -7,22 +7,23 @@ App Store, no install, no account.
 
 ## 📲 Install it now (no setup)
 
-The repo is public, so the app is already served over HTTPS by the **jsDelivr**
-CDN — no GitHub Pages step, no hosting to configure. On your **iPhone/iPad**,
-open this link in **Safari**:
+The repo is public, so the app is already served over HTTPS by **githack** —
+no GitHub Pages step, no hosting to configure. On your **iPhone/iPad**, open
+this link in **Safari**:
 
 ```
-https://cdn.jsdelivr.net/gh/Luke1248/ma-will@711e087/hsk-flashcards/index.html
+https://rawcdn.githack.com/Luke1248/ma-will/711e087/hsk-flashcards/index.html
 ```
 
 Then tap **Share** (the square-with-an-arrow) → **Add to Home Screen** → **Add**.
 You'll get an "HSK" icon that opens full-screen and works offline.
 
-> Backup link (if jsDelivr is slow on your network), same app:
-> `https://raw.githack.com/Luke1248/ma-will/711e087/hsk-flashcards/index.html`
->
-> The `@711e087` part pins a fixed version (a commit). For your own clean,
+> The `/711e087/` part pins a fixed version (a commit). For your own clean,
 > always-latest URL, see **Hosting on GitHub Pages** below.
+>
+> Note: do **not** use `cdn.jsdelivr.net` for the page — jsDelivr serves `.html`
+> as plain text, so the browser shows the source code instead of the app.
+> githack serves it with the correct `text/html` type so it renders.
 
 ## What it does
 
