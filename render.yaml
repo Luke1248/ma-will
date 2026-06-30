@@ -1,0 +1,12 @@
+# Render Blueprint — one-click deploy with automatic HTTPS.
+# See https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: life-organizer
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 2
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11"
