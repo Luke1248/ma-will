@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Bluebook Citation Accuracy Tester &mdash; 22nd Edition</title>
+
+<!-- Progressive Web App -->
+<link rel="manifest" href="manifest.webmanifest" />
+<meta name="theme-color" content="#0b2545" />
+<meta name="description" content="Test citation accuracy under The Bluebook (22nd ed.) with real cases and sources on a 1-5 difficulty scale." />
+
+<!-- iOS home-screen / standalone app -->
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Bluebook" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png" />
+<style>
+  :root {
+    --navy: #0b2545;
+    --navy-2: #13315c;
+    --gold: #b08d57;
+    --bg: #f4f1ea;
+    --card: #ffffff;
+    --red: #c0182b;
+    --green: #1a7d3c;
+    --muted: #5b6470;
+    --line: #e3ded3;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    background: var(--bg);
+    color: #1b1b1b;
+    line-height: 1.5;
+  }
+  header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
+    color: #fff;
+    padding: 28px 20px 22px;
+    border-bottom: 4px solid var(--gold);
+    text-align: center;
+  }
+  header h1 { margin: 0; font-size: 1.9rem; letter-spacing: .3px; }
+  header p { margin: 6px 0 0; color: #cdd6e4; font-size: .95rem; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 22px 18px 60px; }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 20px;
+  }
+  .ctrl-group { display: flex; flex-direction: column; gap: 6px; }
+  .ctrl-group label {
+    font-size: .72rem; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--muted); font-family: Arial, sans-serif; font-weight: 700;
+  }
+  select, button {
+    font-family: Arial, sans-serif; font-size: .92rem;
+    padding: 8px 12px; border-radius: 7px; border: 1px solid #c7cdd6;
+    background: #fff; cursor: pointer;
+  }
+  .ctrl-group select { min-width: 170px; }
+
+  .stats {
+    margin-left: auto; display: flex; gap: 18px; align-items: center;
+    font-family: Arial, sans-serif;
+  }
+  .stat { text-align: center; }
+  .stat .num { font-size: 1.5rem; font-weight: 700; color: var(--navy); display: block; }
+  .stat .lbl { font-size: .68rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-top: 5px solid var(--gold);
+    border-radius: 10px;
+    padding: 24px 26px 26px;
+    box-shadow: 0 4px 18px rgba(11,37,69,.06);
+  }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 18px; }
+  .tag {
+    font-family: Arial, sans-serif; font-size: .72rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .8px;
+    padding: 4px 10px; border-radius: 20px;
+  }
+  .tag.cat { background: #e7edf6; color: var(--navy-2); }
+  .tag.rule { background: #f0e9dd; color: #6b5733; text-transform: none; letter-spacing: .2px; }
+  .stars { color: var(--gold); font-size: 1.05rem; letter-spacing: 2px; margin-left: auto; }
+  .stars .dim { color: #d9d2c4; }
+
+  .prompt { font-family: Arial, sans-serif; font-size: .9rem; color: var(--muted); margin-bottom: 8px; }
+
+  .cite {
+    font-size: 1.3rem; line-height: 1.7; padding: 18px 20px;
+    background: #fbfaf6; border: 1px solid var(--line); border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  .cite .err.show { color: var(--red); text-decoration: line-through; text-decoration-thickness: 1.5px; }
+  .cite .checkmark { font-size: 1.2rem; margin-left: 8px; }
+
+  .answer-buttons { display: flex; gap: 12px; margin-bottom: 4px; }
+  .btn-answer {
+    flex: 1; padding: 13px; font-size: 1rem; font-weight: 700;
+    font-family: Arial, sans-serif; border-width: 2px;
+  }
+  .btn-correct { border-color: var(--green); color: var(--green); }
+  .btn-correct:hover { background: var(--green); color: #fff; }
+  .btn-incorrect { border-color: var(--red); color: var(--red); }
+  .btn-incorrect:hover { background: var(--red); color: #fff; }
+
+  .feedback { margin-top: 18px; display: none; }
+  .feedback.show { display: block; }
+  .verdict {
+    font-family: Arial, sans-serif; font-weight: 700; font-size: 1.05rem;
+    padding: 12px 16px; border-radius: 8px; margin-bottom: 14px;
+  }
+  .verdict.right { background: #e6f4ea; color: var(--green); border: 1px solid #b8e0c4; }
+  .verdict.wrong { background: #fbe7e9; color: var(--red); border: 1px solid #f1c2c7; }
+
+  .fix-line { margin: 12px 0; }
+  .fix-line .label {
+    font-family: Arial, sans-serif; font-size: .72rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px; color: var(--muted);
+    display: block; margin-bottom: 3px;
+  }
+  .fix-line .corrected { font-size: 1.12rem; color: var(--green); }
+  .explain {
+    font-family: Arial, sans-serif; font-size: .92rem; color: #2a2f37;
+    background: #f6f4ee; border-left: 3px solid var(--gold);
+    padding: 12px 14px; border-radius: 0 6px 6px 0; margin-top: 12px;
+  }
+  .explain b { color: var(--navy-2); }
+
+  .nav-row { display: flex; gap: 12px; margin-top: 20px; align-items: center; }
+  .btn-next {
+    margin-left: auto; background: var(--navy); color: #fff; border: none;
+    padding: 12px 24px; font-weight: 700; font-family: Arial, sans-serif;
+  }
+  .btn-next:hover { background: var(--navy-2); }
+  .btn-ghost { background: #fff; color: var(--muted); border: 1px solid #c7cdd6; padding: 12px 18px; font-family: Arial, sans-serif; }
+  .progress-text { font-family: Arial, sans-serif; font-size: .85rem; color: var(--muted); }
+
+  .empty { text-align: center; padding: 40px; color: var(--muted); font-family: Arial, sans-serif; }
+  footer { text-align: center; font-family: Arial, sans-serif; font-size: .78rem; color: var(--muted); padding: 10px 20px 40px; }
+  footer .disc { max-width: 700px; margin: 8px auto 0; line-height: 1.5; }
+  i.title { font-style: italic; }
+
+  #reviewBtn { white-space: nowrap; font-weight: 700; color: var(--navy-2); }
+  #reviewBtn.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+  #reviewBtn:disabled { opacity: .5; cursor: default; }
+
+  /* Standalone / notch safe areas */
+  header {
+    padding-top: calc(28px + env(safe-area-inset-top));
+  }
+  body {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* iOS Add-to-Home-Screen hint bar */
+  #a2hs {
+    position: fixed;
+    left: 12px; right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    background: var(--navy);
+    color: #fff;
+    font-family: Arial, sans-serif;
+    font-size: .9rem;
+    line-height: 1.4;
+    padding: 12px 40px 12px 16px;
+    border-radius: 12px;
+    box-shadow: 0 6px 24px rgba(11,37,69,.35);
+    z-index: 50;
+  }
+  #a2hs b { color: var(--gold); }
+  #a2hs svg { vertical-align: -3px; }
+  #a2hs-x {
+    position: absolute; top: 6px; right: 12px;
+    font-size: 1.4rem; cursor: pointer; color: #cdd6e4;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Bluebook Citation Accuracy Tester</h1>
+  <p>The Bluebook: A Uniform System of Citation &mdash; 22nd Edition &nbsp;&bull;&nbsp; Real cases &amp; sources, difficulty 1&ndash;5</p>
+</header>
+
+<div class="wrap">
+  <div class="controls">
+    <div class="ctrl-group">
+      <label for="catFilter">Source category</label>
+      <select id="catFilter"></select>
+    </div>
+    <div class="ctrl-group">
+      <label for="diffFilter">Difficulty</label>
+      <select id="diffFilter">
+        <option value="all">All levels</option>
+        <option value="1">&#9733; 1 &mdash; Introductory</option>
+        <option value="2">&#9733;&#9733; 2 &mdash; Easy</option>
+        <option value="3">&#9733;&#9733;&#9733; 3 &mdash; Moderate</option>
+        <option value="4">&#9733;&#9733;&#9733;&#9733; 4 &mdash; Hard</option>
+        <option value="5">&#9733;&#9733;&#9733;&#9733;&#9733; 5 &mdash; Expert</option>
+      </select>
+    </div>
+    <div class="ctrl-group">
+      <label for="reviewBtn">Review</label>
+      <button id="reviewBtn" type="button">&#9873; Missed (0)</button>
+    </div>
+    <div class="stats">
+      <div class="stat"><span class="num" id="scoreNum">0</span><span class="lbl">Correct</span></div>
+      <div class="stat"><span class="num" id="seenNum">0</span><span class="lbl">Answered</span></div>
+      <div class="stat"><span class="num" id="pctNum">&mdash;</span><span class="lbl">Accuracy</span></div>
+    </div>
+  </div>
+
+  <div id="cardHost"></div>
+
+  <footer>
+    <div>Built for legal-writing study &amp; citation drills.</div>
+    <div class="disc">Educational tool. Citation forms reflect widely&ndash;taught Bluebook conventions for the listed
+      authorities. Always confirm against the current printed Bluebook for graded or filed work, as local court rules
+      and editorial updates may govern.</div>
+  </footer>
+</div>
+
+<script>
+/* ============================================================
+   QUESTION BANK
+   Each item:
+     cat   - source category (Bluebook rule area)
+     rule  - governing Bluebook rule
+     diff  - difficulty 1..5
+     correct - true if the displayed citation is already correct
+     seg[] - citation segments. A segment may be:
+               {t:"text"}                      normal text
+               {t:"text", i:true}              italicized (titles)
+               {t:"wrong", err:true, fix:"x"}  the INCORRECT portion (shown red) + its fix
+     why   - explanation referencing the Bluebook rule
+   ============================================================ */
+const QUESTIONS = [
+  {"cat": "Cases", "rule": "R10.3.1", "diff": 1, "correct": true, "seg": [{"t": "Lochner v. New York, 198 U.S. 45 (1905)."}], "why": "Textbook full citation — case name, volume U.S. page, and year. U.S. Supreme Court opinions are cited to the United States Reports (U.S.). Rule 10.3.1 &amp; T1."},
+  {"cat": "Cases", "rule": "R10 · B10", "diff": 1, "correct": true, "seg": [{"t": "Baker v. Carr, 369 U.S. 186, 195 (1962)."}], "why": "Pincite to page 195 follows the first page of the case, separated by a comma. Rule 10.1.2 (Bluepages B10)."},
+  {"cat": "Cases", "rule": "R10.4(b)", "diff": 2, "correct": false, "seg": [{"t": "People v. Armour, 590 N.W.2d 61 ("}, {"t": "Mich. Sup. Ct.", "err": true, "fix": "Mich."}, {"t": " 1999)."}], "why": "When a state's highest court is the deciding court, the court parenthetical is just the jurisdiction abbreviation; do not add \"Sup. Ct.\" The Bluebook gives this exact example: \"(Mich. 1999). Not: (Mich. Sup. Ct. 1999).\" Rule 10.4(b)."},
+  {"cat": "Cases", "rule": "R10.2.1(f)", "diff": 2, "correct": false, "seg": [{"t": "Blystone v. "}, {"t": "Commonwealth of Pennsylvania", "err": true, "fix": "Pennsylvania"}, {"t": ", 494 U.S. 299 (1990)."}], "why": "Omit \"Commonwealth of,\" \"State of,\" and \"People of\" from a party's name (except as the Bluebook specifies). The Bluebook example: \"Blystone v. Pennsylvania ... Not: Blystone v. Commonwealth of Pennsylvania.\" Rule 10.2.1(f)."},
+  {"cat": "Cases", "rule": "R10.2.1(f)", "diff": 3, "correct": false, "seg": [{"t": "City of Arlington"}, {"t": ", Texas", "err": true, "fix": ""}, {"t": " v. FCC, 569 U.S. 290 (2013)."}], "why": "Omit geographical designations that follow a comma in a party's name. The Bluebook example: \"City of Arlington v. FCC. Not: City of Arlington, Texas v. FCC.\" Rule 10.2.1(f)."},
+  {"cat": "Cases", "rule": "R10.4(b)", "diff": 3, "correct": false, "seg": [{"t": "DiLucia v. Mandelker, 493 N.Y.S.2d 769 ("}, {"t": "N.Y. App. Div.", "err": true, "fix": "App. Div."}, {"t": " 1985)."}], "why": "Do not repeat jurisdiction information already conveyed by the reporter. N.Y.S.2d already shows New York, so the parenthetical is just \"App. Div.\" The Bluebook example confirms: \"(App. Div. 1985). Not: (N.Y. App. Div. 1985).\" Rule 10.4(b)."},
+  {"cat": "Cases", "rule": "R10.6.1", "diff": 3, "correct": true, "seg": [{"t": "Parker v. Randolph, 442 U.S. 62, 84 (1979) (Stevens, J., dissenting)."}], "why": "A weight-of-authority parenthetical (here, that the cited page is from a dissent) follows the date parenthetical. Rule 10.6.1."},
+  {"cat": "Cases", "rule": "R10.3.2", "diff": 4, "correct": false, "seg": [{"t": "Green v. Biddle, "}, {"t": "21 U.S. 1", "err": true, "fix": "21 U.S. (8 Wheat.) 1"}, {"t": " (1823)."}], "why": "Early Supreme Court volumes include the nominative reporter in parentheses. The Bluebook example: \"Green v. Biddle, 21 U.S. (8 Wheat.) 1 (1823).\" Rule 10.3.2 &amp; T1."},
+  {"cat": "Cases", "rule": "R10.2.1(c) · T6", "diff": 4, "correct": true, "seg": [{"t": "Nat'l R.R. Passenger Corp. v. Morgan, 536 U.S. 101, 110 (2002)."}], "why": "Correctly abbreviated case name: National→Nat'l, Railroad→R.R., Corporation→Corp. (Table T6). The Bluebook uses this exact form. Rule 10.2.1(c) &amp; T6."},
+  {"cat": "Cases", "rule": "R10.9(a)", "diff": 5, "correct": false, "seg": [{"t": "(Short form after full citation to Reno v. Bossier Parish School Board:)  "}, {"t": "Reno", "err": true, "fix": "Bossier Parish Sch. Bd."}, {"t": ", 520 U.S. at 480."}], "why": "In a short form, avoid using the name of a governmental party or official (here, Attorney General Reno) where another party's name is available. The Bluebook example: \"Reno v. Bossier Parish Sch. Bd. ... becomes: Bossier Parish Sch. Bd., 520 U.S. at 480.\" Rule 10.9(a)."},
+  {"cat": "Constitutions", "rule": "R11", "diff": 1, "correct": true, "seg": [{"t": "U.S. Const. amend. XIV, § 1."}], "why": "A currently effective constitutional provision is cited without a date. Subdivisions: amend. (lowercase), roman numeral, then section. Rule 11."},
+  {"cat": "Constitutions", "rule": "R11", "diff": 2, "correct": false, "seg": [{"t": "U.S. Const. amend. XIV, § 1"}, {"t": " (1868)", "err": true, "fix": ""}, {"t": "."}], "why": "Do not give a date for a provision still in force. A year is added only for a provision that has been amended, superseded, or repealed. Rule 11."},
+  {"cat": "Constitutions", "rule": "R11 · R6", "diff": 3, "correct": false, "seg": [{"t": "U.S. Const. amend. "}, {"t": "14", "err": true, "fix": "XIV"}, {"t": "."}], "why": "Amendments are cited with roman numerals: amend. XIV, not amend. 14. Rule 11."},
+  {"cat": "Constitutions", "rule": "R11", "diff": 4, "correct": true, "seg": [{"t": "U.S. Const. art. I, § 3, cl. 1 (amended 1913)."}], "why": "When a provision has been amended, indicate the fact and year of amendment parenthetically. The Bluebook gives this exact example. Rule 11."},
+  {"cat": "Constitutions", "rule": "R11 · R6", "diff": 4, "correct": false, "seg": [{"t": "U.S. Const. amends. "}, {"t": "5, 14", "err": true, "fix": "V, XIV"}, {"t": "."}], "why": "Multiple amendments use roman numerals and a single citation clause: \"amends. V, XIV.\" The Bluebook uses this exact form. Rule 11 &amp; Rule 3.3."},
+  {"cat": "Statutes", "rule": "R12.3", "diff": 1, "correct": true, "seg": [{"t": "42 U.S.C. § 1983."}], "why": "Citation to the current official U.S. Code: title, U.S.C., and section. The Bluebook gives \"42 U.S.C. § 1983.\" with no date for the current code. Rule 12.3."},
+  {"cat": "Statutes", "rule": "R12.3 · T1", "diff": 2, "correct": false, "seg": [{"t": "42 "}, {"t": "USC", "err": true, "fix": "U.S.C."}, {"t": " § 1983."}], "why": "The code is abbreviated with periods: U.S.C. Rule 12.3 &amp; T1."},
+  {"cat": "Statutes", "rule": "R12.3 · R6.2(c)", "diff": 2, "correct": false, "seg": [{"t": "42 U.S.C. "}, {"t": "1983", "err": true, "fix": "§ 1983"}, {"t": "."}], "why": "A section citation requires the section symbol (§) before the number. Rule 6.2(c) &amp; 12.3."},
+  {"cat": "Statutes", "rule": "R12.3.1(d)", "diff": 3, "correct": false, "seg": [{"t": "Cal. Veh. Code § 11509 ("}, {"t": "Cal.", "err": true, "fix": "West"}, {"t": " 2000)."}], "why": "The parenthetical names the publisher of the code, not the jurisdiction. The Bluebook example: \"Cal. Veh. Code § 11509 (West 2000). Not: Cal. Veh. Code § 11509 (Cal. 2000).\" Rule 12.3.1(d)."},
+  {"cat": "Statutes", "rule": "R12.3", "diff": 3, "correct": true, "seg": [{"t": "Del. Code Ann. tit. 13, § 1301 (1999)."}], "why": "A titled state code: name, title number, section, and year. The Bluebook gives this exact example. Rule 12.3."},
+  {"cat": "Statutes", "rule": "R12.4", "diff": 4, "correct": false, "seg": [{"t": "Tax Reduction Act of 1975, "}, {"t": "Pub. L. 94-12", "err": true, "fix": "Pub. L. No. 94-12"}, {"t": ", 89 Stat. 26."}], "why": "A session-law citation uses \"Pub. L. No.\" — the \"No.\" is required — followed by the Statutes at Large volume and page. The Bluebook example: \"Pub. L. No. 94-12, 89 Stat. 26.\" Rule 12.4."},
+  {"cat": "Statutes", "rule": "R12.4", "diff": 5, "correct": true, "seg": [{"t": "Clayton Act, ch. 323, § 7, 38 Stat. 730, 731–32 (1914)."}], "why": "A pre-1957 session law cited by chapter, section, Statutes at Large volume/page with a pincite, and year. The Bluebook gives this exact example. Rule 12.4."},
+  {"cat": "Legislative Materials", "rule": "R13.2", "diff": 2, "correct": true, "seg": [{"t": "Millennium Copyright Act, H.R. 2281, 105th Cong. § 6 (1997)."}], "why": "A federal bill: name, chamber and number, Congress, section, and year. The Bluebook gives this exact example. Rule 13.2."},
+  {"cat": "Legislative Materials", "rule": "R13.2 · T9", "diff": 3, "correct": false, "seg": [{"t": "Millennium Copyright Act, H.R. 2281, 105th "}, {"t": "Congress", "err": true, "fix": "Cong."}, {"t": " § 6 (1997)."}], "why": "\"Congress\" is abbreviated \"Cong.\" in legislative citations. Rule 13.2 &amp; T9."},
+  {"cat": "Administrative &amp; Regulatory", "rule": "R14.2", "diff": 2, "correct": true, "seg": [{"t": "29 C.F.R. § 1604.11 (2023)."}], "why": "A federal regulation: title, C.F.R., section, and year of the C.F.R. edition. Rule 14.2 &amp; T1.2."},
+  {"cat": "Administrative &amp; Regulatory", "rule": "R14.2 · T1", "diff": 2, "correct": false, "seg": [{"t": "29 "}, {"t": "CFR", "err": true, "fix": "C.F.R."}, {"t": " § 1604.11 (2023)."}], "why": "The Code of Federal Regulations is abbreviated with periods: C.F.R. Rule 14.2 &amp; T1.2."},
+  {"cat": "Books &amp; Treatises", "rule": "R15", "diff": 2, "correct": true, "seg": [{"t": "Matthew Butterick, "}, {"t": "Typography for Lawyers", "i": true}, {"t": " 54 (2010)."}], "why": "A book: author, italicized title, pincite page, and year. The Bluebook gives this exact example. Rule 15.1 &amp; 15.4."},
+  {"cat": "Books &amp; Treatises", "rule": "R15.1", "diff": 3, "correct": false, "seg": [{"t": "Ronald E. Mallen "}, {"t": "and", "err": true, "fix": "&amp;"}, {"t": " Jeffrey M. Smith, "}, {"t": "Legal Malpractice", "i": true}, {"t": " § 1.1 (2008)."}], "why": "Two authors are joined with an ampersand (&amp;), never the word \"and.\" Rule 15.1."},
+  {"cat": "Books &amp; Treatises", "rule": "R15.1 · R3.2", "diff": 4, "correct": true, "seg": [{"t": "15 "}, {"t": "Moore's Federal Practice", "i": true}, {"t": " § 100.02 (3d ed. 1997)."}], "why": "A multivolume treatise: volume number precedes the italicized title, then the section pincite and (edition year). The Bluebook gives this exact example. Rule 15.1 &amp; 3.2."},
+  {"cat": "Periodicals", "rule": "R16.2 · R16.3", "diff": 2, "correct": true, "seg": [{"t": "Kim Lane Scheppele, "}, {"t": "Foreword: Telling Stories", "i": true}, {"t": ", 87 Mich. L. Rev. 2073, 2082 (1989)."}], "why": "A consecutively paginated journal article: author, italicized title, volume, journal abbreviation, first page, pincite, and year. The Bluebook gives this exact example. Rule 16.2–16.5."},
+  {"cat": "Periodicals", "rule": "R16.4 · T13", "diff": 3, "correct": false, "seg": [{"t": "Note, "}, {"t": "A Bad Man Is Hard to Find", "i": true}, {"t": ", 127 "}, {"t": "Harvard Law Review", "err": true, "fix": "Harv. L. Rev."}, {"t": " 2521 (2014)."}], "why": "Periodical names are abbreviated per Table T13: Harvard Law Review → Harv. L. Rev. Rule 16.4 &amp; T13."},
+  {"cat": "Periodicals", "rule": "R16.6", "diff": 3, "correct": true, "seg": [{"t": "Cop Shoots Tire, Halts Stolen Car", "i": true}, {"t": ", S.F. Chron., Oct. 10, 1975, at 43."}], "why": "A newspaper article: italicized title, abbreviated newspaper, date, and \"at\" page. The Bluebook gives this exact example. Rule 16.6."},
+  {"cat": "Periodicals", "rule": "R16.5", "diff": 4, "correct": false, "seg": [{"t": "Kim Lane Scheppele, "}, {"t": "Foreword: Telling Stories", "i": true}, {"t": ", "}, {"t": "Mich. L. Rev. 87, 2073", "err": true, "fix": "87 Mich. L. Rev. 2073"}, {"t": ", 2082 (1989)."}], "why": "Order is volume — journal — first page: \"87 Mich. L. Rev. 2073.\" The volume number precedes the journal abbreviation. Rule 16.5."},
+  {"cat": "Periodicals", "rule": "R16.2", "diff": 5, "correct": true, "seg": [{"t": "Robert P. Inman &amp; Michael A. Fitts, "}, {"t": "Political Institutions and Fiscal Policy: Evidence from the U.S. Historical Record", "i": true}, {"t": ", 6 J.L. Econ. &amp; Org. 79, 79–82 (1990)."}], "why": "Two authors joined by \"&amp;,\" italicized title, abbreviated journal (J.L. Econ. &amp; Org.), and a pincite range. The Bluebook gives this exact example. Rule 16.2–16.5."},
+  {"cat": "Internet &amp; Electronic", "rule": "R18.2.2", "diff": 2, "correct": true, "seg": [{"t": "Yahoo! Home Page, http://www.yahoo.com (last visited Mar. 18, 2024)."}], "why": "A web page with no clear publication date uses a \"(last visited …)\" parenthetical after the full URL. The Bluebook gives this exact example. Rule 18.2.2."},
+  {"cat": "Internet &amp; Electronic", "rule": "R18.2.2", "diff": 3, "correct": false, "seg": [{"t": "Yahoo! Home Page, "}, {"t": "www.yahoo.com", "err": true, "fix": "http://www.yahoo.com"}, {"t": " (last visited Mar. 18, 2024)."}], "why": "Provide the full URL, including the protocol (http:// or https://). Rule 18.2.2."},
+  {"cat": "Court Documents", "rule": "B17.1.2 · BT1", "diff": 3, "correct": true, "seg": [{"t": "Hawkins Aff. 6."}], "why": "A court document cited in a brief: abbreviated party name + abbreviated document title (Affidavit → Aff.) + page, with no \"at.\" The Bluebook gives this exact example. Bluepages B17 &amp; BT1."},
+  {"cat": "Court Documents", "rule": "B17.1.2 · BT1", "diff": 3, "correct": true, "seg": [{"t": "Pet'r's Br. 6."}], "why": "Petitioner's Brief → \"Pet'r's Br.\" using Bluepages abbreviations, followed by the page with no \"at.\" Bluepages B17 &amp; BT1."},
+  {"cat": "Court Documents", "rule": "B17.1.2 · BT1", "diff": 4, "correct": false, "seg": [{"t": "Petitioner's Brief at 6", "err": true, "fix": "Pet'r's Br. 6"}, {"t": "."}], "why": "In a court filing, abbreviate the document title and party designation per Table BT1 and omit \"at\" before the page: \"Pet'r's Br. 6.\" Bluepages B17.1.2."},
+  {"cat": "Foreign Materials", "rule": "R20.1", "diff": 3, "correct": true, "seg": [{"t": "Chase v. Campbell, [1962] S.C.R. 425 (Can.)."}], "why": "A non-U.S. case ends with the jurisdiction abbreviation in parentheses (Table T10). The Bluebook gives this exact example. Rule 20.1 &amp; 20.3."},
+  {"cat": "Foreign Materials", "rule": "R20.1", "diff": 4, "correct": false, "seg": [{"t": "Chase v. Campbell, [1962] S.C.R. "}, {"t": "425.", "err": true, "fix": "425 (Can.)."}, {"t": ""}], "why": "When citing any non-U.S. source, indicate the issuing jurisdiction parenthetically (here, Can.). The Bluebook example includes \"(Can.).\" Rule 20.1."},
+  {"cat": "International Materials", "rule": "R21.8", "diff": 3, "correct": true, "seg": [{"t": "U.N. Charter art. 94, ¶ 1."}], "why": "The U.N. Charter is cited by article and paragraph (¶). The Bluebook gives this exact example. Rule 21.8."},
+  {"cat": "International Materials", "rule": "R21.8", "diff": 4, "correct": true, "seg": [{"t": "League of Nations Covenant art. 16."}], "why": "The League of Nations Covenant is cited by article, with no date. The Bluebook gives this exact example. Rule 21.8."},
+  {"cat": "Tribal Nations", "rule": "R22.1", "diff": 2, "correct": true, "seg": [{"t": "Const. of the Comanche Nation art. II, § 1."}], "why": "Rule 22 (new in the 22nd edition) governs Tribal Nation materials. A Tribal constitution is cited much like Rule 11: \"Const.\" + the Nation + article/section. The Bluebook gives this exact example. Rule 22.1."},
+  {"cat": "Tribal Nations", "rule": "R22.2.3", "diff": 3, "correct": true, "seg": [{"t": "Pueblo de San Ildefonso Code § 4.1.1.010 (2023)."}], "why": "A Tribal code is cited by the Nation's code name, section, and year. The Bluebook gives this exact example. Rule 22.2.3."},
+  {"cat": "Tribal Nations", "rule": "R22.1 · R11", "diff": 4, "correct": false, "seg": [{"t": "Constitution of the Comanche Nation", "err": true, "fix": "Const. of the Comanche Nation"}, {"t": " art. II, § 1."}], "why": "Abbreviate \"Constitution\" to \"Const.\" The Bluebook's Tribal Nation example is \"Const. of the Comanche Nation art. II, § 1.\" Rule 22.1 (following Rule 11)."},
+  {"cat": "Tribal Nations", "rule": "R22.1", "diff": 4, "correct": true, "seg": [{"t": "Const. of the Cherokee Nation of Oklahoma of 1976 art. XVI."}], "why": "When a Tribal constitution carries a year of adoption, include it before the subdivision. The Bluebook gives this exact example. Rule 22.1."},
+  {"cat": "Archival Sources", "rule": "R23.1", "diff": 3, "correct": true, "seg": [{"t": "Letter from William Prosser to Robert Hudec (Apr. 27, 1960) (on file with author)."}], "why": "Rule 23 (new in the 22nd edition) governs archival sources. A letter: \"Letter from [author] to [recipient] (date) (location).\" The Bluebook gives this example. Rule 23.1 &amp; 23.6."},
+  {"cat": "Archival Sources", "rule": "R23.5", "diff": 4, "correct": true, "seg": [{"t": "Thomas Jefferson, "}, {"t": "Ice Cream Recipe", "i": true}, {"t": " (n.d.) (on file with Libr. of Cong.)."}], "why": "When an archival item has no determinable date, use \"(n.d.).\" The Bluebook gives this exact example. Rule 23.5."},
+  {"cat": "Archival Sources", "rule": "R23.5 · T12", "diff": 4, "correct": false, "seg": [{"t": "Letter from William Prosser to Robert Hudec"}, {"t": ", April 27, 1960", "err": true, "fix": " (Apr. 27, 1960)"}, {"t": " (on file with author)."}], "why": "The date of an archival source is given in parentheses, with the month abbreviated per Table T12 (April → Apr.). Rule 23.5 &amp; T12."},  {"cat": "Cases", "rule": "R10.1.2", "diff": 2, "correct": true, "seg": [{"t": "Kleppe v. New Mexico, 426 U.S. 529, 531, 546 (1976)."}], "why": "Multiple pincites are separated by commas after the first page. The Bluebook gives this exact example. Rule 10.1.2."},
+  {"cat": "Cases", "rule": "R10.3.2", "diff": 4, "correct": true, "seg": [{"t": "Hall v. Bell, 47 Mass. (6 Met.) 431 (1843)."}], "why": "A state case in an early nominative reporter: the nominative (Met.) appears in parentheses after the official volume. The Bluebook gives this example. Rule 10.3.2."},
+  {"cat": "Cases", "rule": "R10.2.1(f)", "diff": 3, "correct": false, "seg": [{"t": "Mayor of "}, {"t": "the City of ", "err": true, "fix": ""}, {"t": "New York v. Clinton."}], "why": "Omit 'the City of' from a governmental party's name. The Bluebook example: 'Mayor of New York v. Clinton. Not: Mayor of the City of New York v. Clinton.' Rule 10.2.1(f)."},
+  {"cat": "Cases", "rule": "R10.2.1(f)", "diff": 4, "correct": false, "seg": [{"t": "Surrick v. Board of Wardens"}, {"t": " of the Port of Philadelphia", "err": true, "fix": ""}, {"t": "."}], "why": "Omit descriptive prepositional phrases identifying a governmental body's location. The Bluebook example: 'Surrick v. Board of Wardens. Not: Surrick v. Board of Wardens of the Port of Philadelphia.' Rule 10.2.1(f)."},
+  {"cat": "Cases", "rule": "R10.2.1(h)", "diff": 4, "correct": false, "seg": [{"t": "Wisconsin Packing Co."}, {"t": ", Inc.", "err": true, "fix": ""}, {"t": " v. Indiana Refrigerator Lines, Inc."}], "why": "Omit 'Inc.,' 'Ltd.,' etc. when the party's name already contains a word (here, 'Co.') that shows it is a business firm. The other party keeps 'Inc.' because 'Lines' does not. Rule 10.2.1(h)."},
+  {"cat": "Cases", "rule": "R10.2.1", "diff": 5, "correct": false, "seg": [{"t": "NLRB v. Radio &amp; Television Broadcast Engineers Local 1212"}, {"t": ", IBEW, AFL-CIO", "err": true, "fix": ""}, {"t": "."}], "why": "Omit trailing union affiliations and similar descriptive strings from a party's name. The Bluebook example ends at 'Local 1212.' Rule 10.2.1."},
+  {"cat": "Cases", "rule": "R10.4 · T7", "diff": 3, "correct": true, "seg": [{"t": "United States v. Bruno, 144 F. Supp. 593 (N.D. Ill. 1955)."}], "why": "A federal district-court decision: the parenthetical gives the district (N.D. Ill.) and year. The Bluebook gives this example. Rule 10.4 &amp; T7."},
+  {"cat": "Cases", "rule": "R10.6.1", "diff": 4, "correct": true, "seg": [{"t": "Maryland v. King, 567 U.S. 1301 (2012) (Roberts, C.J., in chambers)."}], "why": "An in-chambers opinion is noted in a weight-of-authority parenthetical. The Bluebook gives this example. Rule 10.6.1."},
+  {"cat": "Cases", "rule": "R10.4(b)", "diff": 3, "correct": false, "seg": [{"t": "Dubreuil v. Witt, 80 Conn. App. 410 ("}, {"t": "App. Ct. ", "err": true, "fix": ""}, {"t": "2003)."}], "why": "The reporter (Conn. App.) already identifies the court, so the parenthetical needs only the year. The Bluebook example: '(2003). Not: (App. Ct. 2003).' Rule 10.4(b)."},
+  {"cat": "Cases", "rule": "R10.2.1", "diff": 5, "correct": false, "seg": [{"t": "United States v. "}, {"t": "Parcel of Real Property Known as 6109 Grubb Road, Millcreek Township, Erie County, Pennsylvania", "err": true, "fix": "6109 Grubb Road"}, {"t": "."}], "why": "Shorten a lengthy in rem property description to a manageable name. The Bluebook example: 'United States v. 6109 Grubb Road.' Rule 10.2.1."},
+  {"cat": "Constitutions", "rule": "R11 · R3.5", "diff": 2, "correct": true, "seg": [{"t": "U.S. Const. art. I, § 8; id. art. II, § 2."}], "why": "Consecutive constitutional provisions may share one citation clause, using 'id.' for the second reference to the same constitution. The Bluebook gives this example. Rule 11 &amp; 3.5."},
+  {"cat": "Constitutions", "rule": "R11", "diff": 4, "correct": true, "seg": [{"t": "Wash. Const. art. I, § 2 (West, Westlaw through Nov. 2024 amendments)."}], "why": "A constitution from an electronic database names the publisher/database and its currentness. The Bluebook gives this example. Rule 11."},
+  {"cat": "Constitutions", "rule": "R11", "diff": 5, "correct": true, "seg": [{"t": "U.S. Const. art. I, § 3, cl. 1, amended by U.S. Const. amend. XVII."}], "why": "An amended provision may be cited followed by 'amended by' and the amending provision in full. The Bluebook gives this example. Rule 11."},
+  {"cat": "Statutes", "rule": "R12.3", "diff": 2, "correct": true, "seg": [{"t": "N.C. Gen. Stat. § 1-181 (2003)."}], "why": "A state code: abbreviated code name, section, and year. The Bluebook gives this example. Rule 12.3 &amp; T1.3."},
+  {"cat": "Statutes", "rule": "R12.3.1(d)", "diff": 3, "correct": true, "seg": [{"t": "Tex. Fam. Code Ann. § 5.01 (Vernon 2002 &amp; Supp. 2004–2005)."}], "why": "An annotated state code names the publisher (Vernon) and includes the supplement. The Bluebook gives this example. Rule 12.3.1(d)."},
+  {"cat": "Statutes", "rule": "R12.3.1(d)", "diff": 4, "correct": true, "seg": [{"t": "42 U.S.C.A. § 300a-7 (West 2001)."}], "why": "The annotated U.S. Code (U.S.C.A.) names its publisher (West) in the parenthetical. The Bluebook gives this example. Rule 12.3.1(d)."},
+  {"cat": "Statutes", "rule": "R12.4 · T1", "diff": 4, "correct": false, "seg": [{"t": "1878 Laws of Minn.", "err": true, "fix": "1878 Minn. Laws"}], "why": "Session laws are cited '[year] [State] Laws.' The Bluebook example: '1878 Minn. Laws. Not: 1878 Laws of Minn.' Rule 12.4 &amp; T1.3."},
+  {"cat": "Statutes", "rule": "R12.3", "diff": 3, "correct": true, "seg": [{"t": "Ga. Code Ann. § 21-2-16 (2003)."}], "why": "A state code cited by name, section, and year. The Bluebook gives this example. Rule 12.3."},
+  {"cat": "Statutes", "rule": "R12.4", "diff": 3, "correct": true, "seg": [{"t": "Foreign Assistance Act of 1961, Pub. L. No. 87-195, 75 Stat. 424."}], "why": "A session law: act name, 'Pub. L. No.,' and Statutes at Large volume/page. The Bluebook gives this example. Rule 12.4."},
+  {"cat": "Legislative Materials", "rule": "R12.4 · R13", "diff": 4, "correct": true, "seg": [{"t": "Voting Rights Act of 1965, Pub. L. No. 89-110, 79 Stat. 445."}], "why": "A named public law cited by its public-law number and Statutes at Large page. The Bluebook gives this example. Rule 12.4."},
+  {"cat": "Periodicals", "rule": "R16.2", "diff": 3, "correct": true, "seg": [{"t": "Kenneth W. Tsang et al., "}, {"t": "A Cluster of Cases of Severe Acute Respiratory Syndrome in Hong Kong", "i": true}, {"t": ", 348 New Eng. J. Med. 1977, 1977 (2003)."}], "why": "Three or more authors may be given as the first author + 'et al.' The Bluebook gives this example. Rule 16.2."},
+  {"cat": "Periodicals", "rule": "R16.7.1", "diff": 4, "correct": true, "seg": [{"t": "Recent Case, 24 Vand. L. Rev. 148, 151–52 (1970)."}], "why": "An unsigned student-written 'Recent Case' is cited by that designation, then volume, journal, and pages. The Bluebook gives this example. Rule 16.7.1."},
+  {"cat": "Periodicals", "rule": "R16.7", "diff": 3, "correct": true, "seg": [{"t": "Howard C. Westwood, Book Review, 45 U. Chi. L. Rev. 255 (1977)."}], "why": "A signed but untitled book review uses the 'Book Review' designation. The Bluebook gives this example. Rule 16.7."},
+  {"cat": "Periodicals", "rule": "R16.6", "diff": 3, "correct": true, "seg": [{"t": "Editorial, "}, {"t": "Pricing Drugs", "i": true}, {"t": ", Wash. Post, Feb. 17, 2004, at A18."}], "why": "A newspaper editorial: 'Editorial' designation, italicized title, newspaper, date, and page. The Bluebook gives this example. Rule 16.6."},
+  {"cat": "Periodicals", "rule": "R16.6 · T13", "diff": 4, "correct": false, "seg": [{"t": "Recent Case, 24 "}, {"t": "Vanderbilt Law Review", "err": true, "fix": "Vand. L. Rev."}, {"t": " 148, 151–52 (1970)."}], "why": "Periodical names are abbreviated per Table T13: Vanderbilt Law Review → Vand. L. Rev. Rule 16.6 &amp; T13."},
+  {"cat": "Periodicals", "rule": "R16.2", "diff": 5, "correct": true, "seg": [{"t": "Pauline M. Ippolito &amp; Alan D. Mathios, "}, {"t": "New Food Labeling Regulations and the Flow of Nutrition Information to Consumers", "i": true}, {"t": ", 12 J. Pub. Pol'y &amp; Mktg. 188 (1993)."}], "why": "Two authors joined by '&amp;,' italicized title, and an abbreviated interdisciplinary journal. The Bluebook gives this example. Rule 16.2–16.5."},
+  {"cat": "Books &amp; Treatises", "rule": "R15.4 · R3.2", "diff": 4, "correct": false, "seg": [{"t": "Matthew Butterick, "}, {"t": "Typography for Lawyers", "i": true}, {"t": ", 54", "err": true, "fix": " 54"}, {"t": " (2010)."}], "why": "No comma separates a book's title from the page cited — the pincite follows the title directly. Rule 15.4 &amp; 3.2."},
+  {"cat": "Foreign Materials", "rule": "R20.3", "diff": 3, "correct": true, "seg": [{"t": "R v. Lockwood (1782) 99 Eng. Rep. 379 (KB)."}], "why": "An English Reports case: party names, year in round brackets, reporter, page, and court. The Bluebook gives this example. Rule 20.3."},
+  {"cat": "Foreign Materials", "rule": "R20.3", "diff": 4, "correct": true, "seg": [{"t": "Berry v Dorsey (1975) 101 ALR 35 (Austl.)."}], "why": "An Australian case ends with the jurisdiction (Austl.). The Bluebook gives this example. Rule 20.3."},
+  {"cat": "Foreign Materials", "rule": "R20.2", "diff": 4, "correct": true, "seg": [{"t": "Code civil [C. civ.] [Civil Code] art. 1112 (Fr.)."}], "why": "A non-English code: original name, abbreviation, a bracketed English translation, article, and jurisdiction. The Bluebook gives this example. Rule 20.2."},
+  {"cat": "Services", "rule": "R19.1", "diff": 4, "correct": true, "seg": [{"t": "4 Lab. L. Rep. (CCH) ¶ 9046."}], "why": "A looseleaf service: volume, abbreviated service name, publisher (CCH) in parentheses, and paragraph (¶). Rule 19.1."},
+  {"cat": "Services", "rule": "R19.1", "diff": 5, "correct": true, "seg": [{"t": "In re Looney, [1987–1989 Transfer Binder] Bankr. L. Rep. (CCH) ¶ 72,447, at 93,590 (Bankr. W.D. Va. Sept. 9, 1988)."}], "why": "A case reported in a service, with the transfer-binder designation, paragraph, 'at' page, and court/date parenthetical. Rule 19.1."},
+  {"cat": "Court Documents", "rule": "R10.8.3", "diff": 4, "correct": true, "seg": [{"t": "Complaint at 17, Kelly v. Wyman, 294 F. Supp. 893 (S.D.N.Y. 1968)."}], "why": "An academic-format citation to a court document: document name, 'at' page, then the case citation. The Bluebook gives this example. Rule 10.8.3."},
+  {"cat": "Court Documents", "rule": "R10.8.3", "diff": 5, "correct": true, "seg": [{"t": "Transcript of Record at 16–17, Johnson v. Eisentrager, 339 U.S. 763 (1950)."}], "why": "A record on appeal cited with a page range and the full case citation. The Bluebook gives this example. Rule 10.8.3."},
+  {"cat": "Tribal Nations", "rule": "R22.2.3", "diff": 3, "correct": true, "seg": [{"t": "Colorado River Indian Tribes Land Code § 1-101.5 (1988)."}], "why": "A Tribal code cited by the Nation's code name, section, and year. The Bluebook gives this example. Rule 22.2.3."},
+  {"cat": "Archival Sources", "rule": "R23.1", "diff": 5, "correct": true, "seg": [{"t": "James Madison, "}, {"t": "For the National Gazette", "i": true}, {"t": " (Dec. 19, 1791)."}], "why": "An archival manuscript: author, italicized title/description, and date in parentheses. The Bluebook gives this example. Rule 23.1."},
+  {"cat": "Internet &amp; Electronic", "rule": "R18.2.1(d)", "diff": 4, "correct": true, "seg": [{"t": "Macy's, http://www.macys.com [https://perma.cc/S2LQ-CSYS] (last visited Apr. 5, 2024)."}], "why": "An archived source gives the live URL followed by the archive URL (perma.cc) in brackets. The Bluebook gives this example form. Rule 18.2.1(d)."},  {"cat": "Signals &amp; Short Forms", "rule": "R1.2", "diff": 2, "correct": true, "seg": [{"t": "See ", "i": true}, {"t": "Flanagan v. United States, 465 U.S. 259, 264 (1984)."}], "why": "The signal 'See' (italicized) shows that the cited authority clearly supports the proposition. Rule 1.2."},
+  {"cat": "Signals &amp; Short Forms", "rule": "R1.2 · R1.3", "diff": 3, "correct": true, "seg": [{"t": "See, e.g., ", "i": true}, {"t": "S. Pac. Co. v. Jensen, 244 U.S. 205, 225–26 (1917) (Pitney, J., dissenting)."}], "why": "The combined signal 'See, e.g.,' indicates the cited case is one of several that support the point. Rule 1.2 &amp; 1.3."},
+  {"cat": "Signals &amp; Short Forms", "rule": "R1.2", "diff": 4, "correct": true, "seg": [{"t": "Contra ", "i": true}, {"t": "Blake v. Kline, 612 F.2d 718, 723–24 (3d Cir. 1979)."}], "why": "'Contra' signals authority that directly contradicts the proposition. Rule 1.2."},
+  {"cat": "Signals &amp; Short Forms", "rule": "R1.2 · R1.3", "diff": 4, "correct": true, "seg": [{"t": "See also ", "i": true}, {"t": "Revlon, Inc. v. MacAndrews &amp; Forbes Holdings, Inc., 506 A.2d 173 (Del. 1986)."}], "why": "'See also' adds further authority that supports the proposition. Signals are ordered per Rule 1.3."},
+  {"cat": "Signals &amp; Short Forms", "rule": "R1.2", "diff": 3, "correct": false, "seg": [{"t": "See e.g.,", "err": true, "fix": "See, e.g.,", "i": true}, {"t": " State v. Caryl, 543 P.2d 389, 390 (Mont. 1975)."}], "why": "When 'e.g.' is combined with another signal, a comma precedes it: 'See, e.g.,' Rule 1.2 &amp; 1.3."},
+  {"cat": "Signals &amp; Short Forms", "rule": "R4.1", "diff": 2, "correct": true, "seg": [{"t": "Id.", "i": true}, {"t": " at 93,591."}], "why": "'Id.' cites the immediately preceding authority; 'at' introduces the new pincite. Rule 4.1."},
+  {"cat": "Signals &amp; Short Forms", "rule": "R10.9", "diff": 3, "correct": true, "seg": [{"t": "Youngstown Sheet &amp; Tube Co. v. Sawyer, 343 U.S. at 585."}], "why": "A case short form (after a full citation): one party name, volume, 'at,' and the page. Rule 10.9."},
+  {"cat": "Signals &amp; Short Forms", "rule": "R10.9", "diff": 4, "correct": false, "seg": [{"t": "Youngstown Sheet &amp; Tube Co. v. Sawyer, 343 U.S. "}, {"t": "585", "err": true, "fix": "at 585"}, {"t": "."}], "why": "A short-form case pincite is introduced by 'at': '343 U.S. at 585.' Rule 10.9."},
+  {"cat": "Signals &amp; Short Forms", "rule": "R4.2", "diff": 5, "correct": true, "seg": [{"t": "Scope of Protection", "i": true}, {"t": ", "}, {"t": "supra", "i": true}, {"t": " note 2, at 906."}], "why": "'supra' refers back to a previously cited non-case source by footnote number. Rule 4.2."},
+  {"cat": "Cases", "rule": "R3.2 · R10", "diff": 3, "correct": true, "seg": [{"t": "Newdow v. U.S. Cong., 328 F.3d 466, 471 n.3 (9th Cir. 2003)."}], "why": "A pincite to material in a footnote uses 'n.3' after the page number. Rule 3.2(a)."},
+  {"cat": "Cases", "rule": "R10.2.1(c) · T6", "diff": 2, "correct": true, "seg": [{"t": "Meritor Sav. Bank v. Vinson, 477 U.S. 57, 60 (1986)."}], "why": "'Savings Bank' abbreviates to 'Sav. Bank' (Table T6); the pincite is to page 60. Rule 10.2.1(c) &amp; T6."},
+  {"cat": "Cases", "rule": "R10.2.1(c) · R6.1(b)", "diff": 3, "correct": true, "seg": [{"t": "Env't Def. Fund v. EPA, 465 F.2d 528, 533 (D.C. Cir. 1972)."}], "why": "Environmental→Env't, Defense→Def. (T6); a widely recognized entity (EPA) is left as an unpunctuated acronym. Rule 6.1(b)."},
+  {"cat": "Cases", "rule": "R10.3.1", "diff": 2, "correct": true, "seg": [{"t": "Bates v. Tappan, 99 Mass. 376 (1868)."}], "why": "An older state decision cited to the official reporter (Mass.) with no reporter series number. Rule 10.3.1."},
+  {"cat": "Statutes", "rule": "R12.3", "diff": 2, "correct": true, "seg": [{"t": "Nev. Rev. Stat. § 28.501 (1998)."}], "why": "A state code: abbreviated name, section, and year. The Bluebook gives this example. Rule 12.3."},
+  {"cat": "Court Documents", "rule": "R10.8.3", "diff": 4, "correct": true, "seg": [{"t": "Brief for the Petitioner, Demore v. Kim, 538 U.S. 510 (2003)."}], "why": "An appellate brief cited by document name followed by the full case citation. The Bluebook gives this example. Rule 10.8.3."},  {"cat": "Quotations", "rule": "R5.1(b)", "diff": 2, "correct": true, "seg": [{"t": "The Court called the statute “plain and unambiguous.”"}], "why": "A quotation of fewer than 50 words is run into the text in quotation marks; in American usage the closing period sits inside the closing quotation mark. Rule 5.1(b)."},
+  {"cat": "Quotations", "rule": "R5.1(a)", "diff": 3, "correct": false, "seg": [{"t": "A 55-word quotation, "}, {"t": "run into the text in quotation marks.", "err": true, "fix": "set off as an indented block quotation, without quotation marks."}], "why": "A quotation of 50 or more words is set off as an indented block quotation, without quotation marks, and the citation follows the block rather than sitting inside it. Rule 5.1(a)."},
+  {"cat": "Quotations", "rule": "R5.2", "diff": 3, "correct": false, "seg": [{"t": "The court held that “"}, {"t": "The", "err": true, "fix": "[T]he"}, {"t": " statute controls.”"}], "why": "When you change the case of a letter from the original, show the change with brackets: “[T]he.” Rule 5.2."},
+  {"cat": "Quotations", "rule": "R5.3", "diff": 3, "correct": false, "seg": [{"t": "“the right "}, {"t": "...", "err": true, "fix": ". . ."}, {"t": " shall not be infringed.”"}], "why": "An omission within a quotation is shown by an ellipsis of three periods separated by spaces, with a space before and after. Rule 5.3."},
+  {"cat": "Quotations", "rule": "R5.3", "diff": 4, "correct": false, "seg": [{"t": "“Congress shall make no law "}, {"t": "…", "err": true, "fix": ". . ."}, {"t": " abridging the freedom of speech.”"}], "why": "Use three periods separated by spaces ( . . . ), not a single ellipsis character, to mark an omission. Rule 5.3."},
+  {"cat": "Quotations", "rule": "R5.2", "diff": 4, "correct": true, "seg": [{"t": "The statute “plainly controls” (emphasis added)."}], "why": "When you add emphasis to quoted language, note it in a parenthetical after the citation: (emphasis added). Rule 5.2."},
+  {"cat": "Quotations", "rule": "R5.1(b)", "diff": 4, "correct": false, "seg": [{"t": "The Court called it “unambiguous"}, {"t": "”.", "err": true, "fix": ".”"}], "why": "In American usage, commas and periods are placed inside the closing quotation mark. Rule 5.1(b)."},
+  {"cat": "Quotations", "rule": "R5.1(b)", "diff": 5, "correct": true, "seg": [{"t": "The court invoked the ‘clear statement’ rule when reading “the Act.”"}], "why": "A quotation within a quotation takes single quotation marks inside the double marks. Rule 5.1(b)."},
+];
+
+/* ============================================================
+   APP LOGIC
+   ============================================================ */
+const catFilter = document.getElementById('catFilter');
+const diffFilter = document.getElementById('diffFilter');
+const cardHost = document.getElementById('cardHost');
+const scoreNum = document.getElementById('scoreNum');
+const seenNum = document.getElementById('seenNum');
+const pctNum = document.getElementById('pctNum');
+
+const reviewBtn = document.getElementById('reviewBtn');
+
+let pool = [];
+let idx = 0;
+let answered = 0;
+let correctCount = 0;
+let currentAnswered = false;
+let reviewMode = false;
+
+// Stable id per question, and a persisted set of "missed" question ids.
+QUESTIONS.forEach((q, i) => { q._id = i; });
+let missed = new Set();
+try {
+  const saved = JSON.parse(localStorage.getItem('bluebook-missed') || '[]');
+  saved.forEach(id => { if (QUESTIONS[id]) missed.add(id); });
+} catch (e) { /* storage unavailable */ }
+
+function saveMissed(){
+  try { localStorage.setItem('bluebook-missed', JSON.stringify([...missed])); } catch (e) {}
+}
+
+function updateReviewBtn(){
+  reviewBtn.innerHTML = reviewMode ? '&#10005; Exit review' : ('&#9873; Missed (' + missed.size + ')');
+  reviewBtn.classList.toggle('active', reviewMode);
+  reviewBtn.disabled = (!reviewMode && missed.size === 0);
+}
+
+// Build category dropdown
+(function buildCats(){
+  const cats = Array.from(new Set(QUESTIONS.map(q => q.cat)));
+  const opt = document.createElement('option');
+  opt.value = 'all'; opt.innerHTML = 'All categories';
+  catFilter.appendChild(opt);
+  cats.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c; o.innerHTML = c;
+    catFilter.appendChild(o);
+  });
+})();
+
+function buildPool(){
+  if (reviewMode){
+    pool = QUESTIONS.filter(q => missed.has(q._id));
+  } else {
+    const c = catFilter.value, d = diffFilter.value;
+    pool = QUESTIONS.filter(q =>
+      (c === 'all' || q.cat === c) &&
+      (d === 'all' || String(q.diff) === d)
+    );
+  }
+  idx = 0;
+  catFilter.disabled = reviewMode;
+  diffFilter.disabled = reviewMode;
+  updateReviewBtn();
+  render();
+}
+
+function toggleReview(){
+  if (!reviewMode && missed.size === 0) return;
+  reviewMode = !reviewMode;
+  buildPool();
+}
+
+function stars(n){
+  let s = '';
+  for (let i = 1; i <= 5; i++) s += i <= n ? '★' : '<span class="dim">★</span>';
+  return s;
+}
+
+function citeHTML(q, reveal){
+  return q.seg.map(s => {
+    let txt = s.t;
+    if (s.i) txt = '<i class="title">' + txt + '</i>';
+    if (s.err) {
+      return '<span class="err' + (reveal ? ' show' : '') + '">' + txt + '</span>';
+    }
+    return txt;
+  }).join('');
+}
+
+function correctedHTML(q){
+  return q.seg.map(s => {
+    if (s.err) return s.fix ? ('<b>' + s.fix + '</b>') : '';
+    let txt = s.t;
+    if (s.i) txt = '<i class="title">' + txt + '</i>';
+    return txt;
+  }).join('').replace(/\s+\./g, '.').replace(/\s{2,}/g, ' ').trim();
+}
+
+function updateStats(){
+  scoreNum.textContent = correctCount;
+  seenNum.textContent = answered;
+  pctNum.innerHTML = answered ? Math.round(correctCount / answered * 100) + '%' : '&mdash;';
+}
+
+function render(){
+  currentAnswered = false;
+  if (pool.length === 0){
+    const msg = reviewMode
+      ? 'No missed questions to review &mdash; nice work! Tap &ldquo;Exit review&rdquo; to keep practicing.'
+      : 'No citations match this filter. Try a different category or difficulty.';
+    cardHost.innerHTML = '<div class="card"><div class="empty">' + msg + '</div></div>';
+    return;
+  }
+  const q = pool[idx];
+  cardHost.innerHTML = `
+    <div class="card">
+      <div class="meta-row">
+        <span class="tag cat">${q.cat}</span>
+        <span class="tag rule">${q.rule}</span>
+        <span class="stars">${stars(q.diff)}</span>
+      </div>
+      <div class="prompt">Is this citation correct under <i>The Bluebook</i> (22nd ed.)?</div>
+      <div class="cite" id="citeBox">${citeHTML(q, false)}</div>
+      <div class="answer-buttons">
+        <button class="btn-answer btn-correct" id="btnCorrect">&#10003;&nbsp; Correct</button>
+        <button class="btn-answer btn-incorrect" id="btnIncorrect">&#10007;&nbsp; Has an error</button>
+      </div>
+      <div class="feedback" id="feedback"></div>
+      <div class="nav-row">
+        <span class="progress-text">${idx + 1} of ${pool.length}</span>
+        <button class="btn-ghost" id="btnPrev">&larr; Prev</button>
+        <button class="btn-next" id="btnNext">Next &rarr;</button>
+      </div>
+    </div>`;
+
+  document.getElementById('btnCorrect').onclick = () => answer(true);
+  document.getElementById('btnIncorrect').onclick = () => answer(false);
+  document.getElementById('btnNext').onclick = next;
+  document.getElementById('btnPrev').onclick = prev;
+}
+
+function answer(userSaysCorrect){
+  if (currentAnswered) return;
+  currentAnswered = true;
+  const q = pool[idx];
+  const right = (userSaysCorrect === q.correct);
+  answered++;
+  if (right) correctCount++;
+  updateStats();
+
+  // Track missed questions: wrong answers go into the review set, right ones leave it.
+  if (right) {
+    if (missed.delete(q._id)) { saveMissed(); updateReviewBtn(); }
+  } else if (!missed.has(q._id)) {
+    missed.add(q._id); saveMissed(); updateReviewBtn();
+  }
+
+  // Reveal red error portions in the citation
+  const citeBox = document.getElementById('citeBox');
+  citeBox.innerHTML = citeHTML(q, true) + (q.correct ? ' <span class="checkmark">✅</span>' : '');
+
+  // Build feedback
+  const fb = document.getElementById('feedback');
+  let html = '';
+  html += '<div class="verdict ' + (right ? 'right' : 'wrong') + '">'
+        + (right ? '✅ Correct &mdash; you got it.' : '❌ Not quite.')
+        + ' This citation is <b>' + (q.correct ? 'properly formatted' : 'INCORRECT') + '</b>.</div>';
+
+  if (!q.correct){
+    html += '<div class="fix-line"><span class="label">Corrected Bluebook form</span>'
+          + '<span class="corrected">' + correctedHTML(q) + ' ✅</span></div>';
+  }
+  html += '<div class="explain">' + q.why + '</div>';
+  fb.innerHTML = html;
+  fb.classList.add('show');
+}
+
+function next(){ if (pool.length){ idx = (idx + 1) % pool.length; render(); } }
+function prev(){ if (pool.length){ idx = (idx - 1 + pool.length) % pool.length; render(); } }
+
+catFilter.onchange = buildPool;
+diffFilter.onchange = buildPool;
+reviewBtn.onclick = toggleReview;
+
+updateReviewBtn();
+buildPool();
+updateStats();
+
+/* ---- iOS "Add to Home Screen" hint (Safari shows no install prompt) ---- */
+(function () {
+  var isiOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  var standalone = ('standalone' in navigator && navigator.standalone) ||
+                   (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+  if (isiOS && !standalone && !localStorage.getItem('a2hs-dismissed')) {
+    var bar = document.createElement('div');
+    bar.id = 'a2hs';
+    bar.innerHTML = 'Install this app: tap <b>Share</b> ' +
+      '<svg viewBox="0 0 50 50" width="16" height="16" aria-hidden="true">' +
+      '<path fill="currentColor" d="M30.3 13.7 25 8.4l-5.3 5.3-1.4-1.4L25 5.6l6.7 6.7zM24 7h2v21h-2z"/>' +
+      '<path fill="currentColor" d="M35 40H15a3 3 0 0 1-3-3V19a3 3 0 0 1 3-3h6v2h-6a1 1 0 0 0-1 1v18a1 1 0 0 0 1 1h20a1 1 0 0 0 1-1V19a1 1 0 0 0-1-1h-6v-2h6a3 3 0 0 1 3 3v18a3 3 0 0 1-3 3z"/>' +
+      '</svg>, then <b>Add to Home Screen</b>.' +
+      '<span id="a2hs-x" aria-label="Dismiss">&times;</span>';
+    document.body.appendChild(bar);
+    document.getElementById('a2hs-x').onclick = function () {
+      bar.remove(); localStorage.setItem('a2hs-dismissed', '1');
+    };
+  }
+})();
+
+/* ---- Service worker for offline use ---- */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+  });
+}
+</script>
+</body>
+</html>
