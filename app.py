@@ -197,6 +197,12 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/citations')
+def citations():
+    """Bluebook 22 and Virgin Islands citation rules reference"""
+    return render_template('citations.html')
+
+
 # ----- PWA Routes -----
 @app.route('/manifest.webmanifest')
 def manifest():

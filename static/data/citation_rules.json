@@ -1,0 +1,1439 @@
+{
+  "meta": {
+    "title": "Bluebook 22 & Virgin Islands Citation Rules",
+    "bluebook_edition": "The Bluebook: A Uniform System of Citation (22d ed. 2025)",
+    "vi_rules_note": "Virgin Islands materials reflect V.I. S. Ct. R. 106 (public domain citation) and V.I. R. App. P. 22(i) (citations in briefs).",
+    "disclaimer": "This is a drafting aid, not legal authority and not legal advice. Nothing here has been checked against a licensed copy of The Bluebook. Every entry carries a confidence badge and a source; confirm anything you rely on against the printed rule or the court's own text before filing.",
+    "confidence_key": {
+      "verified": "Confirmed against two or more independent secondary sources.",
+      "reported": "Drawn from a single secondary summary. Check the primary rule text.",
+      "unverified": "Reconstructed pattern offered as a starting shape only. Check the primary rule text."
+    }
+  },
+  "rules": [
+    {
+      "id": "bb22-edition",
+      "cat": "bb22",
+      "title": "The 22nd edition arrived in 2025",
+      "summary": "The Bluebook's 22nd edition was released at the end of May 2025 and is described as the most substantial change to legal citation in at least a decade.",
+      "detail": [
+        "Cite the edition itself as: The Bluebook: A Uniform System of Citation (Colum. L. Rev. Ass'n et al. eds., 22d ed. 2025).",
+        "Two brand-new rules were added at the end of the rule set — Rule 22 (Tribal Nations) and Rule 23 (archival and historical sources) — so the 21st edition's rule numbering above Rule 21 no longer maps across editions.",
+        "Check any court's local rule before switching: a court that specifies an edition by number may still be on the 21st."
+      ],
+      "tags": [
+        "edition",
+        "2025",
+        "overview"
+      ],
+      "confidence": "verified",
+      "refs": [
+        {
+          "label": "Preface to the 22nd Edition (legalbluebook.com)",
+          "url": "https://www.legalbluebook.com/preface-to-the-twenty-second-edition"
+        },
+        {
+          "label": "Duke Law Reference: Bluebook 22d Edition Now Available",
+          "url": "http://dukelawref.blogspot.com/2025/06/bluebook-22d-edition-now-available.html"
+        }
+      ]
+    },
+    {
+      "id": "bb22-contrast-signal",
+      "cat": "bb22",
+      "title": "New signal: \"contrast\" (R. 1.2, B1.2)",
+      "summary": "Rule 1.2 adds a \"contrast\" signal for situations where the contrast between authorities — rather than a comparison between them — supports the proposition.",
+      "detail": [
+        "B1.2 mirrors the change, so the signal is available in practitioner documents as well as in law review footnotes.",
+        "Like every signal, it is italicized in briefs and memoranda (underlined if your court still expects underlining).",
+        "\"Compare ... with ...\" remains the comparison signal; \"contrast\" is the new counterpart when the difference is the point."
+      ],
+      "tags": [
+        "signals",
+        "R.1.2",
+        "B1.2"
+      ],
+      "confidence": "verified",
+      "refs": [
+        {
+          "label": "TypeLaw, 7 Key Rule Changes in Bluebook 22",
+          "url": "https://www.typelaw.com/blog/7-key-rule-changes-in-bluebook-22-to-know/"
+        },
+        {
+          "label": "Preface to the 22nd Edition",
+          "url": "https://www.legalbluebook.com/preface-to-the-twenty-second-edition"
+        }
+      ]
+    },
+    {
+      "id": "bb22-eg-comma",
+      "cat": "bb22",
+      "title": "Typeface for \"see, e.g.,\" and \"but see, e.g.,\" (B1.2)",
+      "summary": "When \"see\" or \"but see\" is combined with \"e.g.,\" the comma between the two signals is italicized (or underlined) along with the signals.",
+      "detail": [
+        "This resolves a long-running ambiguity about whether the joining comma was part of the signal.",
+        "Example in brief format: see, e.g., Banks v. Int'l Rental & Leasing Corp., 55 V.I. 967, 978 (V.I. 2011)."
+      ],
+      "tags": [
+        "signals",
+        "typeface",
+        "B1.2"
+      ],
+      "confidence": "reported",
+      "refs": [
+        {
+          "label": "Univ. of Washington, Bluebook 101 — 22nd ed. Bluepages",
+          "url": "https://lib.law.uw.edu/bluebook101/22nd_bluepages"
+        }
+      ]
+    },
+    {
+      "id": "bb22-citation-modified",
+      "cat": "bb22",
+      "title": "New parenthetical: \"(citation modified)\" (B5.3)",
+      "summary": "B5.3 now permits \"(citation modified)\" when a quotation has been stripped of internal quotation marks, brackets, ellipses, internal citations, and footnote reference numbers, and capitalization has been changed — all without bracketing each alteration.",
+      "detail": [
+        "This is the Bluebook catching up to a practice several federal courts had already adopted (often as \"cleaned up\").",
+        "It does not license changing the words themselves. Substantive alterations still need brackets and ellipses.",
+        "Because it is new, some judges will not recognize it. Consider whether your court has expressed a preference."
+      ],
+      "tags": [
+        "quotations",
+        "B5.3",
+        "parentheticals"
+      ],
+      "confidence": "verified",
+      "refs": [
+        {
+          "label": "TypeLaw, 7 Key Rule Changes in Bluebook 22",
+          "url": "https://www.typelaw.com/blog/7-key-rule-changes-in-bluebook-22-to-know/"
+        },
+        {
+          "label": "Univ. of Washington, Bluebook 101 — 22nd ed. Bluepages",
+          "url": "https://lib.law.uw.edu/bluebook101/22nd_bluepages"
+        }
+      ]
+    },
+    {
+      "id": "bb22-rule18-rewrite",
+      "cat": "bb22",
+      "title": "Rule 18 rewritten for web-based sources",
+      "summary": "Rule 18 was substantially rewritten and expanded from nine subsections to twelve, including new sections on The Internet, AI-Generated Content, and Social Media.",
+      "detail": [
+        "The terminology moved from \"Internet citations\" to \"web-based sources,\" covering material that either appears on or is created on the web.",
+        "A new sentence provides that \"[a]n exact copy is treated similarly to an official version\" — relevant when you are citing a PDF of an official document hosted elsewhere.",
+        "If your practice involves citing agency pages, court websites, or social media, this is the rule to re-read from scratch rather than skim."
+      ],
+      "tags": [
+        "R.18",
+        "internet",
+        "digital"
+      ],
+      "confidence": "verified",
+      "refs": [
+        {
+          "label": "Univ. of Washington, Bluebook 101 — 22nd ed. Rule 18",
+          "url": "https://lib.law.uw.edu/bluebook101/22nd_18"
+        },
+        {
+          "label": "Preface to the 22nd Edition",
+          "url": "https://www.legalbluebook.com/preface-to-the-twenty-second-edition"
+        }
+      ]
+    },
+    {
+      "id": "bb22-archive-required",
+      "cat": "bb22",
+      "title": "Archived links are now required, not encouraged (R. 18)",
+      "summary": "For any URL you cite for a webpage, the 22nd edition requires an archived link — for example a Perma.cc permalink. The 21st edition only encouraged one.",
+      "detail": [
+        "This is the change most likely to trip up a brief drafted from a 21st-edition template.",
+        "Build the archive step into your workflow: capture the permalink at the moment you pull the source, not at the proofreading stage, because pages change.",
+        "The checker on the Check tab flags any http/https URL in your text when no archive link appears anywhere alongside it."
+      ],
+      "tags": [
+        "R.18",
+        "URL",
+        "perma.cc",
+        "archive"
+      ],
+      "confidence": "verified",
+      "refs": [
+        {
+          "label": "TypeLaw, 7 Key Rule Changes in Bluebook 22",
+          "url": "https://www.typelaw.com/blog/7-key-rule-changes-in-bluebook-22-to-know/"
+        },
+        {
+          "label": "Univ. of Washington, Bluebook 101 — 22nd ed. Rule 18",
+          "url": "https://lib.law.uw.edu/bluebook101/22nd_18"
+        }
+      ]
+    },
+    {
+      "id": "bb22-ai-content",
+      "cat": "bb22",
+      "title": "AI-generated content must be saved, not just linked (R. 18)",
+      "summary": "For AI-generated content the 22nd edition requires you to save a PDF of the output and keep it on file. A shared URL alone is not enough.",
+      "detail": [
+        "The reason is reproducibility: a model's output is not stable, and a share link may not resolve to what you saw.",
+        "Practical consequence — if you cite an AI-generated response, keep the PDF the way you would keep a record excerpt, and be ready to produce it.",
+        "Separately from citation form, check your court's standing orders. Several courts require disclosure or certification when generative AI is used in preparing a filing; that obligation is independent of the Bluebook."
+      ],
+      "tags": [
+        "R.18",
+        "AI",
+        "generative"
+      ],
+      "confidence": "verified",
+      "refs": [
+        {
+          "label": "TypeLaw, 7 Key Rule Changes in Bluebook 22",
+          "url": "https://www.typelaw.com/blog/7-key-rule-changes-in-bluebook-22-to-know/"
+        },
+        {
+          "label": "HeinOnline Blog, What's New in The Bluebook",
+          "url": "https://home.heinonline.org/blog/2025/08/whats-new-in-the-bluebook-ai-citations-tribal-law-more/"
+        }
+      ]
+    },
+    {
+      "id": "bb22-rule10",
+      "cat": "bb22",
+      "title": "Cases: modernized examples and \"LX\" for LexisNexis (R. 10)",
+      "summary": "Rule 10's examples and abbreviations were clarified and modernized, and \"LX\" is now an acceptable short form for LexisNexis in document citations.",
+      "detail": [
+        "\"LX\" reflects LexisNexis's own 2024 alternative short form.",
+        "The underlying structure of a case citation did not change: case name, reporter volume, reporter, first page, pinpoint, court and year parenthetical."
+      ],
+      "tags": [
+        "R.10",
+        "cases",
+        "Lexis"
+      ],
+      "confidence": "reported",
+      "refs": [
+        {
+          "label": "Univ. of Washington, Bluebook 101 — 22nd ed. Rules 10–17",
+          "url": "https://lib.law.uw.edu/bluebook101/22nd_10to17"
+        }
+      ]
+    },
+    {
+      "id": "bb22-b10-abbrev",
+      "cat": "bb22",
+      "title": "Abbreviating case names in text (B10.1)",
+      "summary": "B10.1 is more explicit about when and how to abbreviate long words and entity names in case names, and gives a precise list of abbreviations permitted in textual sentences.",
+      "detail": [
+        "The old friction point — whether you may abbreviate inside a case name that appears as part of a sentence — now has a defined list rather than a judgment call.",
+        "Case names in citations (as opposed to in text) continue to follow R. 10.2.2 and Table T6."
+      ],
+      "tags": [
+        "B10.1",
+        "case names",
+        "abbreviations"
+      ],
+      "confidence": "reported",
+      "refs": [
+        {
+          "label": "Univ. of Washington, Bluebook 101 — 22nd ed. Bluepages",
+          "url": "https://lib.law.uw.edu/bluebook101/22nd_bluepages"
+        }
+      ]
+    },
+    {
+      "id": "bb22-rule12",
+      "cat": "bb22",
+      "title": "Statutes: codification information may be omitted (R. 12.4(f))",
+      "summary": "Rule 12.4(f) now allows codification information to be omitted depending on context.",
+      "detail": [
+        "Useful when citing a session law whose codification would clutter the sentence and adds nothing for the reader.",
+        "\"Depending on context\" is doing real work here — when the codified location is what the reader needs to find, include it."
+      ],
+      "tags": [
+        "R.12",
+        "statutes",
+        "session laws"
+      ],
+      "confidence": "reported",
+      "refs": [
+        {
+          "label": "Univ. of Washington, Bluebook 101 — 22nd ed. Rules 10–17",
+          "url": "https://lib.law.uw.edu/bluebook101/22nd_10to17"
+        }
+      ]
+    },
+    {
+      "id": "bb22-rule15",
+      "cat": "bb22",
+      "title": "Books: pen names, tribal affiliations, and named treatises (R. 15)",
+      "summary": "Rule 15 keeps its structure but adds guidance on pen names and tribal affiliations in R. 15.1, adds citation formats for Wright & Miller and Moore's in R. 15.8(c), and expands the treatment of special pagination and classical citations in R. 15.8.",
+      "detail": [
+        "The Wright & Miller and Moore's formats are a welcome addition — both were previously handled by convention rather than by rule.",
+        "Tribal affiliation guidance in R. 15.1 runs alongside the new Rule 22 on Tribal Nations."
+      ],
+      "tags": [
+        "R.15",
+        "books",
+        "treatises"
+      ],
+      "confidence": "reported",
+      "refs": [
+        {
+          "label": "Univ. of Washington, Bluebook 101 — 22nd ed. Rules 10–17",
+          "url": "https://lib.law.uw.edu/bluebook101/22nd_10to17"
+        }
+      ]
+    },
+    {
+      "id": "bb22-rule22-tribal",
+      "cat": "bb22",
+      "title": "New Rule 22: Tribal Nations",
+      "summary": "Rule 22 delivers the Bluebook's first comprehensive system for citing materials from Tribal Nations.",
+      "detail": [
+        "For a tribal court opinion, give a parallel citation: the tribal format first where one exists, then Westlaw or Lexis.",
+        "A new Table T1.5 on Bluebook Online lists all federally recognized Tribal Nations.",
+        "Do not carry over the old practice of citing tribal decisions only to a commercial database when a tribal format exists."
+      ],
+      "tags": [
+        "R.22",
+        "tribal",
+        "T1.5"
+      ],
+      "confidence": "verified",
+      "refs": [
+        {
+          "label": "Wisconsin Law Library, New 22nd Edition Adds Tribal Law Citation Rules",
+          "url": "https://wisblawg.law.wisc.edu/2025/06/05/new-22nd-edition-of-the-bluebook-adds-tribal-law-citation-rules/"
+        },
+        {
+          "label": "Univ. of Washington, Bluebook 101 — 22nd ed. Rule 22",
+          "url": "https://lib.law.uw.edu/bluebook101/22nd_22"
+        }
+      ]
+    },
+    {
+      "id": "bb22-rule23-archival",
+      "cat": "bb22",
+      "title": "New Rule 23: archival and historical sources",
+      "summary": "Rule 23 introduces structured citation formats for archival and historical sources.",
+      "detail": [
+        "Before the 22nd edition these were handled by analogy, which produced inconsistent citations in historical and legal-history work.",
+        "Relevant to territorial practice, where older records often exist only in archives rather than in a reporter."
+      ],
+      "tags": [
+        "R.23",
+        "archives",
+        "history"
+      ],
+      "confidence": "reported",
+      "refs": [
+        {
+          "label": "HeinOnline Blog, What's New in The Bluebook",
+          "url": "https://home.heinonline.org/blog/2025/08/whats-new-in-the-bluebook-ai-citations-tribal-law-more/"
+        }
+      ]
+    },
+    {
+      "id": "bb22-table-t1",
+      "cat": "tables",
+      "title": "Where the Virgin Islands sits in Table T1",
+      "summary": "Table T1 is split into T1.1 (federal courts), T1.3 (states and the District of Columbia), T1.4 (other United States jurisdictions), and the new T1.5 (Tribal Nations). The Virgin Islands appears in T1.4.",
+      "detail": [
+        "T1.4 is the table to open for the Virgin Islands, Puerto Rico, Guam, and the other territories — not T1.3.",
+        "Where a decision appears in more than one reporter, T1 identifies the preferred source."
+      ],
+      "tags": [
+        "T1",
+        "T1.4",
+        "tables",
+        "Virgin Islands"
+      ],
+      "confidence": "verified",
+      "refs": [
+        {
+          "label": "UC Davis Mabie Law Library, Bluebook Citation Guide — Cases",
+          "url": "https://libguides.law.ucdavis.edu/c.php?g=1014499&p=7370656"
+        }
+      ]
+    },
+    {
+      "id": "vi-r106-public-domain",
+      "cat": "vi",
+      "title": "V.I. S. Ct. R. 106: every opinion gets a public domain citation",
+      "summary": "Since January 1, 2019, the Virgin Islands Judiciary assigns a public domain (medium-neutral) citation to every opinion of the Supreme Court and the Superior Court under V.I. S. Ct. R. 106.",
+      "detail": [
+        "The citation is made up of the calendar year in which the opinion is announced, a court designator, and a sequential number.",
+        "Supreme Court: 2019 VI 1. Superior Court: 2019 VI Super 1.",
+        "Unpublished opinions carry a \"U\" suffix on the sequential number.",
+        "The public domain citation appears on the title page of the opinion itself, so you do not have to construct it — read it off the opinion.",
+        "Opinions announced before January 1, 2019 are cited to the Virgin Islands Reports in the ordinary way."
+      ],
+      "tags": [
+        "R.106",
+        "public domain",
+        "neutral citation",
+        "VISCR"
+      ],
+      "confidence": "verified",
+      "refs": [
+        {
+          "label": "Supreme Court of the V.I., Promulgation Order No. 2018-0008",
+          "url": "https://cdnsm5-hosted.civiclive.com/UserFiles/Servers/Server_12810860/File/Promolugation%20Orders/S.Ct.Prom.20180008%20Full2.pdf"
+        },
+        {
+          "label": "Georgetown Law Library, Virgin Islands Resources — Cases & Courts",
+          "url": "https://guides.ll.georgetown.edu/c.php?g=277317&p=1850013"
+        }
+      ]
+    },
+    {
+      "id": "vi-pinpoint-paragraph",
+      "cat": "vi",
+      "title": "Pinpoint a public domain citation by paragraph, never by page",
+      "summary": "Opinions carrying a public domain citation have numbered paragraphs, and the pinpoint is the paragraph number: Smith v. Jones, 2019 VI 22, ¶¶ 13–14.",
+      "detail": [
+        "Paragraph numbering is what makes the citation medium-neutral — it is the same in the slip opinion, the reporter, and any database.",
+        "Use ¶ for a single paragraph and ¶¶ for a range or a list.",
+        "A page pinpoint attached to a public domain citation (\"2019 VI 22, 970\") is an error; the Check tab flags it."
+      ],
+      "tags": [
+        "R.106",
+        "pinpoint",
+        "paragraph"
+      ],
+      "confidence": "verified",
+      "refs": [
+        {
+          "label": "Georgetown Law Library, Virgin Islands Resources — Cases & Courts",
+          "url": "https://guides.ll.georgetown.edu/c.php?g=277317&p=1850013"
+        }
+      ]
+    },
+    {
+      "id": "vi-parallel-optional",
+      "cat": "vi",
+      "title": "Parallel citation is permitted, not required",
+      "summary": "The public domain citation may be used instead of, or in addition to, a citation to the Virgin Islands Reports. A parallel citation to the other format is not required.",
+      "detail": [
+        "V.I. R. App. P. 22(i) was amended to delete the phrase \"shall make parallel citations,\" which is what turned parallel citation from a duty into an option.",
+        "Choose one convention and hold it across a brief. Mixing formats between citations to the same court reads as carelessness even though both are permitted.",
+        "Because the option runs both ways, a brief that cites only to the Virgin Islands Reports is as compliant as one that cites only the public domain form."
+      ],
+      "tags": [
+        "VIRAP 22(i)",
+        "parallel citation",
+        "briefs"
+      ],
+      "confidence": "verified",
+      "refs": [
+        {
+          "label": "Supreme Court of the V.I., Promulgation Order No. 2018-0008",
+          "url": "https://cdnsm5-hosted.civiclive.com/UserFiles/Servers/Server_12810860/File/Promolugation%20Orders/S.Ct.Prom.20180008%20Full2.pdf"
+        },
+        {
+          "label": "Virgin Islands Rules of Appellate Procedure",
+          "url": "https://www.vicourts.org/common/pages/DisplayFile.aspx?itemId=16185765"
+        }
+      ]
+    },
+    {
+      "id": "vi-r22i-briefs",
+      "cat": "vi",
+      "title": "V.I. R. App. P. 22(i): citations in briefs",
+      "summary": "Rule 22 of the Virgin Islands Rules of Appellate Procedure governs briefs; subsection (i) governs citations, and directs that citations follow The Bluebook: A Uniform System of Citation.",
+      "detail": [
+        "The local rule sets the exceptions; the Bluebook supplies everything the local rule does not address.",
+        "Read the current text of Rule 22(i) directly before filing — this entry is a paraphrase from secondary sources, not a quotation of the rule.",
+        "Briefs and appendices conform to Rules 22 through 25 of the appellate rules."
+      ],
+      "tags": [
+        "VIRAP 22(i)",
+        "briefs",
+        "Bluebook"
+      ],
+      "confidence": "reported",
+      "refs": [
+        {
+          "label": "Virgin Islands Rules of Appellate Procedure",
+          "url": "https://www.vicourts.org/common/pages/DisplayFile.aspx?itemId=16185765"
+        },
+        {
+          "label": "Court Rules Network, U.S. Virgin Islands Practice Guide",
+          "url": "https://www.courtrules.net/us_virgin_islands/practice-guide"
+        }
+      ]
+    },
+    {
+      "id": "vi-cite-the-rules",
+      "cat": "vi",
+      "title": "How to cite the Virgin Islands court rules themselves",
+      "summary": "The appellate rules are cited V.I. R. App. P. 1(a) in long form and VIRAP 1(a) in short form. The Supreme Court Rules are cited V.I. S. Ct. R. ___ (V.I.S.CT.R. ___).",
+      "detail": [
+        "Use the long form on first reference in the text or footnotes, and whenever the citation begins a sentence.",
+        "The short form VIRAP is defined by the rules themselves, so it does not need a \"hereinafter\" parenthetical.",
+        "The Virgin Islands Rules of Civil Procedure follow the same pattern (V.I. R. Civ. P. ___); confirm the short form against the current rules."
+      ],
+      "tags": [
+        "VIRAP",
+        "VISCR",
+        "court rules"
+      ],
+      "confidence": "verified",
+      "refs": [
+        {
+          "label": "Virgin Islands Rules of Appellate Procedure",
+          "url": "https://www.vicourts.org/common/pages/DisplayFile.aspx?itemId=16185765"
+        },
+        {
+          "label": "Virgin Islands Rules of Civil Procedure",
+          "url": "https://www.vicourts.org/common/pages/DisplayFile.aspx?itemId=15453824"
+        }
+      ]
+    },
+    {
+      "id": "vi-code",
+      "cat": "vi",
+      "title": "Citing the Virgin Islands Code",
+      "summary": "Long form: V.I. Code Ann. tit. 4, § 244. Short form thereafter: 4 V.I.C. § 244.",
+      "detail": [
+        "Use the long form the first time the Code is cited in the text or footnotes, and whenever the citation begins a sentence.",
+        "Note the inversion: the title number follows \"tit.\" in the long form but precedes \"V.I.C.\" in the short form.",
+        "\"V.I.C.A.\" is not a recognized form — the checker flags it."
+      ],
+      "tags": [
+        "statutes",
+        "V.I.C.",
+        "code"
+      ],
+      "confidence": "verified",
+      "refs": [
+        {
+          "label": "Court Rules Network, U.S. Virgin Islands Practice Guide",
+          "url": "https://www.courtrules.net/us_virgin_islands/practice-guide"
+        },
+        {
+          "label": "Georgetown Law Library, Virgin Islands Resources",
+          "url": "https://guides.ll.georgetown.edu/c.php?g=277317&p=1850013"
+        }
+      ]
+    },
+    {
+      "id": "vi-reports",
+      "cat": "vi",
+      "title": "The Virgin Islands Reports (V.I.)",
+      "summary": "Decisions of the Third Circuit, the District Court of the Virgin Islands, the Appellate Division of that District Court, and the Territorial Court are cited to the Virgin Islands Reports if they appear there — and/or to F., F.2d, F.3d, F. Supp., or F.R.D.",
+      "detail": [
+        "The Virgin Islands Reports are the official territorial reporter and run back to the 1917 volumes.",
+        "A federal decision that appears in both V.I. and a West reporter takes a parallel citation under this instruction — this is separate from the public domain citation rule, which concerns the local courts.",
+        "For a local case with both a V.I. Reports citation and a public domain citation, the parallel is optional (see the entry above)."
+      ],
+      "tags": [
+        "reporter",
+        "V.I. Reports",
+        "T1.4"
+      ],
+      "confidence": "verified",
+      "refs": [
+        {
+          "label": "Georgetown Law Library, Virgin Islands Resources — Cases & Courts",
+          "url": "https://guides.ll.georgetown.edu/c.php?g=277317&p=1850013"
+        },
+        {
+          "label": "District Court of the V.I., Local Rules Guide",
+          "url": "https://www.vid.uscourts.gov/sites/vid/files/local_rules/Guide.pdf"
+        }
+      ]
+    },
+    {
+      "id": "vi-court-history",
+      "cat": "practice",
+      "title": "Which court decided it — and what that means for the parenthetical",
+      "summary": "The Virgin Islands trial court was renamed from the Territorial Court to the Superior Court in 2005, and the Supreme Court of the Virgin Islands began operating in 2007. Before then, local appeals went to the Appellate Division of the District Court.",
+      "detail": [
+        "A 2003 trial-level decision is a Territorial Court decision; a 2008 one is a Superior Court decision. The court parenthetical has to match the court as it was named when it decided the case.",
+        "Local appellate decisions before 2007 come from the Appellate Division of the District Court of the Virgin Islands, not from the Supreme Court.",
+        "Because the public domain system began in 2019, no opinion predating it carries a 20XX VI ___ citation."
+      ],
+      "tags": [
+        "courts",
+        "history",
+        "parenthetical"
+      ],
+      "confidence": "verified",
+      "refs": [
+        {
+          "label": "Supreme Court of the Virgin Islands (Wikipedia)",
+          "url": "https://en.wikipedia.org/wiki/Supreme_Court_of_the_Virgin_Islands"
+        },
+        {
+          "label": "United States Virgin Islands Superior Court (Wikipedia)",
+          "url": "https://en.wikipedia.org/wiki/United_States_Virgin_Islands_Superior_Court"
+        }
+      ]
+    },
+    {
+      "id": "vi-candor-local-law",
+      "cat": "practice",
+      "title": "Citing away from Virgin Islands law can draw sanctions",
+      "summary": "An attorney who appears to mislead the Court by offering law from another jurisdiction where Virgin Islands law gives a contrary analysis, or who fails to present controlling contrary law, is subject to sanctions. Failure to adequately cite authority may result in rejection of the argument.",
+      "detail": [
+        "This is a citation rule with teeth: the problem is not only what you cite but what you leave out.",
+        "It bears directly on the Banks analysis — mainland authority is often persuasive in the Virgin Islands, but it cannot be presented as though local authority did not exist.",
+        "Verify the current text and the rule number before quoting this to a court; the wording here is drawn from a practice guide, not from the rule itself."
+      ],
+      "tags": [
+        "candor",
+        "sanctions",
+        "briefs"
+      ],
+      "confidence": "reported",
+      "refs": [
+        {
+          "label": "Court Rules Network, U.S. Virgin Islands Practice Guide",
+          "url": "https://www.courtrules.net/us_virgin_islands/practice-guide"
+        }
+      ]
+    },
+    {
+      "id": "vi-banks",
+      "cat": "practice",
+      "title": "Banks and what counts as controlling authority",
+      "summary": "Banks v. Int'l Rental & Leasing Corp., 55 V.I. 967 (V.I. 2011), directs courts facing an unresolved question of Virgin Islands common law to weigh three things: what Virgin Islands courts have applied in the past, what other jurisdictions and the majority rule provide, and which rule is soundest for the Virgin Islands.",
+      "detail": [
+        "Banks displaced the automatic application of the Restatements, so a brief that cites a Restatement section as though it controlled is making an argument it has not made.",
+        "The practical effect on citation: a Banks argument needs authority in all three buckets, and the third bucket is territory-specific reasoning rather than a citation at all.",
+        "Note the citation form — Banks was decided in 2011, before the public domain system, so it is cited to volume 55 of the Virgin Islands Reports and has no 20XX VI ___ citation."
+      ],
+      "tags": [
+        "Banks",
+        "common law",
+        "Restatement"
+      ],
+      "confidence": "verified",
+      "refs": [
+        {
+          "label": "Banks v. Int'l Rental & Leasing Corp. (CourtListener)",
+          "url": "https://www.courtlistener.com/opinion/8676262/banks-v-international-rental-leasing-corp/"
+        },
+        {
+          "label": "Adams, The Move Toward an Indigenous Virgin Islands Jurisprudence, 91 Fordham L. Rev. (2023)",
+          "url": "https://ir.lawnet.fordham.edu/flr/vol91/iss5/1/"
+        }
+      ]
+    }
+  ],
+  "courts": [
+    {
+      "court": "Supreme Court of the Virgin Islands",
+      "abbrev": "V.I.",
+      "example": "Banks v. Int'l Rental & Leasing Corp., 55 V.I. 967, 978 (V.I. 2011)",
+      "neutral": "2019 VI 1",
+      "notes": "Began operating in 2007. Public domain citations assigned to opinions announced on or after Jan. 1, 2019.",
+      "confidence": "verified"
+    },
+    {
+      "court": "Superior Court of the Virgin Islands",
+      "abbrev": "V.I. Super. Ct.",
+      "example": "Smith v. Jones, 60 V.I. 100, 105 (V.I. Super. Ct. 2014)",
+      "neutral": "2019 VI Super 1",
+      "notes": "Renamed from the Territorial Court in 2005.",
+      "confidence": "verified"
+    },
+    {
+      "court": "Territorial Court of the Virgin Islands",
+      "abbrev": "Terr. Ct. V.I.",
+      "example": "—",
+      "neutral": "—",
+      "notes": "The pre-2005 trial court. Confirm the exact Bluebook abbreviation in Table T1.4 before use — this entry is not verified.",
+      "confidence": "unverified"
+    },
+    {
+      "court": "District Court of the Virgin Islands",
+      "abbrev": "D.V.I.",
+      "example": "Doe v. Roe, 500 F. Supp. 3d 100, 105 (D.V.I. 2020)",
+      "neutral": "—",
+      "notes": "An Article IV territorial court exercising federal district court jurisdiction.",
+      "confidence": "verified"
+    },
+    {
+      "court": "Appellate Division, District Court of the Virgin Islands",
+      "abbrev": "D.V.I. App. Div.",
+      "example": "Doe v. Roe, 45 V.I. 200, 205 (D.V.I. App. Div. 2003)",
+      "neutral": "—",
+      "notes": "Heard appeals from the local courts before the Supreme Court of the Virgin Islands began operating in 2007. Confirm the abbreviation in Table T1.4.",
+      "confidence": "reported"
+    },
+    {
+      "court": "U.S. Court of Appeals for the Third Circuit",
+      "abbrev": "3d Cir.",
+      "example": "Doe v. Roe, 20 F.4th 100, 105 (3d Cir. 2021)",
+      "neutral": "—",
+      "notes": "Cite to the Virgin Islands Reports as well if the decision appears there. F.4th succeeded F.3d in 2021.",
+      "confidence": "verified"
+    }
+  ],
+  "templates": [
+    {
+      "id": "vi-sup-neutral",
+      "cat": "vi",
+      "name": "V.I. Supreme Court — public domain (neutral) citation",
+      "rule": "V.I. S. Ct. R. 106",
+      "confidence": "verified",
+      "note": "Read the public domain citation off the title page of the opinion. Only opinions announced on or after January 1, 2019 have one.",
+      "fields": [
+        {
+          "k": "case",
+          "label": "Case name",
+          "ph": "Banks v. Int'l Rental & Leasing Corp.",
+          "req": true,
+          "help": "Italicize in a brief. Abbreviate under R. 10.2.2 and Table T6."
+        },
+        {
+          "k": "shortcase",
+          "label": "Short case name",
+          "ph": "Banks",
+          "help": "Leave blank to derive it from the first party."
+        },
+        {
+          "k": "year",
+          "label": "Year announced",
+          "ph": "2019",
+          "req": true
+        },
+        {
+          "k": "seq",
+          "label": "Sequential number",
+          "ph": "22",
+          "req": true
+        },
+        {
+          "k": "unpub",
+          "label": "Unpublished opinion",
+          "ph": "",
+          "type": "check",
+          "val": "U"
+        },
+        {
+          "k": "pin",
+          "label": "Paragraph pinpoint",
+          "ph": "13–14",
+          "pre": ", ",
+          "pinpoint": true
+        }
+      ],
+      "full": "{case}, {year} VI {seq}{unpub}{pin}",
+      "short": "{shortcase}, {year} VI {seq}{unpub}{pin}"
+    },
+    {
+      "id": "vi-sup-reports",
+      "cat": "vi",
+      "name": "V.I. Supreme Court — Virgin Islands Reports",
+      "rule": "Bluebook T1.4; V.I. R. App. P. 22(i)",
+      "confidence": "verified",
+      "note": "The form for any Supreme Court opinion, and the only form for opinions announced before 2019.",
+      "fields": [
+        {
+          "k": "case",
+          "label": "Case name",
+          "ph": "Banks v. Int'l Rental & Leasing Corp.",
+          "req": true,
+          "help": "Italicize in a brief. Abbreviate under R. 10.2.2 and Table T6."
+        },
+        {
+          "k": "shortcase",
+          "label": "Short case name",
+          "ph": "Banks",
+          "help": "Leave blank to derive it from the first party."
+        },
+        {
+          "k": "vol",
+          "label": "V.I. volume",
+          "ph": "55",
+          "req": true
+        },
+        {
+          "k": "page",
+          "label": "First page",
+          "ph": "967",
+          "req": true
+        },
+        {
+          "k": "pin",
+          "label": "Page pinpoint",
+          "ph": "978",
+          "pre": ", "
+        },
+        {
+          "k": "year",
+          "label": "Year",
+          "ph": "2011",
+          "req": true
+        }
+      ],
+      "full": "{case}, {vol} V.I. {page}{pin} (V.I. {year})",
+      "short": "{shortcase}, {vol} V.I. at {pinshort}"
+    },
+    {
+      "id": "vi-super-neutral",
+      "cat": "vi",
+      "name": "V.I. Superior Court — public domain (neutral) citation",
+      "rule": "V.I. S. Ct. R. 106",
+      "confidence": "verified",
+      "note": "The Superior Court designator is \"VI Super\" — two words, no periods.",
+      "fields": [
+        {
+          "k": "case",
+          "label": "Case name",
+          "ph": "Banks v. Int'l Rental & Leasing Corp.",
+          "req": true,
+          "help": "Italicize in a brief. Abbreviate under R. 10.2.2 and Table T6."
+        },
+        {
+          "k": "shortcase",
+          "label": "Short case name",
+          "ph": "Banks",
+          "help": "Leave blank to derive it from the first party."
+        },
+        {
+          "k": "year",
+          "label": "Year announced",
+          "ph": "2019",
+          "req": true
+        },
+        {
+          "k": "seq",
+          "label": "Sequential number",
+          "ph": "7",
+          "req": true
+        },
+        {
+          "k": "unpub",
+          "label": "Unpublished opinion",
+          "ph": "",
+          "type": "check",
+          "val": "U"
+        },
+        {
+          "k": "pin",
+          "label": "Paragraph pinpoint",
+          "ph": "12",
+          "pre": ", ",
+          "pinpoint": true
+        }
+      ],
+      "full": "{case}, {year} VI Super {seq}{unpub}{pin}",
+      "short": "{shortcase}, {year} VI Super {seq}{unpub}{pin}"
+    },
+    {
+      "id": "vi-super-reports",
+      "cat": "vi",
+      "name": "V.I. Superior Court — Virgin Islands Reports",
+      "rule": "Bluebook T1.4",
+      "confidence": "verified",
+      "note": "For a pre-2005 decision the court was the Territorial Court, and the parenthetical must say so.",
+      "fields": [
+        {
+          "k": "case",
+          "label": "Case name",
+          "ph": "Banks v. Int'l Rental & Leasing Corp.",
+          "req": true,
+          "help": "Italicize in a brief. Abbreviate under R. 10.2.2 and Table T6."
+        },
+        {
+          "k": "shortcase",
+          "label": "Short case name",
+          "ph": "Banks",
+          "help": "Leave blank to derive it from the first party."
+        },
+        {
+          "k": "vol",
+          "label": "V.I. volume",
+          "ph": "60",
+          "req": true
+        },
+        {
+          "k": "page",
+          "label": "First page",
+          "ph": "100",
+          "req": true
+        },
+        {
+          "k": "pin",
+          "label": "Page pinpoint",
+          "ph": "105",
+          "pre": ", "
+        },
+        {
+          "k": "year",
+          "label": "Year",
+          "ph": "2014",
+          "req": true
+        }
+      ],
+      "full": "{case}, {vol} V.I. {page}{pin} (V.I. Super. Ct. {year})",
+      "short": "{shortcase}, {vol} V.I. at {pinshort}"
+    },
+    {
+      "id": "vi-dvi",
+      "cat": "vi",
+      "name": "District Court of the Virgin Islands",
+      "rule": "Bluebook T1.1, T1.4",
+      "confidence": "verified",
+      "note": "Add a parallel citation to the Virgin Islands Reports if the decision appears there.",
+      "fields": [
+        {
+          "k": "case",
+          "label": "Case name",
+          "ph": "Banks v. Int'l Rental & Leasing Corp.",
+          "req": true,
+          "help": "Italicize in a brief. Abbreviate under R. 10.2.2 and Table T6."
+        },
+        {
+          "k": "shortcase",
+          "label": "Short case name",
+          "ph": "Banks",
+          "help": "Leave blank to derive it from the first party."
+        },
+        {
+          "k": "vol",
+          "label": "Reporter volume",
+          "ph": "500",
+          "req": true
+        },
+        {
+          "k": "rep",
+          "label": "Reporter",
+          "ph": "F. Supp. 3d",
+          "req": true
+        },
+        {
+          "k": "page",
+          "label": "First page",
+          "ph": "100",
+          "req": true
+        },
+        {
+          "k": "pin",
+          "label": "Page pinpoint",
+          "ph": "105",
+          "pre": ", "
+        },
+        {
+          "k": "year",
+          "label": "Year",
+          "ph": "2020",
+          "req": true
+        }
+      ],
+      "full": "{case}, {vol} {rep} {page}{pin} (D.V.I. {year})",
+      "short": "{shortcase}, {vol} {rep} at {pinshort}"
+    },
+    {
+      "id": "vi-appdiv",
+      "cat": "vi",
+      "name": "Appellate Division, District Court of the Virgin Islands",
+      "rule": "Bluebook T1.4",
+      "confidence": "reported",
+      "note": "The local appellate court before 2007. Confirm the abbreviation in Table T1.4 — it is not verified here.",
+      "fields": [
+        {
+          "k": "case",
+          "label": "Case name",
+          "ph": "Banks v. Int'l Rental & Leasing Corp.",
+          "req": true,
+          "help": "Italicize in a brief. Abbreviate under R. 10.2.2 and Table T6."
+        },
+        {
+          "k": "shortcase",
+          "label": "Short case name",
+          "ph": "Banks",
+          "help": "Leave blank to derive it from the first party."
+        },
+        {
+          "k": "vol",
+          "label": "V.I. volume",
+          "ph": "45",
+          "req": true
+        },
+        {
+          "k": "page",
+          "label": "First page",
+          "ph": "200",
+          "req": true
+        },
+        {
+          "k": "pin",
+          "label": "Page pinpoint",
+          "ph": "205",
+          "pre": ", "
+        },
+        {
+          "k": "year",
+          "label": "Year",
+          "ph": "2003",
+          "req": true
+        }
+      ],
+      "full": "{case}, {vol} V.I. {page}{pin} (D.V.I. App. Div. {year})",
+      "short": "{shortcase}, {vol} V.I. at {pinshort}"
+    },
+    {
+      "id": "third-circuit",
+      "cat": "fed",
+      "name": "U.S. Court of Appeals for the Third Circuit",
+      "rule": "Bluebook R. 10, T1.1",
+      "confidence": "verified",
+      "note": "F.4th succeeded F.3d in 2021. Cite to the Virgin Islands Reports as well if the decision appears there.",
+      "fields": [
+        {
+          "k": "case",
+          "label": "Case name",
+          "ph": "Banks v. Int'l Rental & Leasing Corp.",
+          "req": true,
+          "help": "Italicize in a brief. Abbreviate under R. 10.2.2 and Table T6."
+        },
+        {
+          "k": "shortcase",
+          "label": "Short case name",
+          "ph": "Banks",
+          "help": "Leave blank to derive it from the first party."
+        },
+        {
+          "k": "vol",
+          "label": "Reporter volume",
+          "ph": "20",
+          "req": true
+        },
+        {
+          "k": "rep",
+          "label": "Reporter",
+          "ph": "F.4th",
+          "req": true
+        },
+        {
+          "k": "page",
+          "label": "First page",
+          "ph": "100",
+          "req": true
+        },
+        {
+          "k": "pin",
+          "label": "Page pinpoint",
+          "ph": "105",
+          "pre": ", "
+        },
+        {
+          "k": "year",
+          "label": "Year",
+          "ph": "2021",
+          "req": true
+        }
+      ],
+      "full": "{case}, {vol} {rep} {page}{pin} (3d Cir. {year})",
+      "short": "{shortcase}, {vol} {rep} at {pinshort}"
+    },
+    {
+      "id": "vi-code",
+      "cat": "vi",
+      "name": "Virgin Islands Code",
+      "rule": "Bluebook R. 12, T1.4",
+      "confidence": "verified",
+      "note": "Long form on first reference and whenever the citation opens a sentence; short form thereafter. Note that the title number moves.",
+      "fields": [
+        {
+          "k": "title",
+          "label": "Title number",
+          "ph": "4",
+          "req": true
+        },
+        {
+          "k": "section",
+          "label": "Section",
+          "ph": "244",
+          "req": true
+        },
+        {
+          "k": "year",
+          "label": "Year of the code edition",
+          "ph": "2024",
+          "pre": " (",
+          "post": ")"
+        }
+      ],
+      "full": "V.I. Code Ann. tit. {title}, § {section}{year}",
+      "short": "{title} V.I.C. § {section}"
+    },
+    {
+      "id": "vi-virap",
+      "cat": "vi",
+      "name": "Virgin Islands Rules of Appellate Procedure",
+      "rule": "V.I. R. App. P. 1",
+      "confidence": "verified",
+      "note": "The rules define their own short form, so no \"hereinafter\" parenthetical is needed.",
+      "fields": [
+        {
+          "k": "rule",
+          "label": "Rule and subsection",
+          "ph": "22(i)",
+          "req": true
+        }
+      ],
+      "full": "V.I. R. App. P. {rule}",
+      "short": "VIRAP {rule}"
+    },
+    {
+      "id": "vi-viscr",
+      "cat": "vi",
+      "name": "Virgin Islands Supreme Court Rules",
+      "rule": "V.I. S. Ct. R.",
+      "confidence": "verified",
+      "note": "Used for the Supreme Court's own rules, including Rule 106 on public domain citation.",
+      "fields": [
+        {
+          "k": "rule",
+          "label": "Rule and subsection",
+          "ph": "106",
+          "req": true
+        }
+      ],
+      "full": "V.I. S. Ct. R. {rule}",
+      "short": "V.I.S.CT.R. {rule}"
+    },
+    {
+      "id": "us-code",
+      "cat": "fed",
+      "name": "United States Code",
+      "rule": "Bluebook R. 12",
+      "confidence": "verified",
+      "note": "Under the 22nd edition's R. 12.4(f), codification information may be omitted depending on context.",
+      "fields": [
+        {
+          "k": "title",
+          "label": "Title",
+          "ph": "28",
+          "req": true
+        },
+        {
+          "k": "section",
+          "label": "Section",
+          "ph": "1291",
+          "req": true
+        },
+        {
+          "k": "year",
+          "label": "Year",
+          "ph": "2018",
+          "pre": " (",
+          "post": ")"
+        }
+      ],
+      "full": "{title} U.S.C. § {section}{year}",
+      "short": "§ {section}"
+    },
+    {
+      "id": "web-source",
+      "cat": "bb22",
+      "name": "Web-based source (22nd ed. Rule 18)",
+      "rule": "Bluebook R. 18",
+      "confidence": "reported",
+      "note": "The archived link is REQUIRED in the 22nd edition — it was only encouraged in the 21st. Capture the permalink when you pull the source. Confirm the field order against R. 18.2.",
+      "fields": [
+        {
+          "k": "author",
+          "label": "Author",
+          "ph": "Jane Roe",
+          "post": ", "
+        },
+        {
+          "k": "title",
+          "label": "Title of the page",
+          "ph": "Public Domain Citation",
+          "req": true
+        },
+        {
+          "k": "site",
+          "label": "Website name",
+          "ph": "Supreme Court of the Virgin Islands",
+          "pre": ", "
+        },
+        {
+          "k": "date",
+          "label": "Date (and time, if given)",
+          "ph": "Jan. 1, 2019",
+          "pre": " (",
+          "post": ")"
+        },
+        {
+          "k": "url",
+          "label": "URL",
+          "ph": "https://example.gov/page",
+          "req": true,
+          "pre": ", "
+        },
+        {
+          "k": "archive",
+          "label": "Archived link (required)",
+          "ph": "https://perma.cc/XXXX-XXXX",
+          "req": true,
+          "pre": " [",
+          "post": "]"
+        }
+      ],
+      "full": "{author}{title}{site}{date}{url}{archive}",
+      "short": "{title}, supra"
+    },
+    {
+      "id": "ai-content",
+      "cat": "bb22",
+      "name": "AI-generated content (22nd ed. Rule 18)",
+      "rule": "Bluebook R. 18",
+      "confidence": "unverified",
+      "note": "The verified requirement is that you save a PDF of the output and keep it on file — a share URL is not enough. The field order below is a starting shape only; check R. 18 before filing. Check your court's standing orders on AI disclosure too, which are separate from citation form.",
+      "fields": [
+        {
+          "k": "model",
+          "label": "Model and version",
+          "ph": "Claude Opus 5",
+          "req": true
+        },
+        {
+          "k": "developer",
+          "label": "Developer",
+          "ph": "Anthropic",
+          "pre": " (",
+          "post": ")"
+        },
+        {
+          "k": "desc",
+          "label": "Description of the output",
+          "ph": "response to prompt regarding V.I. common law",
+          "req": true,
+          "pre": ", "
+        },
+        {
+          "k": "date",
+          "label": "Date generated",
+          "ph": "Sept. 15, 2026",
+          "req": true,
+          "pre": " (",
+          "post": ")"
+        },
+        {
+          "k": "onfile",
+          "label": "Custody note",
+          "ph": "PDF on file with author",
+          "pre": " (",
+          "post": ")"
+        }
+      ],
+      "full": "{model}{developer}{desc}{date}{onfile}",
+      "short": "{model}, supra"
+    },
+    {
+      "id": "tribal-court",
+      "cat": "bb22",
+      "name": "Tribal court opinion (22nd ed. Rule 22)",
+      "rule": "Bluebook R. 22, T1.5",
+      "confidence": "reported",
+      "note": "Give a parallel citation: the tribal format first where one exists, then Westlaw or Lexis. New Table T1.5 on Bluebook Online lists the federally recognized Tribal Nations.",
+      "fields": [
+        {
+          "k": "case",
+          "label": "Case name",
+          "ph": "Banks v. Int'l Rental & Leasing Corp.",
+          "req": true,
+          "help": "Italicize in a brief. Abbreviate under R. 10.2.2 and Table T6."
+        },
+        {
+          "k": "shortcase",
+          "label": "Short case name",
+          "ph": "Banks",
+          "help": "Leave blank to derive it from the first party."
+        },
+        {
+          "k": "tribal",
+          "label": "Tribal citation",
+          "ph": "5 Am. Tribal Law 1",
+          "req": true,
+          "pre": ", "
+        },
+        {
+          "k": "db",
+          "label": "Westlaw or Lexis citation",
+          "ph": "2004 WL 5807711",
+          "pre": ", "
+        },
+        {
+          "k": "court",
+          "label": "Tribal court",
+          "ph": "Hopi Ct. App.",
+          "req": true,
+          "pre": " ("
+        },
+        {
+          "k": "year",
+          "label": "Year",
+          "ph": "2004",
+          "req": true,
+          "pre": " ",
+          "post": ")"
+        }
+      ],
+      "full": "{case}{tribal}{db}{court}{year}",
+      "short": "{shortcase}, {tribal}"
+    }
+  ],
+  "checks": [
+    {
+      "id": "neutral-page-pin",
+      "re": "\\b(?:19|20)\\d{2}\\s+VI\\s+(?:Super\\s+)?\\d+U?,\\s*\\d",
+      "flags": "g",
+      "sev": "error",
+      "msg": "A public domain citation is pinpointed by paragraph, not by page.",
+      "rule": "V.I. S. Ct. R. 106",
+      "fix": "Write ¶ 13 for one paragraph or ¶¶ 13–14 for a range."
+    },
+    {
+      "id": "neutral-periods",
+      "re": "\\b(?:19|20)\\d{2}\\s+V\\.I\\.\\s+\\d+\\b",
+      "flags": "g",
+      "sev": "error",
+      "msg": "The public domain court designator is \"VI\" with no periods.",
+      "rule": "V.I. S. Ct. R. 106",
+      "fix": "Write 2019 VI 22, not 2019 V.I. 22. \"55 V.I. 967\" with periods is the reporter cite and is a different thing."
+    },
+    {
+      "id": "super-abbrev",
+      "re": "\\(V\\.I\\.\\s+Super\\.\\s*(?:19|20)\\d{2}\\)",
+      "flags": "g",
+      "sev": "warn",
+      "msg": "The Superior Court abbreviation is \"V.I. Super. Ct.\"",
+      "rule": "Bluebook T1.4",
+      "fix": "Write (V.I. Super. Ct. 2014)."
+    },
+    {
+      "id": "court-spelled-out",
+      "re": "\\((?:the\\s+)?(?:Supreme|Superior|Territorial|District)\\s+Court\\s+of\\s+the\\s+(?:U\\.S\\.\\s+)?Virgin\\s+Islands",
+      "flags": "gi",
+      "sev": "error",
+      "msg": "Abbreviate the court in the citation parenthetical.",
+      "rule": "Bluebook T1.4",
+      "fix": "(V.I. 2011), (V.I. Super. Ct. 2014), (D.V.I. 2020)."
+    },
+    {
+      "id": "usvi-designator",
+      "re": "\\(\\s*U\\.?S\\.?V\\.?I\\.?\\s+(?:19|20)\\d{2}\\s*\\)",
+      "flags": "g",
+      "sev": "error",
+      "msg": "\"U.S.V.I.\" is not the court designator.",
+      "rule": "Bluebook T1.4",
+      "fix": "Use (V.I. year) for the Supreme Court and (V.I. Super. Ct. year) for the Superior Court."
+    },
+    {
+      "id": "vica",
+      "re": "V\\.I\\.C\\.A\\.",
+      "flags": "g",
+      "sev": "error",
+      "msg": "\"V.I.C.A.\" is not a recognized form for the Virgin Islands Code.",
+      "rule": "Bluebook R. 12",
+      "fix": "Long form: V.I. Code Ann. tit. 4, § 244. Short form: 4 V.I.C. § 244."
+    },
+    {
+      "id": "code-no-title",
+      "re": "V\\.I\\.\\s*Code\\s*Ann\\.(?!\\s*tit\\.)",
+      "flags": "g",
+      "sev": "warn",
+      "msg": "The long form of a Virgin Islands Code citation names the title.",
+      "rule": "Bluebook R. 12",
+      "fix": "V.I. Code Ann. tit. 4, § 244."
+    },
+    {
+      "id": "territorial-court",
+      "re": "Territorial\\s+Court|\\bTerr\\.\\s*Ct\\.",
+      "flags": "g",
+      "sev": "info",
+      "msg": "The Territorial Court was renamed the Superior Court in 2005.",
+      "rule": "Court history",
+      "fix": "Correct for a pre-2005 decision. For anything decided from 2005 on, the court is the Superior Court."
+    },
+    {
+      "id": "f3d-late",
+      "re": "\\bF\\.3d\\b[^.\\n]{0,80}\\(3d\\s*Cir\\.\\s*20(?:2[1-9]|[3-9]\\d)\\)",
+      "flags": "g",
+      "sev": "warn",
+      "msg": "The Third Circuit moved from F.3d to F.4th in 2021.",
+      "rule": "Bluebook T1.1",
+      "fix": "Check the reporter for any Third Circuit decision from 2021 onward."
+    },
+    {
+      "id": "last-visited",
+      "re": "\\(last\\s+visited[^)]*\\)",
+      "flags": "gi",
+      "sev": "info",
+      "msg": "A \"last visited\" parenthetical does not satisfy the 22nd edition's archiving requirement.",
+      "rule": "Bluebook R. 18",
+      "fix": "Add an archived link (for example a Perma.cc permalink) as well."
+    },
+    {
+      "id": "ai-named",
+      "re": "\\b(?:ChatGPT|GPT-[45][^\\s,.]*|Claude|Gemini|Copilot|Llama|Mistral|DeepSeek)\\b",
+      "flags": "g",
+      "sev": "info",
+      "msg": "If you are citing AI-generated content, the 22nd edition requires you to save a PDF of the output and keep it on file.",
+      "rule": "Bluebook R. 18",
+      "fix": "Save the PDF now, and check your court's standing orders on AI disclosure."
+    },
+    {
+      "id": "lexis-short",
+      "re": "\\bLexisNexis\\b",
+      "flags": "g",
+      "sev": "info",
+      "msg": "\"LX\" is now an acceptable short form for LexisNexis in document citations.",
+      "rule": "Bluebook R. 10",
+      "fix": "Optional — no change required."
+    },
+    {
+      "id": "supra-case",
+      "re": "\\b[A-Z][A-Za-z.'’-]+\\s+v\\.\\s+[A-Z][A-Za-z.'’-]+,\\s*supra\\b",
+      "flags": "g",
+      "sev": "warn",
+      "msg": "\"supra\" is generally not used for cases.",
+      "rule": "Bluebook R. 4.2",
+      "fix": "Use a case short form, or id. where the immediately preceding citation is the same case."
+    },
+    {
+      "id": "virap-short-first",
+      "re": "\\bVIRAP\\s+\\d",
+      "flags": "g",
+      "sev": "info",
+      "msg": "VIRAP is the short form of the appellate rules citation.",
+      "rule": "V.I. R. App. P. 1",
+      "fix": "Use V.I. R. App. P. 22(i) on first reference and whenever the citation opens a sentence."
+    },
+    {
+      "id": "double-space",
+      "re": "[^\\S\\n]{2,}",
+      "flags": "g",
+      "sev": "info",
+      "msg": "Repeated spaces.",
+      "rule": "Style",
+      "fix": "Collapse to a single space."
+    },
+    {
+      "id": "url-no-archive",
+      "kind": "url-no-archive",
+      "sev": "error",
+      "msg": "A URL appears with no archived link anywhere in the text.",
+      "rule": "Bluebook R. 18",
+      "fix": "The 22nd edition requires an archived link (for example https://perma.cc/XXXX-XXXX) for any webpage URL you cite."
+    },
+    {
+      "id": "parallel-both",
+      "kind": "parallel-both",
+      "sev": "info",
+      "msg": "This citation carries both a public domain citation and a Virgin Islands Reports citation.",
+      "rule": "V.I. R. App. P. 22(i)",
+      "fix": "Permitted but not required. Whichever you choose, stay consistent across the brief."
+    }
+  ]
+}

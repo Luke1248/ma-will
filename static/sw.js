@@ -1,9 +1,11 @@
 /* Life Organizer service worker — offline app shell + runtime caching */
-const CACHE = 'life-organizer-v1';
+const CACHE = 'life-organizer-v2';
 
 // Core shell assets precached on install so the app opens offline.
 const APP_SHELL = [
   '/',
+  '/citations',
+  '/static/data/citation_rules.json',
   '/manifest.webmanifest',
   '/static/icons/icon-192.png',
   '/static/icons/icon-512.png',
@@ -46,9 +48,18 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Page navigations: network-first, fall back to the cached shell when offline.
+  // Page navigations: network-first. Offline, serve the cached copy of the page
+  // that was actually requested before falling back to the dashboard shell.
   if (req.mode === 'navigate') {
-    event.respondWith(fetch(req).catch(() => caches.match('/')));
+    event.respondWith(
+      fetch(req)
+        .then((res) => {
+          const copy = res.clone();
+          caches.open(CACHE).then((c) => c.put(req, copy));
+          return res;
+        })
+        .catch(() => caches.match(req).then((cached) => cached || caches.match('/')))
+    );
     return;
   }
 

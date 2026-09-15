@@ -134,6 +134,19 @@
             text-align: center;
         }
 
+        /* Nav entries that leave the dashboard for another app on this server */
+        a.nav-item,
+        a.more-sheet-item {
+            text-decoration: none;
+        }
+
+        .nav-item .nav-external-icon {
+            margin-left: auto;
+            width: auto;
+            font-size: 11px;
+            opacity: 0.5;
+        }
+
         /* Main Content */
         .main-content {
             margin-left: var(--sidebar-width);
@@ -1194,6 +1207,15 @@
                 <span>AI Assistant</span>
             </div>
         </nav>
+
+        <nav class="nav-section">
+            <div class="nav-label">Apps</div>
+            <a class="nav-item nav-external" href="/citations">
+                <i class="fas fa-scale-balanced"></i>
+                <span>Citation Rules</span>
+                <i class="fas fa-arrow-up-right-from-square nav-external-icon"></i>
+            </a>
+        </nav>
     </aside>
 
     <!-- Drawer backdrop (mobile) -->
@@ -1487,6 +1509,10 @@
                 <i class="fas fa-robot"></i>
                 <span>AI Assistant</span>
             </div>
+            <a class="more-sheet-item nav-external" href="/citations">
+                <i class="fas fa-scale-balanced"></i>
+                <span>Citation Rules</span>
+            </a>
         </div>
     </div>
 
@@ -1718,7 +1744,7 @@
         const moreNavPages = ['goals', 'notes', 'assistant'];
 
         // Page Navigation (sidebar + bottom bar + more sheet)
-        document.querySelectorAll('.nav-item, .bottom-nav-item[data-page], .more-sheet-item').forEach(item => {
+        document.querySelectorAll('.nav-item:not(.nav-external), .bottom-nav-item[data-page], .more-sheet-item:not(.nav-external)').forEach(item => {
             item.addEventListener('click', () => {
                 showPage(item.dataset.page);
                 closeMoreSheet();
