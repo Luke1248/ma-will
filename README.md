@@ -71,8 +71,8 @@ Home Screen**. (On Android/Chrome, use the **Install app** prompt.)
 ### iOS app
 
 A native **SwiftUI** version lives in [`ios/`](ios/) as a ready-to-open Xcode
-project, grounded in the supplied text of the Bluebook's 22nd edition (50
-citations across 13 categories, including the new Rule 22 Tribal Nations and
+project, grounded in the supplied text of the Bluebook's 22nd edition (87
+citations across 14 categories, including the new Rule 22 Tribal Nations and
 Rule 23 Archival Sources). See [`ios/README.md`](ios/README.md) to build and run
 it. Open with:
 

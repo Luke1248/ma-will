@@ -46,6 +46,7 @@ enum SourceCategory: String, CaseIterable, Identifiable {
     case international  = "International Materials"
     case tribal         = "Tribal Nations"
     case archival       = "Archival Sources"
+    case services       = "Services"
 
     var id: String { rawValue }
 
@@ -65,6 +66,7 @@ enum SourceCategory: String, CaseIterable, Identifiable {
         case .international:  return "Rule 21"
         case .tribal:         return "Rule 22"
         case .archival:       return "Rule 23"
+        case .services:       return "Rule 19"
         }
     }
 
@@ -84,6 +86,7 @@ enum SourceCategory: String, CaseIterable, Identifiable {
         case .international:  return "network"
         case .tribal:         return "sun.max"
         case .archival:       return "archivebox"
+        case .services:       return "tray.full"
         }
     }
 }
