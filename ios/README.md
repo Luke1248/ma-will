@@ -19,7 +19,7 @@ illustrations.
 - Filter by **source category** and by **difficulty (1–5 stars)**; a live
   scoreboard tracks accuracy.
 
-## Coverage — 87 citations across 14 categories of authority
+## Coverage — 102 citations across 15 categories of authority
 
 | Category | Rule | Category | Rule |
 | --- | --- | --- | --- |
