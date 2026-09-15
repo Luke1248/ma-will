@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Citation Rules — Bluebook 22 &amp; the Virgin Islands</title>
+
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#0F766E">
+    <meta name="description" content="Build, check, and look up citations under The Bluebook (22d ed. 2025) and the Virgin Islands courts' own citation rules.">
+
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Citations">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* A class that sets `display` outranks the UA rule for [hidden], so
+           make the attribute win. Without this, el.hidden = true does nothing
+           to anything styled as flex or grid. */
+        [hidden] { display: none !important; }
+
+        :root {
+            --primary: #0F766E;
+            --primary-light: #5EEAD4;
+            --primary-dark: #115E59;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --info: #3B82F6;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-400: #9CA3AF;
+            --gray-500: #6B7280;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-800: #1F2937;
+            --gray-900: #111827;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-800);
+            min-height: 100vh;
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        /* ---- Header ---- */
+        .topbar {
+            background: linear-gradient(180deg, var(--gray-900) 0%, var(--gray-800) 100%);
+            color: #fff;
+            padding: calc(20px + env(safe-area-inset-top, 0px)) 24px 20px;
+        }
+        .topbar-inner { max-width: 960px; margin: 0 auto; }
+        .back-link {
+            display: inline-flex; align-items: center; gap: 8px;
+            color: var(--gray-400); text-decoration: none;
+            font-size: 13px; font-weight: 500; margin-bottom: 14px;
+        }
+        .back-link:hover { color: #fff; }
+        .topbar h1 { font-size: 24px; font-weight: 700; line-height: 1.25; }
+        .topbar p { color: var(--gray-400); font-size: 14px; margin-top: 6px; }
+
+        /* ---- Tabs ---- */
+        .tabs {
+            background: #fff;
+            border-bottom: 1px solid var(--gray-200);
+            position: sticky; top: 0; z-index: 20;
+            overflow-x: auto; -webkit-overflow-scrolling: touch;
+        }
+        .tabs-inner { max-width: 960px; margin: 0 auto; display: flex; gap: 4px; padding: 0 16px; }
+        .tab {
+            flex: 0 0 auto;
+            background: none; border: none; cursor: pointer;
+            font-family: inherit; font-size: 14px; font-weight: 600;
+            color: var(--gray-500); padding: 16px 12px;
+            border-bottom: 2px solid transparent;
+            display: flex; align-items: center; gap: 8px;
+            white-space: nowrap;
+        }
+        .tab:hover { color: var(--gray-800); }
+        .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+        /* ---- Layout ---- */
+        .wrap { max-width: 960px; margin: 0 auto; padding: 24px 16px 64px; }
+        .panel { display: none; }
+        .panel.active { display: block; }
+
+        .card {
+            background: #fff; border-radius: 12px;
+            border: 1px solid var(--gray-200);
+            padding: 20px; margin-bottom: 16px;
+        }
+        .card h2 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+        .card h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+        .muted { color: var(--gray-500); font-size: 13px; line-height: 1.6; }
+
+        .notice {
+            background: #FFFBEB; border: 1px solid #FDE68A;
+            color: #78350F; border-radius: 12px;
+            padding: 14px 16px; margin-bottom: 20px;
+            font-size: 13px; line-height: 1.6;
+            display: flex; gap: 12px; align-items: flex-start;
+        }
+        .notice i { margin-top: 2px; }
+
+        /* ---- Forms ---- */
+        label.lbl {
+            display: block; font-size: 12px; font-weight: 600;
+            color: var(--gray-600); margin-bottom: 6px;
+        }
+        .inp, select.inp, textarea.inp {
+            width: 100%; font-family: inherit; font-size: 14px;
+            padding: 10px 12px; border: 1px solid var(--gray-300);
+            border-radius: 8px; background: #fff; color: var(--gray-800);
+        }
+        .inp:focus { outline: 2px solid var(--primary-light); outline-offset: -1px; border-color: var(--primary); }
+        textarea.inp { min-height: 200px; resize: vertical; line-height: 1.7; }
+        .field { margin-bottom: 14px; }
+        .field .help { font-size: 12px; color: var(--gray-500); margin-top: 4px; line-height: 1.5; }
+        .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0 16px; }
+        .checkrow { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+        .checkrow input { width: 18px; height: 18px; accent-color: var(--primary); }
+        .checkrow label { font-size: 14px; font-weight: 500; }
+
+        .btn {
+            font-family: inherit; font-size: 14px; font-weight: 600;
+            padding: 10px 16px; border-radius: 8px; border: 1px solid var(--gray-300);
+            background: #fff; color: var(--gray-700); cursor: pointer;
+            display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn:hover { background: var(--gray-50); }
+        .btn-primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+
+        /* ---- Output ---- */
+        .out {
+            background: var(--gray-50); border: 1px solid var(--gray-200);
+            border-radius: 10px; padding: 14px 16px; margin-bottom: 12px;
+        }
+        .out-label {
+            font-size: 11px; text-transform: uppercase; letter-spacing: .08em;
+            color: var(--gray-500); font-weight: 700; margin-bottom: 8px;
+        }
+        .cite {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 16px; line-height: 1.6; word-break: break-word;
+        }
+        .cite .it { font-style: italic; }
+        .cite .blank { color: var(--danger); font-style: normal; }
+        .copy-btn {
+            margin-top: 10px; font-size: 12px; padding: 6px 10px;
+        }
+
+        /* ---- Badges ---- */
+        .badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 11px; font-weight: 700; border-radius: 999px;
+            padding: 3px 9px; text-transform: uppercase; letter-spacing: .04em;
+        }
+        .b-verified { background: #D1FAE5; color: #065F46; }
+        .b-reported { background: #FEF3C7; color: #92400E; }
+        .b-unverified { background: #FEE2E2; color: #991B1B; }
+        .b-rule { background: var(--gray-100); color: var(--gray-600); text-transform: none; letter-spacing: 0; font-weight: 600; }
+        .b-error { background: #FEE2E2; color: #991B1B; }
+        .b-warn  { background: #FEF3C7; color: #92400E; }
+        .b-info  { background: #DBEAFE; color: #1E40AF; }
+
+        /* ---- Findings ---- */
+        .finding {
+            border: 1px solid var(--gray-200); border-left-width: 4px;
+            border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; background: #fff;
+        }
+        .finding.error { border-left-color: var(--danger); }
+        .finding.warn  { border-left-color: var(--warning); }
+        .finding.info  { border-left-color: var(--info); }
+        .finding-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
+        .finding-msg { font-weight: 600; font-size: 14px; }
+        .snippet {
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 12.5px; background: var(--gray-50); border: 1px solid var(--gray-200);
+            border-radius: 6px; padding: 8px 10px; margin: 8px 0;
+            white-space: pre-wrap; word-break: break-word;
+        }
+        .snippet mark { background: #FDE68A; border-radius: 3px; padding: 0 2px; }
+        .fix { font-size: 13px; color: var(--gray-600); line-height: 1.6; }
+        .fix strong { color: var(--gray-800); }
+
+        .tally { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+        .tally-item {
+            font-size: 13px; font-weight: 600; border-radius: 8px;
+            padding: 8px 12px; background: #fff; border: 1px solid var(--gray-200);
+        }
+        .tally-item.error { color: #991B1B; }
+        .tally-item.warn { color: #92400E; }
+        .tally-item.info { color: #1E40AF; }
+        .tally-item.clean { color: #065F46; }
+
+        /* ---- Rules list ---- */
+        .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 20px; }
+        .chip {
+            font-family: inherit; font-size: 13px; font-weight: 600;
+            border: 1px solid var(--gray-300); background: #fff; color: var(--gray-600);
+            border-radius: 999px; padding: 7px 14px; cursor: pointer;
+        }
+        .chip.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+        .rule-card { background: #fff; border: 1px solid var(--gray-200); border-radius: 12px; padding: 18px 20px; margin-bottom: 14px; }
+        .rule-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
+        .rule-card h3 { flex: 1 1 auto; font-size: 15px; font-weight: 700; margin: 0; min-width: 200px; }
+        .rule-summary { font-size: 14px; line-height: 1.65; color: var(--gray-700); }
+        .rule-card ul { margin: 12px 0 0 18px; }
+        .rule-card li { font-size: 13.5px; line-height: 1.65; color: var(--gray-600); margin-bottom: 6px; }
+        .refs { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px 14px; }
+        .refs a { font-size: 12px; color: var(--primary); text-decoration: none; }
+        .refs a:hover { text-decoration: underline; }
+
+        /* ---- Table ---- */
+        .table-scroll { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 620px; }
+        th, td { text-align: left; padding: 11px 12px; border-bottom: 1px solid var(--gray-200); vertical-align: top; }
+        th { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--gray-500); }
+        td.mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; white-space: nowrap; }
+        td .note { color: var(--gray-500); font-size: 12.5px; line-height: 1.55; }
+
+        .empty { text-align: center; color: var(--gray-500); font-size: 14px; padding: 40px 20px; }
+
+        @media (max-width: 640px) {
+            .topbar h1 { font-size: 20px; }
+            .card { padding: 16px; }
+            .rule-card { padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a class="back-link" href="/" id="back-link" hidden><i class="fas fa-arrow-left"></i> Life Organizer</a>
+            <h1>Citation Rules</h1>
+            <p id="subtitle">The Bluebook (22d ed. 2025) and the Virgin Islands courts' own rules</p>
+        </div>
+    </header>
+
+    <nav class="tabs">
+        <div class="tabs-inner">
+            <button class="tab active" data-panel="build"><i class="fas fa-pen-nib"></i> Build</button>
+            <button class="tab" data-panel="check"><i class="fas fa-magnifying-glass"></i> Check</button>
+            <button class="tab" data-panel="rules"><i class="fas fa-book"></i> Rules</button>
+            <button class="tab" data-panel="courts"><i class="fas fa-landmark"></i> Courts</button>
+        </div>
+    </nav>
+
+    <div class="wrap">
+        <div class="notice">
+            <i class="fas fa-triangle-exclamation"></i>
+            <div id="disclaimer">Loading&hellip;</div>
+        </div>
+
+        <!-- ===== BUILD ===== -->
+        <section class="panel active" id="panel-build">
+            <div class="card">
+                <div class="field">
+                    <label class="lbl" for="tpl-select">Source type</label>
+                    <select class="inp" id="tpl-select"></select>
+                </div>
+                <div id="tpl-meta"></div>
+                <div id="tpl-fields" class="grid2"></div>
+            </div>
+
+            <div class="card">
+                <h2>Citation</h2>
+                <p class="muted" style="margin-bottom:14px">Italics are shown where a brief would italicize. Red blanks are required fields you have not filled in yet.</p>
+                <div class="out">
+                    <div class="out-label">Full citation</div>
+                    <div class="cite" id="out-full"></div>
+                    <button class="btn copy-btn" data-copy="out-full"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <div class="out">
+                    <div class="out-label">Short form</div>
+                    <div class="cite" id="out-short"></div>
+                    <button class="btn copy-btn" data-copy="out-short"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== CHECK ===== -->
+        <section class="panel" id="panel-check">
+            <div class="card">
+                <h2>Check a passage</h2>
+                <p class="muted" style="margin-bottom:14px">Paste one citation or a whole section of a brief. The checker looks for the mistakes that are actually detectable in plain text — it cannot see italics, and it cannot tell you whether a case says what you claim.</p>
+                <div class="field">
+                    <textarea class="inp" id="check-input" placeholder="Paste your citations here…" spellcheck="false"></textarea>
+                </div>
+                <div class="btn-row">
+                    <button class="btn btn-primary" id="run-check"><i class="fas fa-play"></i> Run check</button>
+                    <button class="btn" id="load-example"><i class="fas fa-flask"></i> Load a flawed example</button>
+                    <button class="btn" id="clear-check"><i class="fas fa-eraser"></i> Clear</button>
+                </div>
+            </div>
+            <div id="check-results"></div>
+        </section>
+
+        <!-- ===== RULES ===== -->
+        <section class="panel" id="panel-rules">
+            <div class="card">
+                <div class="field" style="margin-bottom:0">
+                    <label class="lbl" for="rule-search">Search the rules</label>
+                    <input class="inp" id="rule-search" type="search" placeholder="perma.cc, paragraph, tribal, V.I.C. …" autocomplete="off">
+                </div>
+                <div class="filters" id="rule-filters"></div>
+                <p class="muted" id="rule-count"></p>
+            </div>
+            <div id="rule-list"></div>
+        </section>
+
+        <!-- ===== COURTS ===== -->
+        <section class="panel" id="panel-courts">
+            <div class="card">
+                <h2>Court abbreviations and citation forms</h2>
+                <p class="muted" style="margin-bottom:16px">The court parenthetical has to match the court as it was named when it decided the case. Confirm anything marked unverified against Table T1.4.</p>
+                <div class="table-scroll">
+                    <table id="courts-table">
+                        <thead>
+                            <tr><th>Court</th><th>Abbrev.</th><th>Example</th><th>Public domain</th><th>Notes</th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card">
+                <h2>Confidence badges</h2>
+                <div id="confidence-key"></div>
+            </div>
+        </section>
+    </div>
+
+<script>
+(function () {
+    'use strict';
+
+    var DATA = null;
+
+    /* ---------------- helpers ---------------- */
+
+    function el(tag, cls, text) {
+        var n = document.createElement(tag);
+        if (cls) n.className = cls;
+        if (text !== undefined && text !== null) n.textContent = text;
+        return n;
+    }
+
+    function esc(s) {
+        return String(s).replace(/[&<>"]/g, function (c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+        });
+    }
+
+    function badge(conf) {
+        var b = el('span', 'badge b-' + conf, conf);
+        b.title = (DATA && DATA.meta.confidence_key[conf]) || '';
+        return b;
+    }
+
+    function ruleBadge(text) {
+        return el('span', 'badge b-rule', text);
+    }
+
+    /* ---------------- tabs ---------------- */
+
+    document.querySelectorAll('.tab').forEach(function (tab) {
+        tab.addEventListener('click', function () {
+            document.querySelectorAll('.tab').forEach(function (t) { t.classList.remove('active'); });
+            document.querySelectorAll('.panel').forEach(function (p) { p.classList.remove('active'); });
+            tab.classList.add('active');
+            document.getElementById('panel-' + tab.dataset.panel).classList.add('active');
+            window.scrollTo(0, 0);
+        });
+    });
+
+    /* ---------------- builder ---------------- */
+
+    var CAT_LABEL = { vi: 'Virgin Islands', fed: 'Federal', bb22: 'Bluebook 22nd ed.', tables: 'Tables', practice: 'Practice notes' };
+
+    function currentTemplate() {
+        var id = document.getElementById('tpl-select').value;
+        return DATA.templates.filter(function (t) { return t.id === id; })[0];
+    }
+
+    function fieldValues(tpl) {
+        var vals = {};
+        tpl.fields.forEach(function (f) {
+            var node = document.getElementById('fld-' + f.k);
+            if (!node) { vals[f.k] = ''; return; }
+            vals[f.k] = (f.type === 'check') ? (node.checked ? (f.val || '') : '') : node.value.trim();
+        });
+        return vals;
+    }
+
+    // A short case name, when the user has not supplied one: the first party,
+    // trimmed to its first word once it runs past two words ("Banks", "United States").
+    function deriveShortCase(name) {
+        if (!name) return '';
+        var first = name.split(/\s+v\.\s+/)[0].replace(/,+$/, '').trim();
+        var words = first.split(/\s+/);
+        return words.length <= 2 ? first : words[0];
+    }
+
+    // A range of numbers takes an en dash: 13-14 becomes 13–14.
+    function enDash(v) {
+        return v.replace(/(\d)\s*-\s*(\d)/g, '$1–$2');
+    }
+
+    // "¶ 13" for a single paragraph, "¶¶ 13–14" for a range or a list.
+    function paraRef(v) {
+        return (/[–—,&]/.test(v) ? '¶¶ ' : '¶ ') + v;
+    }
+
+    // Renders a pattern into [{text, italic, blank}] segments.
+    function renderPattern(tpl, vals, short) {
+        var pattern = short ? tpl.short : tpl.full;
+        var byKey = {};
+        tpl.fields.forEach(function (f) { byKey[f.k] = f; });
+
+        var segs = [];
+        var re = /\{(\w+)\}/g;
+        var last = 0, m;
+        while ((m = re.exec(pattern)) !== null) {
+            if (m.index > last) segs.push({ text: pattern.slice(last, m.index) });
+            segs = segs.concat(resolveToken(m[1], byKey, vals));
+            last = m.index + m[0].length;
+        }
+        if (last < pattern.length) segs.push({ text: pattern.slice(last) });
+        return segs;
+    }
+
+    function resolveToken(key, byKey, vals) {
+        // Derived tokens first.
+        if (key === 'shortcase') {
+            var sc = vals.shortcase || deriveShortCase(vals.case || '');
+            return sc ? [{ text: sc, italic: true }] : [{ text: '___', blank: true }];
+        }
+        if (key === 'pinshort') {
+            return vals.pin ? [{ text: enDash(vals.pin) }] : [{ text: '___', blank: true }];
+        }
+
+        var f = byKey[key];
+        var v = vals[key] || '';
+        if (!f) return [{ text: v }];
+
+        if (!v) {
+            if (!f.req) return [];
+            return [{ text: f.pre || '' }, { text: '___', blank: true }, { text: f.post || '' }];
+        }
+        if (f.k === 'pin') v = enDash(v);
+        if (f.pinpoint) v = paraRef(v);
+
+        var out = [];
+        if (f.pre) out.push({ text: f.pre });
+        out.push({ text: v, italic: !!f.italic });
+        if (f.post) out.push({ text: f.post });
+        return out;
+    }
+
+    function paintCitation(node, segs) {
+        node.innerHTML = '';
+        segs.forEach(function (s) {
+            if (!s.text) return;
+            if (s.blank) node.appendChild(el('span', 'blank', s.text));
+            else if (s.italic) node.appendChild(el('span', 'it', s.text));
+            else node.appendChild(document.createTextNode(s.text));
+        });
+    }
+
+    function updateOutput() {
+        var tpl = currentTemplate();
+        if (!tpl) return;
+        var vals = fieldValues(tpl);
+        // The case name is italicized in a brief; mark it so the preview shows that.
+        tpl.fields.forEach(function (f) { if (f.k === 'case') f.italic = true; });
+        paintCitation(document.getElementById('out-full'), renderPattern(tpl, vals, false));
+        paintCitation(document.getElementById('out-short'), renderPattern(tpl, vals, true));
+    }
+
+    function buildFields() {
+        var tpl = currentTemplate();
+        var meta = document.getElementById('tpl-meta');
+        var host = document.getElementById('tpl-fields');
+        meta.innerHTML = '';
+        host.innerHTML = '';
+        if (!tpl) return;
+
+        var head = el('div', 'rule-head');
+        head.appendChild(ruleBadge(tpl.rule));
+        head.appendChild(badge(tpl.confidence));
+        meta.appendChild(head);
+        if (tpl.note) {
+            var note = el('p', 'muted', tpl.note);
+            note.style.marginBottom = '18px';
+            meta.appendChild(note);
+        }
+
+        tpl.fields.forEach(function (f) {
+            if (f.type === 'check') {
+                var row = el('div', 'checkrow');
+                var cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.id = 'fld-' + f.k;
+                var lab = el('label', null, f.label);
+                lab.setAttribute('for', cb.id);
+                row.appendChild(cb);
+                row.appendChild(lab);
+                host.appendChild(row);
+                cb.addEventListener('change', updateOutput);
+                return;
+            }
+            var wrap = el('div', 'field');
+            var lbl = el('label', 'lbl', f.label + (f.req ? ' *' : ''));
+            lbl.setAttribute('for', 'fld-' + f.k);
+            var inp = document.createElement('input');
+            inp.type = 'text';
+            inp.className = 'inp';
+            inp.id = 'fld-' + f.k;
+            inp.placeholder = f.ph || '';
+            inp.autocomplete = 'off';
+            wrap.appendChild(lbl);
+            wrap.appendChild(inp);
+            if (f.help) wrap.appendChild(el('div', 'help', f.help));
+            host.appendChild(wrap);
+            inp.addEventListener('input', updateOutput);
+        });
+
+        updateOutput();
+    }
+
+    function initBuilder() {
+        var sel = document.getElementById('tpl-select');
+        var groups = {};
+        DATA.templates.forEach(function (t) { (groups[t.cat] = groups[t.cat] || []).push(t); });
+        Object.keys(groups).forEach(function (cat) {
+            var og = document.createElement('optgroup');
+            og.label = CAT_LABEL[cat] || cat;
+            groups[cat].forEach(function (t) {
+                var o = document.createElement('option');
+                o.value = t.id;
+                o.textContent = t.name;
+                og.appendChild(o);
+            });
+            sel.appendChild(og);
+        });
+        sel.addEventListener('change', buildFields);
+        buildFields();
+    }
+
+    document.querySelectorAll('.copy-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var text = document.getElementById(btn.dataset.copy).textContent;
+            var done = function () {
+                var original = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied';
+                setTimeout(function () { btn.innerHTML = original; }, 1400);
+            };
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(done, function () {});
+            } else {
+                var ta = document.createElement('textarea');
+                ta.value = text;
+                document.body.appendChild(ta);
+                ta.select();
+                try { document.execCommand('copy'); done(); } catch (e) {}
+                document.body.removeChild(ta);
+            }
+        });
+    });
+
+    /* ---------------- checker ---------------- */
+
+    var MAX_PER_CHECK = 8;
+    var ARCHIVE_RE = /perma\.cc|web\.archive\.org|archive\.(?:today|is|ph)/i;
+
+    function snippet(text, start, end) {
+        var from = Math.max(0, start - 45);
+        var to = Math.min(text.length, end + 45);
+        var frag = document.createDocumentFragment();
+        if (from > 0) frag.appendChild(document.createTextNode('…'));
+        frag.appendChild(document.createTextNode(text.slice(from, start)));
+        var mark = el('mark', null, text.slice(start, end));
+        frag.appendChild(mark);
+        frag.appendChild(document.createTextNode(text.slice(end, to)));
+        if (to < text.length) frag.appendChild(document.createTextNode('…'));
+        var box = el('div', 'snippet');
+        box.appendChild(frag);
+        return box;
+    }
+
+    function runChecks(text) {
+        var findings = [];
+
+        DATA.checks.forEach(function (chk) {
+            if (chk.kind === 'url-no-archive') {
+                if (ARCHIVE_RE.test(text)) return;
+                var ure = /https?:\/\/[^\s)\]<>"']+/g, um, n = 0;
+                while ((um = ure.exec(text)) !== null && n < MAX_PER_CHECK) {
+                    findings.push({ chk: chk, start: um.index, end: um.index + um[0].length });
+                    n++;
+                }
+                return;
+            }
+
+            if (chk.kind === 'parallel-both') {
+                var neutral = /\b(?:19|20)\d{2}\s+VI\s+(?:Super\s+)?\d+U?\b/;
+                var reporter = /\b\d+\s+V\.I\.\s+\d+\b/;
+                var offset = 0;
+                text.split('\n').forEach(function (line) {
+                    var nm = line.match(neutral);
+                    if (nm && reporter.test(line)) {
+                        findings.push({ chk: chk, start: offset + nm.index, end: offset + nm.index + nm[0].length });
+                    }
+                    offset += line.length + 1;
+                });
+                return;
+            }
+
+            var re = new RegExp(chk.re, chk.flags || 'g');
+            var m, count = 0;
+            while ((m = re.exec(text)) !== null && count < MAX_PER_CHECK) {
+                if (m[0].length === 0) { re.lastIndex++; continue; }
+                findings.push({ chk: chk, start: m.index, end: m.index + m[0].length });
+                count++;
+            }
+        });
+
+        findings.sort(function (a, b) { return a.start - b.start; });
+        return findings;
+    }
+
+    var SEV_ORDER = { error: 0, warn: 1, info: 2 };
+    var SEV_LABEL = { error: 'Error', warn: 'Warning', info: 'Note' };
+
+    function renderFindings(text, findings) {
+        var host = document.getElementById('check-results');
+        host.innerHTML = '';
+
+        if (!text.trim()) {
+            host.appendChild(el('div', 'empty', 'Paste something above, then run the check.'));
+            return;
+        }
+
+        var counts = { error: 0, warn: 0, info: 0 };
+        findings.forEach(function (f) { counts[f.chk.sev]++; });
+
+        var tally = el('div', 'tally');
+        if (!findings.length) {
+            tally.appendChild(el('div', 'tally-item clean', 'Nothing flagged — which is not the same as correct.'));
+        } else {
+            ['error', 'warn', 'info'].forEach(function (sev) {
+                if (!counts[sev]) return;
+                var noun = SEV_LABEL[sev] + (counts[sev] === 1 ? '' : 's');
+                tally.appendChild(el('div', 'tally-item ' + sev, counts[sev] + ' ' + noun));
+            });
+        }
+        host.appendChild(tally);
+
+        findings.sort(function (a, b) {
+            var d = SEV_ORDER[a.chk.sev] - SEV_ORDER[b.chk.sev];
+            return d !== 0 ? d : a.start - b.start;
+        });
+
+        findings.forEach(function (f) {
+            var card = el('div', 'finding ' + f.chk.sev);
+            var head = el('div', 'finding-head');
+            head.appendChild(el('span', 'badge b-' + f.chk.sev, SEV_LABEL[f.chk.sev]));
+            head.appendChild(ruleBadge(f.chk.rule));
+            card.appendChild(head);
+            card.appendChild(el('div', 'finding-msg', f.chk.msg));
+            card.appendChild(snippet(text, f.start, f.end));
+            var fix = el('div', 'fix');
+            fix.appendChild(el('strong', null, 'Fix: '));
+            fix.appendChild(document.createTextNode(f.chk.fix));
+            card.appendChild(fix);
+            host.appendChild(card);
+        });
+
+        if (findings.length) {
+            var caveat = el('p', 'muted');
+            caveat.style.marginTop = '18px';
+            caveat.textContent = 'The checker reads plain text, so it cannot see italics or underlining, cannot confirm a reporter volume exists, and cannot tell you whether the authority supports your proposition. Treat a clean result as the beginning of proofreading, not the end.';
+            host.appendChild(caveat);
+        }
+    }
+
+    var EXAMPLE = [
+        "The Supreme Court of the Virgin Islands resolved the question in Smith v. Jones, 2019 V.I. 22, 970, and again in Doe v. Roe, 2020 VI Super 7, 14.",
+        "",
+        "Accord Banks v. Int'l Rental & Leasing Corp., 55 V.I. 967 (Supreme Court of the Virgin Islands 2011); see also Rivera v. Gomez, 60 V.I. 100 (V.I. Super. 2014).",
+        "",
+        "The statute is at V.I. Code Ann. § 244, and the older rule appeared in V.I.C.A. tit. 5. The Territorial Court applied it in 2012.",
+        "",
+        "See VIRAP 22(i); Careaga v. Gov't of the V.I., 20 F.3d 100 (3d Cir. 2023).",
+        "",
+        "Guidance is posted at https://www.vicourts.org/rules (last visited Sept. 1, 2026), and ChatGPT summarized it on request."
+    ].join('\n');
+
+    document.getElementById('run-check').addEventListener('click', function () {
+        var text = document.getElementById('check-input').value;
+        renderFindings(text, runChecks(text));
+    });
+    document.getElementById('load-example').addEventListener('click', function () {
+        document.getElementById('check-input').value = EXAMPLE;
+        renderFindings(EXAMPLE, runChecks(EXAMPLE));
+    });
+    document.getElementById('clear-check').addEventListener('click', function () {
+        document.getElementById('check-input').value = '';
+        document.getElementById('check-results').innerHTML = '';
+    });
+
+    /* ---------------- rules browser ---------------- */
+
+    var activeCat = 'all';
+
+    function ruleMatches(rule, query) {
+        if (activeCat !== 'all' && rule.cat !== activeCat) return false;
+        if (!query) return true;
+        var hay = [rule.title, rule.summary, rule.detail.join(' '), rule.tags.join(' ')].join(' ').toLowerCase();
+        return query.split(/\s+/).every(function (word) { return hay.indexOf(word) !== -1; });
+    }
+
+    function renderRules() {
+        var query = document.getElementById('rule-search').value.trim().toLowerCase();
+        var list = document.getElementById('rule-list');
+        var matches = DATA.rules.filter(function (r) { return ruleMatches(r, query); });
+
+        document.getElementById('rule-count').textContent =
+            matches.length + ' of ' + DATA.rules.length + ' entries';
+
+        list.innerHTML = '';
+        if (!matches.length) {
+            list.appendChild(el('div', 'empty', 'Nothing matches that search.'));
+            return;
+        }
+
+        matches.forEach(function (r) {
+            var card = el('div', 'rule-card');
+            var head = el('div', 'rule-head');
+            head.appendChild(el('h3', null, r.title));
+            head.appendChild(badge(r.confidence));
+            card.appendChild(head);
+            card.appendChild(el('p', 'rule-summary', r.summary));
+
+            if (r.detail && r.detail.length) {
+                var ul = document.createElement('ul');
+                r.detail.forEach(function (d) { ul.appendChild(el('li', null, d)); });
+                card.appendChild(ul);
+            }
+
+            if (r.refs && r.refs.length) {
+                var refs = el('div', 'refs');
+                r.refs.forEach(function (ref) {
+                    var a = el('a', null, ref.label);
+                    a.href = ref.url;
+                    a.target = '_blank';
+                    a.rel = 'noopener noreferrer';
+                    refs.appendChild(a);
+                });
+                card.appendChild(refs);
+            }
+            list.appendChild(card);
+        });
+    }
+
+    function initRules() {
+        var filters = document.getElementById('rule-filters');
+        var cats = ['all'].concat(DATA.rules.map(function (r) { return r.cat; }).filter(function (c, i, a) { return a.indexOf(c) === i; }));
+        cats.forEach(function (cat) {
+            var chip = el('button', 'chip' + (cat === 'all' ? ' active' : ''), cat === 'all' ? 'All' : (CAT_LABEL[cat] || cat));
+            chip.addEventListener('click', function () {
+                activeCat = cat;
+                filters.querySelectorAll('.chip').forEach(function (c) { c.classList.remove('active'); });
+                chip.classList.add('active');
+                renderRules();
+            });
+            filters.appendChild(chip);
+        });
+        document.getElementById('rule-search').addEventListener('input', renderRules);
+        renderRules();
+    }
+
+    /* ---------------- courts + key ---------------- */
+
+    function initCourts() {
+        var body = document.querySelector('#courts-table tbody');
+        DATA.courts.forEach(function (c) {
+            var tr = document.createElement('tr');
+
+            var name = document.createElement('td');
+            name.appendChild(document.createTextNode(c.court));
+            tr.appendChild(name);
+
+            var ab = el('td', 'mono', c.abbrev);
+            tr.appendChild(ab);
+
+            tr.appendChild(el('td', null, c.example));
+            tr.appendChild(el('td', 'mono', c.neutral));
+
+            var notes = document.createElement('td');
+            notes.appendChild(badge(c.confidence));
+            var n = el('div', 'note', c.notes);
+            n.style.marginTop = '6px';
+            notes.appendChild(n);
+            tr.appendChild(notes);
+
+            body.appendChild(tr);
+        });
+
+        var key = document.getElementById('confidence-key');
+        Object.keys(DATA.meta.confidence_key).forEach(function (k) {
+            var row = el('div');
+            row.style.marginBottom = '10px';
+            row.appendChild(badge(k));
+            var d = el('span', 'muted', ' ' + DATA.meta.confidence_key[k]);
+            row.appendChild(d);
+            key.appendChild(row);
+        });
+    }
+
+    /* ---------------- boot ---------------- */
+
+    // Served standalone (GitHub Pages, or installed to a home screen) there is
+    // no dashboard to go back to, so only show the link where one exists.
+    if (location.pathname === '/citations/' || location.pathname === '/citations') {
+        document.getElementById('back-link').hidden = false;
+    }
+
+    // Relative path: registers under this directory, so the worker's scope is
+    // the app itself and never the whole origin.
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+            navigator.serviceWorker.register('sw.js').catch(function () {
+                /* the app still works, just without offline support */
+            });
+        });
+    }
+
+    fetch('data/citation_rules.json')
+        .then(function (r) {
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.json();
+        })
+        .then(function (data) {
+            DATA = data;
+            document.getElementById('subtitle').textContent =
+                DATA.meta.bluebook_edition + ' · ' + DATA.meta.vi_rules_note;
+            document.getElementById('disclaimer').textContent = DATA.meta.disclaimer;
+            initBuilder();
+            initRules();
+            initCourts();
+        })
+        .catch(function (err) {
+            document.getElementById('disclaimer').textContent =
+                'The rule data failed to load (' + err.message + '). Reload the page; if it keeps failing, check that data/citation_rules.json is being served next to this page.';
+        });
+})();
+</script>
+</body>
+</html>
