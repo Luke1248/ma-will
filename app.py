@@ -3,7 +3,7 @@ Life Organizer Dashboard - Main Application
 A comprehensive dashboard to organize your life with tasks, goals, habits, notes, and an AI assistant.
 """
 
-from flask import Flask, render_template, request, jsonify, send_from_directory
+from flask import Flask, render_template, request, jsonify, send_from_directory, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from datetime import datetime, date
@@ -197,10 +197,31 @@ def index():
     return render_template('index.html')
 
 
+# The citation app is a self-contained static app in citations/ so it can also
+# be published to GitHub Pages. Serving the directory (rather than rendering a
+# template) keeps its relative asset paths working in both places.
+CITATIONS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'citations')
+
+
 @app.route('/citations')
-def citations():
-    """Bluebook 22 and Virgin Islands citation rules reference"""
-    return render_template('citations.html')
+def citations_redirect():
+    """Send /citations to /citations/ so relative asset paths resolve"""
+    return redirect('/citations/', code=301)
+
+
+@app.route('/citations/')
+def citations_index():
+    """Bluebook 22 and Virgin Islands citation rules app"""
+    return send_from_directory(CITATIONS_DIR, 'index.html')
+
+
+@app.route('/citations/<path:filename>')
+def citations_asset(filename):
+    """Data, icons, manifest and service worker for the citation app"""
+    response = send_from_directory(CITATIONS_DIR, filename)
+    if filename == 'sw.js':
+        response.headers['Cache-Control'] = 'no-cache'
+    return response
 
 
 # ----- PWA Routes -----

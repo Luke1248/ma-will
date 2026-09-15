@@ -16,7 +16,7 @@ import sys
 
 DATA_PATH = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-    "static", "data", "citation_rules.json",
+    "citations", "data", "citation_rules.json",
 )
 
 # Tokens the page resolves itself rather than reading off a field.

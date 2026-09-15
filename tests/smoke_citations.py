@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
-"""Browser smoke test for the /citations app.
+"""Browser smoke test for the citation app.
 
-Starts the Flask app on a free port, drives it with headless Chromium, and
-asserts the behaviour that is easy to break by editing either the template
-or static/data/citation_rules.json.
+The app is a self-contained static app in citations/, delivered two ways, so
+this drives it twice with headless Chromium:
+
+  1. Served by the Flask dashboard at /citations/ (reached from the sidebar).
+  2. Served as a plain static directory under a repo-style subpath, the way
+     GitHub Pages publishes it at /<repo>/citations/.
+
+The second pass is what catches an absolute path (/static/..., href="/") that
+works under Flask and 404s on Pages.
 
 Usage:  python tests/smoke_citations.py
 Env:    CHROMIUM_PATH  explicit Chromium binary, when Playwright's own
@@ -13,9 +19,11 @@ Env:    CHROMIUM_PATH  explicit Chromium binary, when Playwright's own
 """
 
 import os
+import shutil
 import socket
 import subprocess
 import sys
+import tempfile
 import time
 import urllib.error
 import urllib.request
@@ -23,10 +31,11 @@ import urllib.request
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 failures = []
-BASE = None
+PHASE = ""
 
 
 def check(label, condition, detail=""):
+    label = ("[%s] %s" % (PHASE, label)) if PHASE else label
     print(("PASS  " if condition else "FAIL  ") + label
           + (("  -> " + str(detail)) if detail and not condition else ""))
     if not condition:
@@ -39,6 +48,33 @@ def free_port():
         return s.getsockname()[1]
 
 
+def wait_for(url, proc, what):
+    for _ in range(60):
+        if proc.poll() is not None:
+            raise RuntimeError("%s exited early:\n%s"
+                               % (what, proc.stdout.read().decode("utf-8", "replace")))
+        try:
+            urllib.request.urlopen(url, timeout=1).read()
+            return proc
+        except (urllib.error.URLError, OSError):
+            time.sleep(0.5)
+    proc.kill()
+    raise RuntimeError("%s did not come up on %s" % (what, url))
+
+
+def start_static_server(port):
+    """Serve a Pages-shaped tree: <root>/<repo>/citations/ ."""
+    root = tempfile.mkdtemp(prefix="pages-")
+    dest = os.path.join(root, "ma-will", "citations")
+    shutil.copytree(os.path.join(REPO, "citations"), dest)
+    proc = subprocess.Popen(
+        [sys.executable, "-m", "http.server", str(port), "--bind", "127.0.0.1"],
+        cwd=root, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+    )
+    wait_for("http://127.0.0.1:%d/ma-will/citations/" % port, proc, "static server")
+    return proc, root
+
+
 def start_server(port):
     env = dict(os.environ, FLASK_RUN_PORT=str(port), PYTHONUNBUFFERED="1")
     proc = subprocess.Popen(
@@ -47,31 +83,44 @@ def start_server(port):
         cwd=REPO, env=env,
         stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
     )
-    url = "http://127.0.0.1:%d/" % port
-    for _ in range(60):
-        if proc.poll() is not None:
-            raise RuntimeError("server exited early:\n%s"
-                               % proc.stdout.read().decode("utf-8", "replace"))
-        try:
-            urllib.request.urlopen(url, timeout=1).read()
-            return proc
-        except (urllib.error.URLError, OSError):
-            time.sleep(0.5)
-    proc.kill()
-    raise RuntimeError("server did not come up on %s" % url)
+    return wait_for("http://127.0.0.1:%d/" % port, proc, "flask server")
+
+
+def enter_via_dashboard(page, base):
+    """Flask delivery: the app is reached from the dashboard sidebar."""
+    page.goto(base, wait_until="domcontentloaded")
+    check("dashboard links to the citation app",
+          page.locator('a.nav-item[href="/citations/"]').count() == 1)
+    page.click('a.nav-item[href="/citations/"]')
+    page.wait_for_load_state("domcontentloaded")
+    check("that link navigates to /citations/", page.url.endswith("/citations/"), page.url)
+    page.wait_for_selector("#tpl-select option", state="attached", timeout=15000)
+    check("the back link is shown when the dashboard is there",
+          page.locator("#back-link").is_visible())
+
+
+def enter_standalone(page, base):
+    """Pages delivery: opened directly, under a repo subpath."""
+    page.goto(base, wait_until="domcontentloaded")
+    page.wait_for_selector("#tpl-select option", state="attached", timeout=15000)
+    check("the back link is hidden when there is no dashboard",
+          not page.locator("#back-link").is_visible())
+
+    # A manifest and worker that 404 mean the app cannot be installed.
+    for asset in ("manifest.webmanifest", "sw.js", "icons/icon-192.png",
+                  "icons/icon-512.png", "icons/maskable-512.png",
+                  "icons/apple-touch-icon.png"):
+        status = page.evaluate(
+            "a => fetch(a).then(r => r.status).catch(() => 0)", asset)
+        check("standalone serves %s" % asset, status == 200, status)
+
+    name = page.evaluate(
+        "() => fetch('manifest.webmanifest').then(r => r.json()).then(m => m.name)")
+    check("the manifest names the app", name == "Citation Rules", name)
 
 
 def run(page):
-    # ---- reachable from the dashboard ----
-    page.goto(BASE, wait_until="domcontentloaded")
-    check("dashboard links to the citation app",
-          page.locator('a.nav-item[href="/citations"]').count() == 1)
-    page.click('a.nav-item[href="/citations"]')
-    page.wait_for_load_state("domcontentloaded")
-    check("that link navigates to /citations", page.url.endswith("/citations"), page.url)
-
     # ---- corpus loaded ----
-    page.wait_for_selector("#tpl-select option", state="attached", timeout=15000)
     check("disclaimer is shown", "drafting aid" in page.inner_text("#disclaimer"))
     options = page.locator("#tpl-select option").count()
     check("every template is offered", options >= 14, options)
@@ -140,7 +189,7 @@ def run(page):
     page.click('.tab[data-panel="check"]')
 
     # Every regex in the corpus must be constructible by the browser.
-    bad = page.evaluate("""() => fetch('/static/data/citation_rules.json')
+    bad = page.evaluate("""() => fetch('data/citation_rules.json')
         .then(r => r.json())
         .then(d => d.checks.filter(c => {
             if (!c.re) return false;
@@ -226,7 +275,6 @@ def run(page):
 
 
 def main():
-    global BASE
     try:
         from playwright.sync_api import sync_playwright
     except ImportError:
@@ -234,9 +282,13 @@ def main():
               "&& playwright install chromium")
         return 1
 
-    port = free_port()
-    BASE = "http://127.0.0.1:%d" % port
-    server = start_server(port)
+    global PHASE
+    flask_port, static_port = free_port(), free_port()
+    flask_base = "http://127.0.0.1:%d" % flask_port
+    static_base = "http://127.0.0.1:%d/ma-will/citations/" % static_port
+
+    server = start_server(flask_port)
+    static_server, static_root = start_static_server(static_port)
 
     # Only same-origin failures matter. The page pulls its font and icon CSS
     # from public CDNs, which some sandboxes block; that is not a regression.
@@ -249,20 +301,37 @@ def main():
             if os.environ.get("CHROMIUM_PATH"):
                 launch["executable_path"] = os.environ["CHROMIUM_PATH"]
             browser = pw.chromium.launch(**launch)
-            page = browser.new_page(viewport={"width": 1100, "height": 900})
-            page.on("pageerror", lambda e: page_errors.append(str(e)))
-            page.on("requestfailed", lambda r: origin_failures.append(r.url)
-                    if r.url.startswith(BASE) else None)
             try:
-                run(page)
+                for phase, base, enter in (
+                    ("flask", flask_base, enter_via_dashboard),
+                    ("pages", static_base, enter_standalone),
+                ):
+                    PHASE = phase
+                    origin = base if phase == "flask" else static_base.split("/ma-will")[0]
+                    # A fresh context per phase so neither delivery inherits the
+                    # other's service worker, cache or storage.
+                    context = browser.new_context(viewport={"width": 1100, "height": 900})
+                    page = context.new_page()
+                    page.on("pageerror", lambda e: page_errors.append(str(e)))
+                    page.on("requestfailed",
+                            lambda r, o=origin: origin_failures.append(r.url)
+                            if r.url.startswith(o) else None)
+                    try:
+                        enter(page, base)
+                        run(page)
+                    finally:
+                        context.close()
+                PHASE = ""
             finally:
                 browser.close()
     finally:
-        server.terminate()
-        try:
-            server.wait(timeout=10)
-        except subprocess.TimeoutExpired:
-            server.kill()
+        for proc in (server, static_server):
+            proc.terminate()
+            try:
+                proc.wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+        shutil.rmtree(static_root, ignore_errors=True)
 
     check("no uncaught JavaScript errors", not page_errors, page_errors)
     check("every same-origin request succeeded", not origin_failures, origin_failures)

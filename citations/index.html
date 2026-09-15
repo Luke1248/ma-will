@@ -5,25 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Citation Rules — Bluebook 22 &amp; the Virgin Islands</title>
 
-    <link rel="manifest" href="/manifest.webmanifest">
-    <meta name="theme-color" content="#4F46E5">
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#0F766E">
     <meta name="description" content="Build, check, and look up citations under The Bluebook (22d ed. 2025) and the Virgin Islands courts' own citation rules.">
 
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="Citation Rules">
-    <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/favicon-32.png">
+    <meta name="apple-mobile-web-app-title" content="Citations">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
+        /* A class that sets `display` outranks the UA rule for [hidden], so
+           make the attribute win. Without this, el.hidden = true does nothing
+           to anything styled as flex or grid. */
+        [hidden] { display: none !important; }
+
         :root {
-            --primary: #4F46E5;
-            --primary-light: #818CF8;
-            --primary-dark: #3730A3;
+            --primary: #0F766E;
+            --primary-light: #5EEAD4;
+            --primary-dark: #115E59;
             --success: #10B981;
             --warning: #F59E0B;
             --danger: #EF4444;
@@ -239,7 +244,7 @@
 <body>
     <header class="topbar">
         <div class="topbar-inner">
-            <a class="back-link" href="/"><i class="fas fa-arrow-left"></i> Life Organizer</a>
+            <a class="back-link" href="/" id="back-link" hidden><i class="fas fa-arrow-left"></i> Life Organizer</a>
             <h1>Citation Rules</h1>
             <p id="subtitle">The Bluebook (22d ed. 2025) and the Virgin Islands courts' own rules</p>
         </div>
@@ -828,7 +833,23 @@
 
     /* ---------------- boot ---------------- */
 
-    fetch('/static/data/citation_rules.json')
+    // Served standalone (GitHub Pages, or installed to a home screen) there is
+    // no dashboard to go back to, so only show the link where one exists.
+    if (location.pathname === '/citations/' || location.pathname === '/citations') {
+        document.getElementById('back-link').hidden = false;
+    }
+
+    // Relative path: registers under this directory, so the worker's scope is
+    // the app itself and never the whole origin.
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+            navigator.serviceWorker.register('sw.js').catch(function () {
+                /* the app still works, just without offline support */
+            });
+        });
+    }
+
+    fetch('data/citation_rules.json')
         .then(function (r) {
             if (!r.ok) throw new Error('HTTP ' + r.status);
             return r.json();
@@ -844,7 +865,7 @@
         })
         .catch(function (err) {
             document.getElementById('disclaimer').textContent =
-                'The rule data failed to load (' + err.message + '). Reload the page; if it keeps failing, check that /static/data/citation_rules.json is being served.';
+                'The rule data failed to load (' + err.message + '). Reload the page; if it keeps failing, check that data/citation_rules.json is being served next to this page.';
         });
 })();
 </script>

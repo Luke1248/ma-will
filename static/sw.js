@@ -4,8 +4,6 @@ const CACHE = 'life-organizer-v2';
 // Core shell assets precached on install so the app opens offline.
 const APP_SHELL = [
   '/',
-  '/citations',
-  '/static/data/citation_rules.json',
   '/manifest.webmanifest',
   '/static/icons/icon-192.png',
   '/static/icons/icon-512.png',
@@ -33,6 +31,10 @@ self.addEventListener('fetch', (event) => {
   if (req.method !== 'GET') return;
 
   const url = new URL(req.url);
+
+  // The citation app under /citations/ registers its own worker with its own
+  // cache; stay out of its scope entirely.
+  if (url.origin === location.origin && url.pathname.startsWith('/citations/')) return;
 
   // API calls: network-first so data stays fresh, fall back to last cached response offline.
   if (url.origin === location.origin && url.pathname.startsWith('/api/')) {
