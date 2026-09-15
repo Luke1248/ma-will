@@ -48,6 +48,7 @@ enum SourceCategory: String, CaseIterable, Identifiable {
     case archival       = "Archival Sources"
     case services       = "Services"
     case signals        = "Signals & Short Forms"
+    case quotations     = "Quotations"
 
     var id: String { rawValue }
 
@@ -69,6 +70,7 @@ enum SourceCategory: String, CaseIterable, Identifiable {
         case .archival:       return "Rule 23"
         case .services:       return "Rule 19"
         case .signals:        return "Rules 1 & 4"
+        case .quotations:     return "Rule 5"
         }
     }
 
@@ -90,6 +92,7 @@ enum SourceCategory: String, CaseIterable, Identifiable {
         case .archival:       return "archivebox"
         case .services:       return "tray.full"
         case .signals:        return "signpost.right"
+        case .quotations:     return "text.quote"
         }
     }
 }

@@ -155,6 +155,10 @@
   footer .disc { max-width: 700px; margin: 8px auto 0; line-height: 1.5; }
   i.title { font-style: italic; }
 
+  #reviewBtn { white-space: nowrap; font-weight: 700; color: var(--navy-2); }
+  #reviewBtn.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+  #reviewBtn:disabled { opacity: .5; cursor: default; }
+
   /* Standalone / notch safe areas */
   header {
     padding-top: calc(28px + env(safe-area-inset-top));
@@ -208,6 +212,10 @@
         <option value="4">&#9733;&#9733;&#9733;&#9733; 4 &mdash; Hard</option>
         <option value="5">&#9733;&#9733;&#9733;&#9733;&#9733; 5 &mdash; Expert</option>
       </select>
+    </div>
+    <div class="ctrl-group">
+      <label for="reviewBtn">Review</label>
+      <button id="reviewBtn" type="button">&#9873; Missed (0)</button>
     </div>
     <div class="stats">
       <div class="stat"><span class="num" id="scoreNum">0</span><span class="lbl">Correct</span></div>
@@ -340,7 +348,14 @@ const QUESTIONS = [
   {"cat": "Cases", "rule": "R10.2.1(c) · R6.1(b)", "diff": 3, "correct": true, "seg": [{"t": "Env't Def. Fund v. EPA, 465 F.2d 528, 533 (D.C. Cir. 1972)."}], "why": "Environmental→Env't, Defense→Def. (T6); a widely recognized entity (EPA) is left as an unpunctuated acronym. Rule 6.1(b)."},
   {"cat": "Cases", "rule": "R10.3.1", "diff": 2, "correct": true, "seg": [{"t": "Bates v. Tappan, 99 Mass. 376 (1868)."}], "why": "An older state decision cited to the official reporter (Mass.) with no reporter series number. Rule 10.3.1."},
   {"cat": "Statutes", "rule": "R12.3", "diff": 2, "correct": true, "seg": [{"t": "Nev. Rev. Stat. § 28.501 (1998)."}], "why": "A state code: abbreviated name, section, and year. The Bluebook gives this example. Rule 12.3."},
-  {"cat": "Court Documents", "rule": "R10.8.3", "diff": 4, "correct": true, "seg": [{"t": "Brief for the Petitioner, Demore v. Kim, 538 U.S. 510 (2003)."}], "why": "An appellate brief cited by document name followed by the full case citation. The Bluebook gives this example. Rule 10.8.3."},
+  {"cat": "Court Documents", "rule": "R10.8.3", "diff": 4, "correct": true, "seg": [{"t": "Brief for the Petitioner, Demore v. Kim, 538 U.S. 510 (2003)."}], "why": "An appellate brief cited by document name followed by the full case citation. The Bluebook gives this example. Rule 10.8.3."},  {"cat": "Quotations", "rule": "R5.1(b)", "diff": 2, "correct": true, "seg": [{"t": "The Court called the statute “plain and unambiguous.”"}], "why": "A quotation of fewer than 50 words is run into the text in quotation marks; in American usage the closing period sits inside the closing quotation mark. Rule 5.1(b)."},
+  {"cat": "Quotations", "rule": "R5.1(a)", "diff": 3, "correct": false, "seg": [{"t": "A 55-word quotation, "}, {"t": "run into the text in quotation marks.", "err": true, "fix": "set off as an indented block quotation, without quotation marks."}], "why": "A quotation of 50 or more words is set off as an indented block quotation, without quotation marks, and the citation follows the block rather than sitting inside it. Rule 5.1(a)."},
+  {"cat": "Quotations", "rule": "R5.2", "diff": 3, "correct": false, "seg": [{"t": "The court held that “"}, {"t": "The", "err": true, "fix": "[T]he"}, {"t": " statute controls.”"}], "why": "When you change the case of a letter from the original, show the change with brackets: “[T]he.” Rule 5.2."},
+  {"cat": "Quotations", "rule": "R5.3", "diff": 3, "correct": false, "seg": [{"t": "“the right "}, {"t": "...", "err": true, "fix": ". . ."}, {"t": " shall not be infringed.”"}], "why": "An omission within a quotation is shown by an ellipsis of three periods separated by spaces, with a space before and after. Rule 5.3."},
+  {"cat": "Quotations", "rule": "R5.3", "diff": 4, "correct": false, "seg": [{"t": "“Congress shall make no law "}, {"t": "…", "err": true, "fix": ". . ."}, {"t": " abridging the freedom of speech.”"}], "why": "Use three periods separated by spaces ( . . . ), not a single ellipsis character, to mark an omission. Rule 5.3."},
+  {"cat": "Quotations", "rule": "R5.2", "diff": 4, "correct": true, "seg": [{"t": "The statute “plainly controls” (emphasis added)."}], "why": "When you add emphasis to quoted language, note it in a parenthetical after the citation: (emphasis added). Rule 5.2."},
+  {"cat": "Quotations", "rule": "R5.1(b)", "diff": 4, "correct": false, "seg": [{"t": "The Court called it “unambiguous"}, {"t": "”.", "err": true, "fix": ".”"}], "why": "In American usage, commas and periods are placed inside the closing quotation mark. Rule 5.1(b)."},
+  {"cat": "Quotations", "rule": "R5.1(b)", "diff": 5, "correct": true, "seg": [{"t": "The court invoked the ‘clear statement’ rule when reading “the Act.”"}], "why": "A quotation within a quotation takes single quotation marks inside the double marks. Rule 5.1(b)."},
 ];
 
 /* ============================================================
@@ -353,11 +368,32 @@ const scoreNum = document.getElementById('scoreNum');
 const seenNum = document.getElementById('seenNum');
 const pctNum = document.getElementById('pctNum');
 
+const reviewBtn = document.getElementById('reviewBtn');
+
 let pool = [];
 let idx = 0;
 let answered = 0;
 let correctCount = 0;
 let currentAnswered = false;
+let reviewMode = false;
+
+// Stable id per question, and a persisted set of "missed" question ids.
+QUESTIONS.forEach((q, i) => { q._id = i; });
+let missed = new Set();
+try {
+  const saved = JSON.parse(localStorage.getItem('bluebook-missed') || '[]');
+  saved.forEach(id => { if (QUESTIONS[id]) missed.add(id); });
+} catch (e) { /* storage unavailable */ }
+
+function saveMissed(){
+  try { localStorage.setItem('bluebook-missed', JSON.stringify([...missed])); } catch (e) {}
+}
+
+function updateReviewBtn(){
+  reviewBtn.innerHTML = reviewMode ? '&#10005; Exit review' : ('&#9873; Missed (' + missed.size + ')');
+  reviewBtn.classList.toggle('active', reviewMode);
+  reviewBtn.disabled = (!reviewMode && missed.size === 0);
+}
 
 // Build category dropdown
 (function buildCats(){
@@ -373,13 +409,26 @@ let currentAnswered = false;
 })();
 
 function buildPool(){
-  const c = catFilter.value, d = diffFilter.value;
-  pool = QUESTIONS.filter(q =>
-    (c === 'all' || q.cat === c) &&
-    (d === 'all' || String(q.diff) === d)
-  );
+  if (reviewMode){
+    pool = QUESTIONS.filter(q => missed.has(q._id));
+  } else {
+    const c = catFilter.value, d = diffFilter.value;
+    pool = QUESTIONS.filter(q =>
+      (c === 'all' || q.cat === c) &&
+      (d === 'all' || String(q.diff) === d)
+    );
+  }
   idx = 0;
+  catFilter.disabled = reviewMode;
+  diffFilter.disabled = reviewMode;
+  updateReviewBtn();
   render();
+}
+
+function toggleReview(){
+  if (!reviewMode && missed.size === 0) return;
+  reviewMode = !reviewMode;
+  buildPool();
 }
 
 function stars(n){
@@ -417,7 +466,10 @@ function updateStats(){
 function render(){
   currentAnswered = false;
   if (pool.length === 0){
-    cardHost.innerHTML = '<div class="card"><div class="empty">No citations match this filter. Try a different category or difficulty.</div></div>';
+    const msg = reviewMode
+      ? 'No missed questions to review &mdash; nice work! Tap &ldquo;Exit review&rdquo; to keep practicing.'
+      : 'No citations match this filter. Try a different category or difficulty.';
+    cardHost.innerHTML = '<div class="card"><div class="empty">' + msg + '</div></div>';
     return;
   }
   const q = pool[idx];
@@ -457,6 +509,13 @@ function answer(userSaysCorrect){
   if (right) correctCount++;
   updateStats();
 
+  // Track missed questions: wrong answers go into the review set, right ones leave it.
+  if (right) {
+    if (missed.delete(q._id)) { saveMissed(); updateReviewBtn(); }
+  } else if (!missed.has(q._id)) {
+    missed.add(q._id); saveMissed(); updateReviewBtn();
+  }
+
   // Reveal red error portions in the citation
   const citeBox = document.getElementById('citeBox');
   citeBox.innerHTML = citeHTML(q, true) + (q.correct ? ' <span class="checkmark">✅</span>' : '');
@@ -482,7 +541,9 @@ function prev(){ if (pool.length){ idx = (idx - 1 + pool.length) % pool.length; 
 
 catFilter.onchange = buildPool;
 diffFilter.onchange = buildPool;
+reviewBtn.onclick = toggleReview;
 
+updateReviewBtn();
 buildPool();
 updateStats();
 
