@@ -24,3 +24,28 @@ The rule corpus lives in `static/data/citation_rules.json`. Every entry carries 
 confidence badge (`verified`, `reported`, `unverified`) and links to its sources,
 because none of it has been checked against a licensed copy of The Bluebook. It
 is a drafting aid, not legal authority and not legal advice.
+
+## Tests
+
+```
+pip install -r requirements.txt -r requirements-dev.txt
+python -m playwright install chromium
+
+python tests/check_citation_data.py   # fast, no browser
+python tests/smoke_citations.py       # starts the app, drives headless Chromium
+```
+
+`check_citation_data.py` validates the structure of
+`static/data/citation_rules.json`: confidence levels, unique ids, required
+keys, and that every `{token}` in a builder pattern resolves to a declared
+field. A malformed corpus leaves `/citations` blank with only a console error
+to show for it, so this runs first.
+
+`smoke_citations.py` starts the Flask app on a free port and exercises the
+builder's rendering rules, every checker rule, the rules browser, the courts
+table, and layout at 390px. It fails on uncaught JavaScript errors and on
+failed same-origin requests, but tolerates blocked CDN fonts and icons, which
+some sandboxes refuse to fetch.
+
+Both run on every pull request and on pushes to `main`
+(`.github/workflows/smoke-test.yml`).

@@ -1,0 +1,50 @@
+name: Smoke test
+
+# Verifies the Flask app and the /citations rule corpus on every pull request
+# and on pushes to main. The repo's other workflow only deploys the flashcards
+# PWA, so without this nothing checks the dashboard app at all.
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+# One run per ref; a newer push supersedes an in-flight run.
+concurrency:
+  group: smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Install Chromium
+        run: python -m playwright install --with-deps chromium
+
+      # Fast, no browser. Runs first because a malformed citation_rules.json is
+      # the cheapest way to blank the page and the slowest way to notice.
+      - name: Check the citation rule corpus
+        run: python tests/check_citation_data.py
+
+      # Starts the Flask app on a free port and drives it with headless Chromium.
+      - name: Smoke-test the citation app
+        run: python tests/smoke_citations.py
