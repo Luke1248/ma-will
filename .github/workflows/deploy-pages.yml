@@ -1,7 +1,7 @@
-name: Deploy HSK Flashcards to GitHub Pages
+name: Deploy web apps to GitHub Pages
 
-# Publishes the hsk-flashcards/ PWA to GitHub Pages. The site is served at the
-# repository's Pages root, e.g. https://<user>.github.io/<repo>/
+# Publishes the hsk-flashcards/ PWA at the repository's Pages root, e.g.
+# https://<user>.github.io/<repo>/, and the concordat/ PWA under /concordat/.
 on:
   push:
     branches:
@@ -9,6 +9,7 @@ on:
       - claude/hsk-flashcard-app-j6fqvh
     paths:
       - "hsk-flashcards/**"
+      - "concordat/**"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch: {}
 
@@ -39,10 +40,17 @@ jobs:
         # the Pages site itself, so `enablement: true` is intentionally omitted.
         uses: actions/configure-pages@v5
 
-      - name: Upload app as Pages artifact
+      - name: Assemble site
+        run: |
+          mkdir -p _site/concordat
+          cp -r hsk-flashcards/. _site/
+          cp -r concordat/. _site/concordat/
+          rm -rf _site/concordat/tests _site/tools
+
+      - name: Upload site as Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./hsk-flashcards
+          path: ./_site
 
       - name: Deploy to GitHub Pages
         id: deployment
