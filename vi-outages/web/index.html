@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VI Power Watch</title>
+<meta name="description" content="Power outages in the U.S. Virgin Islands: who is out now, by district and feeder, scheduled rotations, and how often each feeder loses power.">
+<meta name="theme-color" content="#0f1b2d">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="bolt" aria-hidden="true">⚡</span> VI Power Watch</div>
+  <div id="feed" class="feed" role="status">Loading…</div>
+</header>
+
+<main id="main">
+  <section id="tab-now" class="tab" aria-labelledby="h-now">
+    <h1 id="h-now" class="sr">Now</h1>
+    <div id="now"></div>
+  </section>
+  <section id="tab-mine" class="tab" hidden aria-labelledby="h-mine">
+    <h1 id="h-mine" class="sr">My power</h1>
+    <div id="mine"></div>
+  </section>
+  <section id="tab-feeders" class="tab" hidden aria-labelledby="h-feeders">
+    <h1 id="h-feeders" class="sr">Feeders</h1>
+    <div id="feeders"></div>
+  </section>
+  <section id="tab-updates" class="tab" hidden aria-labelledby="h-updates">
+    <h1 id="h-updates" class="sr">Updates</h1>
+    <div id="updates"></div>
+  </section>
+  <section id="tab-about" class="tab" hidden aria-labelledby="h-about">
+    <h1 id="h-about" class="sr">About</h1>
+    <div id="about"></div>
+  </section>
+</main>
+
+<nav class="tabs" aria-label="Sections">
+  <button data-tab="now" aria-current="page"><span aria-hidden="true">◉</span>Now</button>
+  <button data-tab="mine"><span aria-hidden="true">⌂</span>My power</button>
+  <button data-tab="feeders"><span aria-hidden="true">≡</span>Feeders</button>
+  <button data-tab="updates"><span aria-hidden="true">✉</span>Updates</button>
+  <button data-tab="about"><span aria-hidden="true">ⓘ</span>About</button>
+</nav>
+<div id="tip" class="tip" hidden></div>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "_about": "WAPA publishes no live feed of generating capacity or system load. These are the most recent figures stated in public (hearings, WAPA statements, news reports), each with its date and source. Edit this file when a newer figure is published; the app shows the 'as of' date beside every number. Figures marked secondary were read from news coverage, not from a WAPA document.",
+  "updated": "2026-11-13",
+  "districts": {
+    "STTJ": {
+      "name": "St. Thomas / St. John",
+      "plant": "Randolph Harley Power Plant",
+      "peak_demand_mw": {"low": 54, "high": 62, "as_of": "2026-04", "note": "Range given for the district's peak in spring 2026; demand rises in summer.", "secondary": true},
+      "shortfall_mw": {"low": 3, "high": 5, "as_of": "2026-10-28", "note": "Shortfall WAPA reported after returning Unit 27 to service.", "source": "https://viconsortium.com/vi-wapa/virgin-islands-wapa-restores-unit-27-but-still-faces-3-5-megawatt-power-shortfall--urges-conservation", "secondary": true},
+      "available_mw": null
+    },
+    "STX": {
+      "name": "St. Croix",
+      "plant": "Estate Richmond Power Plant",
+      "peak_demand_mw": {"low": 41, "high": 43, "as_of": "2025-03", "note": "Daily peak stated to the Legislature; base load about 28 MW.", "source": "https://legvi.org/committee-members-receives-updates-from-wapa-psc-and-tourism/", "secondary": true},
+      "shortfall_mw": null,
+      "available_mw": null
+    }
+  },
+  "monthly_production_url": "https://www.viwapa.vi/customer-service/megawatt-hours-production-report"
+}
