@@ -94,9 +94,9 @@ t('Indochina map loads and is consistent', () => {
   setMap('vietnam');
   assert.equal(NP, 7); assert.equal(SCS.length, 34); assert.equal(WIN_SCS, 18);
   for (const id of IDS) { assert(PROV[id].adj.length >= 2, id); for (const o of PROV[id].adj) assert(PROV[o].adj.includes(id)); }
-  for (const h of HOMES) assert.equal(h.length, 3);
+  assert.deepEqual(HOMES.map((h) => h.length), [3, 4, 3, 4, 3, 3, 3]);
   for (const id of IDS) if (PROV[id].unit === 'F') assert(PROV[id].coastal, id);
-  const s = newGame(); assert.equal(Object.keys(s.units).length, 21);
+  const s = newGame(); assert.equal(Object.keys(s.units).length, 23);
   assert(isValid(s, { p: 'HPH', t: 'M', to: 'GTK' }) && !isValid(s, { p: 'HAN', t: 'M', to: 'GTK' }));
   setMap('ring');
 });

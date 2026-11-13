@@ -122,26 +122,26 @@ const L = 'land', S = 'sea';
 const VN = [
   // North Vietnam
   ['HAN', 'Hanoi', L, 105.8, 21.0, { h: 0, u: 'A', c: 1 }], ['HPH', 'Haiphong', L, 107.1, 20.7, { h: 0, u: 'F' }], ['VIN', 'Vinh', L, 105.6, 18.7, { h: 0, u: 'A' }],
-  ['DBP', 'Dien Bien Phu', L, 103.0, 21.4, { sc: 1 }], ['LCA', 'Lao Cai', L, 104.4, 22.4], ['LSN', 'Lang Son', L, 106.7, 22.1], ['THA', 'Thanh Hoa', L, 105.6, 19.9], ['DHO', 'Dong Hoi', L, 106.4, 17.6],
+  ['DBP', 'Dien Bien Phu', L, 103.0, 21.4, { sc: 1 }], ['LCA', 'Lao Cai', L, 104.4, 22.4], ['LSN', 'Lang Son', L, 106.7, 22.1], ['THA', 'Thanh Hoa', L, 105.6, 19.9, { sc: 1 }], ['DHO', 'Dong Hoi', L, 106.4, 17.6, { sc: 1 }],
   // South Vietnam and US bases
   ['SGN', 'Saigon', L, 106.7, 10.8, { h: 1, u: 'A', c: 1 }], ['HUE', 'Hue', L, 107.5, 16.5, { h: 1, u: 'A' }], ['CTH', 'Can Tho', L, 105.6, 9.8, { h: 1, u: 'F' }],
   ['DNG', 'Da Nang', L, 108.4, 15.5, { h: 2, u: 'A' }], ['CRB', 'Cam Ranh Bay', L, 109.1, 12.0, { h: 2, u: 'F' }], ['SUB', 'Subic Bay', L, 116.1, 14.6, { h: 2, u: 'F', c: 1 }],
-  ['PLK', 'Pleiku', L, 107.9, 14.0, { sc: 1 }], ['QNH', 'Qui Nhon', L, 109.1, 13.8, { sc: 1 }], ['BMT', 'Ban Me Thuot', L, 108.1, 12.7], ['PTH', 'Phan Thiet', L, 108.1, 11.0],
-  ['TNH', 'Tay Ninh', L, 105.9, 11.8, { sc: 1 }], ['CMU', 'Ca Mau', L, 105.0, 8.9],
+  ['PLK', 'Pleiku', L, 107.9, 14.0, { h: 1, u: 'A' }], ['QNH', 'Qui Nhon', L, 109.1, 13.8], ['BMT', 'Ban Me Thuot', L, 108.1, 12.7], ['PTH', 'Phan Thiet', L, 108.1, 11.0],
+  ['TNH', 'Tay Ninh', L, 105.9, 11.8], ['CMU', 'Ca Mau', L, 105.0, 8.9, { sc: 1 }],
   // Laos
   ['VTE', 'Vientiane', L, 102.6, 18.1, { h: 3, u: 'A', c: 1 }], ['LPB', 'Luang Prabang', L, 102.1, 19.9, { h: 3, u: 'A' }], ['PKS', 'Pakse', L, 105.8, 15.1, { h: 3, u: 'A' }],
-  ['PDJ', 'Plain of Jars', L, 103.5, 19.4, { sc: 1 }], ['SAV', 'Savannakhet', L, 105.0, 16.6, { sc: 1 }], ['TCH', 'Tchepone', L, 106.3, 16.3], ['PSL', 'Phongsali', L, 101.8, 21.9], ['TKK', 'Thakhek', L, 104.7, 17.7], ['ATP', 'Attapeu', L, 107.0, 14.9],
+  ['PDJ', 'Plain of Jars', L, 103.5, 19.4, { h: 3, u: 'A' }], ['SAV', 'Savannakhet', L, 105.0, 16.6, { sc: 1 }], ['TCH', 'Tchepone', L, 106.3, 16.3], ['PSL', 'Phongsali', L, 101.8, 21.9], ['TKK', 'Thakhek', L, 104.7, 17.7], ['ATP', 'Attapeu', L, 107.0, 14.9, { sc: 1 }],
   // Cambodia
   ['PNH', 'Phnom Penh', L, 104.8, 11.5, { h: 4, u: 'A', c: 1 }], ['BTB', 'Battambang', L, 103.1, 13.0, { h: 4, u: 'A' }], ['KPS', 'Kompong Som', L, 103.6, 10.7, { h: 4, u: 'F' }],
   ['ANG', 'Angkor', L, 104.2, 13.9], ['KTM', 'Kompong Thom', L, 104.9, 12.7], ['STG', 'Stung Treng', L, 106.0, 13.6], ['MDK', 'Mondulkiri', L, 106.9, 12.7],
   // Thailand and the Burmese border
   ['BKK', 'Bangkok', L, 100.5, 13.8, { h: 5, u: 'F', c: 1 }], ['UDN', 'Udon Thani', L, 102.8, 16.9, { h: 5, u: 'A' }], ['CNX', 'Chiang Mai', L, 99.0, 18.8, { h: 5, u: 'A' }],
-  ['KOR', 'Korat', L, 102.1, 15.0, { sc: 1 }], ['UBN', 'Ubon', L, 104.6, 15.3, { sc: 1 }], ['PHL', 'Phitsanulok', L, 100.4, 16.8, { sc: 1 }], ['NAN', 'Nan', L, 100.8, 18.9], ['CHB', 'Chanthaburi', L, 102.1, 12.6],
-  ['HHN', 'Hua Hin', L, 99.7, 11.9], ['KRA', 'Kra Isthmus', L, 99.3, 9.6, { sc: 1 }], ['KAN', 'Kanchanaburi', L, 99.1, 14.8], ['KTG', 'Kengtung', L, 99.6, 21.3, { sc: 1 }], ['MLM', 'Moulmein', L, 98.1, 16.6, { sc: 1 }], ['TVY', 'Tavoy', L, 98.3, 13.2], ['LSH', 'Lashio', L, 98.4, 23.2],
+  ['KOR', 'Korat', L, 102.1, 15.0], ['UBN', 'Ubon', L, 104.6, 15.3, { sc: 1 }], ['PHL', 'Phitsanulok', L, 100.4, 16.8], ['NAN', 'Nan', L, 100.8, 18.9], ['CHB', 'Chanthaburi', L, 102.1, 12.6],
+  ['HHN', 'Hua Hin', L, 99.7, 11.9], ['KRA', 'Kra Isthmus', L, 99.3, 9.6, { sc: 1 }], ['KAN', 'Kanchanaburi', L, 99.1, 14.8, { sc: 1 }], ['KTG', 'Kengtung', L, 99.6, 21.3, { sc: 1 }], ['MLM', 'Moulmein', L, 98.1, 16.6, { sc: 1 }], ['TVY', 'Tavoy', L, 98.3, 13.2], ['LSH', 'Lashio', L, 98.4, 23.2],
   // China
   ['KMG', 'Kunming', L, 102.7, 25.0, { h: 6, u: 'A', c: 1 }], ['NNG', 'Nanning', L, 108.3, 22.8, { h: 6, u: 'A' }], ['HKO', 'Hainan', L, 109.9, 19.3, { h: 6, u: 'F' }],
   ['SMO', 'Simao', L, 100.9, 23.0], ['MZI', 'Mengzi', L, 103.5, 23.4], ['BSE', 'Baise', L, 105.9, 23.9], ['DLI', 'Dali', L, 100.2, 25.7], ['GYG', 'Guiyang', L, 106.3, 25.7], ['GLN', 'Guilin', L, 110.2, 25.2],
-  ['ZHJ', 'Zhanjiang', L, 110.4, 21.3], ['GZH', 'Guangzhou', L, 113.0, 23.6], ['HKG', 'Hong Kong', L, 114.3, 22.3, { sc: 1 }], ['SGU', 'Shaoguan', L, 113.6, 25.3], ['STU', 'Shantou', L, 116.0, 23.6],
+  ['ZHJ', 'Zhanjiang', L, 110.4, 21.3], ['GZH', 'Guangzhou', L, 113.0, 23.6], ['HKG', 'Hong Kong', L, 114.3, 22.3], ['SGU', 'Shaoguan', L, 113.6, 25.3], ['STU', 'Shantou', L, 116.0, 23.6],
   // Seas
   ['GTK', 'Gulf of Tonkin', S, 107.7, 19.3], ['YKS', 'Yankee Station', S, 109.0, 17.3], ['PRC', 'Paracel Sea', S, 112.2, 16.6], ['PRL', 'Pearl Estuary', S, 113.4, 20.4], ['PRT', 'Pratas Sea', S, 115.7, 20.4],
   ['MCB', 'Macclesfield Bank', S, 113.8, 16.6], ['WLS', 'West Luzon Sea', S, 114.1, 12.9], ['CCW', 'Central Coast', S, 110.9, 13.4],
@@ -157,7 +157,7 @@ function vietnamSeeds() {
 
 export const MAPS = {
   ring: { id: 'ring', name: 'The Ring', blurb: 'a ring-shaped continent around an inner sea, with an outer ocean (the two seas do not connect); seven identical starting positions', powers: DEFAULT_POWERS, make: ringSeeds },
-  vietnam: { id: 'vietnam', name: 'Indochina 1965', blurb: 'mainland Southeast Asia in the Vietnam War era, from Yunnan to the Mekong Delta and with the South China Sea compressed so that Subic Bay sits at its eastern edge; starting positions are historical and unequal', powers: VN_POWERS, make: vietnamSeeds },
+  vietnam: { id: 'vietnam', name: 'Indochina 1965', blurb: 'mainland Southeast Asia in the Vietnam War era, from Yunnan to the Mekong Delta and with the South China Sea compressed so that Subic Bay sits at its eastern edge; starting positions are historical; South Vietnam and Laos, hemmed in on all sides, begin with a fourth home centre', powers: VN_POWERS, make: vietnamSeeds },
 };
 
 // Live bindings: every module sees the active map after setMap().
@@ -176,6 +176,13 @@ export function setMap(id) {
   return def;
 }
 setMap('ring');
+
+// Recompute derived tables after editing province flags (used by tests/balance.mjs).
+export function recount() {
+  SCS = IDS.filter((p) => PROV[p].sc);
+  HOMES = Array.from({ length: NP }, (_, k) => IDS.filter((p) => PROV[p].home === k));
+  WIN_SCS = Math.floor(SCS.length / 2) + 1;
+}
 
 export const adjFor = (type, id) => (type === 'A' ? PROV[id].aAdj : PROV[id].fAdj);
 export const isSea = (id) => PROV[id].kind === 'sea';

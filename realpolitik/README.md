@@ -27,9 +27,13 @@ names, colours and emblems (emoji or uploaded image). Choose the map at setup:
   (Da Nang, Cam Ranh Bay, Subic Bay), Laos, Cambodia, Thailand, China. Provinces are
   real places at their real coordinates, but borders are Voronoi cells, so coastlines
   are stylised, and the open sea is compressed so Subic Bay sits at the eastern edge.
-  Starts are historical and **not balanced**: in 28 Normal-engine self-play games the
-  wins were United States 8, China 8, North Vietnam 4, Cambodia 4, South Vietnam 1,
-  Thailand 1, Laos 0 (2 unfinished). Take Laos or Thailand if you want it hard.
+  Starts are historical but tuned for balance: South Vietnam (Pleiku) and Laos (Plain
+  of Jars) are hemmed in on every side and begin with a fourth home centre, and the
+  neutral centres were placed by measurement. In 100 Normal-engine self-play games
+  (capped at year 22) the wins were China 14, Cambodia 13, Laos 12, United States 10,
+  Thailand 9, North Vietnam 8, South Vietnam 8, with 26 unfinished. Before tuning the
+  spread was 8 / 8 / 4 / 4 / 1 / 1 / 0. `node tests/balance.mjs vietnam normal 20`
+  reproduces a sample. This is engine self-play, not human play.
 
 Simplifications versus the genre's usual rules: provinces have a single coast, and an
 army ordered to a non-adjacent coast is convoyed automatically if fleets order it.
