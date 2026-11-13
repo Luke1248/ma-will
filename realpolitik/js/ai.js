@@ -1,4 +1,4 @@
-// Concordat tactical engine. No network, runs on device.
+// Realpolitik tactical engine. No network, runs on device.
 // Each power gets a set of candidate order sets; candidates are scored by
 // adjudicating them against sampled plans of every other power, and the
 // sampling distributions are refined over a few rounds of best response.

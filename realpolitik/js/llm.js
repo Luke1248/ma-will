@@ -19,7 +19,7 @@ export const PRESETS = [
   { id: 'custom', label: 'Custom OpenAI-compatible endpoint', kind: 'openai', baseUrl: '', model: '' },
 ];
 
-const KEY = 'concordat.profiles';
+const KEY = 'realpolitik.profiles';
 export function loadProfiles() { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch { return []; } }
 export function saveProfiles(p) { try { localStorage.setItem(KEY, JSON.stringify(p)); } catch { /* storage unavailable */ } }
 

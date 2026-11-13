@@ -1,4 +1,4 @@
-# Concordat
+# Realpolitik
 
 An original seven-power game of negotiation and simultaneous movement, built as an
 installable iOS web app (PWA). Secret orders, supports, convoys, retreats, builds,
@@ -8,11 +8,11 @@ Not affiliated with any published board game. Map, names and code are original.
 
 ## Play
 
-Deployed by GitHub Pages at `https://<user>.github.io/<repo>/concordat/` once this is
+Deployed by GitHub Pages at `https://<user>.github.io/<repo>/realpolitik/` once this is
 on `main`. Open it in Safari on the iPhone, then Share → **Add to Home Screen**.
 It runs full-screen and works offline (engine opponents need no network).
 
-Local: `cd concordat && python3 -m http.server 8000`, open `http://localhost:8000`.
+Local: `cd realpolitik && python3 -m http.server 8000`, open `http://localhost:8000`.
 
 ## The game
 

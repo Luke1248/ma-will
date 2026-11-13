@@ -1,7 +1,7 @@
 name: Deploy web apps to GitHub Pages
 
 # Publishes the hsk-flashcards/ PWA at the repository's Pages root, e.g.
-# https://<user>.github.io/<repo>/, and the concordat/ PWA under /concordat/.
+# https://<user>.github.io/<repo>/, and the realpolitik/ PWA under /realpolitik/.
 on:
   push:
     branches:
@@ -9,7 +9,7 @@ on:
       - claude/hsk-flashcard-app-j6fqvh
     paths:
       - "hsk-flashcards/**"
-      - "concordat/**"
+      - "realpolitik/**"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch: {}
 
@@ -42,10 +42,10 @@ jobs:
 
       - name: Assemble site
         run: |
-          mkdir -p _site/concordat
+          mkdir -p _site/realpolitik
           cp -r hsk-flashcards/. _site/
-          cp -r concordat/. _site/concordat/
-          rm -rf _site/concordat/tests _site/tools
+          cp -r realpolitik/. _site/realpolitik/
+          rm -rf _site/realpolitik/tests _site/tools
 
       - name: Upload site as Pages artifact
         uses: actions/upload-pages-artifact@v3

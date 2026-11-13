@@ -1,4 +1,4 @@
-// Concordat UI — single-page, touch-first.
+// Realpolitik UI — single-page, touch-first.
 import { PROV, IDS, SCS, NP, W, H, DEFAULT_POWERS, adjFor, isSea, isCoast } from './map.js';
 import { moveTargets, isValid, fmtOrder, scCount, unitsOf, alive, buildDeltas, buildSites, WIN_SCS } from './rules.js';
 import * as GM from './game.js';
@@ -27,7 +27,7 @@ function render() {
 function renderHome() {
   const saved = GM.loadGame();
   app.innerHTML = `<div class="page"><div class="home">
-    <div style="text-align:center;margin-bottom:10px"><h1>CONCORDAT</h1><p class="dim">Seven powers. One ring of land. No binding promises.</p></div>
+    <div style="text-align:center;margin-bottom:10px"><h1>REALPOLITIK</h1><p class="dim">Seven powers. One ring of land. No binding promises.</p></div>
     ${saved && saved.state ? `<button class="primary" data-act="continue">Continue — ${esc(GM.seasonName(saved.state))}</button>` : ''}
     <button ${saved ? '' : 'class="primary"'} data-act="new">New game</button>
     <button data-act="models">AI models</button>
@@ -472,5 +472,5 @@ document.addEventListener('change', (e) => {
 document.addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target.id === 'chatInput') { e.preventDefault(); A.send(); } });
 
 if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
-window.__concordat = { ui, get G() { return G; } };
+window.__realpolitik = { ui, get G() { return G; } };
 render();

@@ -5,7 +5,7 @@ import { newGame, stepOrders, stepRetreats, stepBuilds, scCount, unitsOf, alive,
 import { planAll, planRetreats, planBuilds } from './ai.js';
 import { chatJson, loadProfiles } from './llm.js';
 
-const SAVE = 'concordat.game';
+const SAVE = 'realpolitik.game';
 const PERSONAS = [
   'patient and loyal, but punishes betrayal without mercy',
   'charming and opportunistic; keeps deals only while they pay',
@@ -139,7 +139,7 @@ function scriptedDiplomacy(G, hooks) {
 }
 
 // ---- LLM diplomacy --------------------------------------------------------
-const RULES = `Concordat is a seven-player strategy game of negotiation and simultaneous movement on a ring-shaped continent around an inner sea, with an outer ocean.
+const RULES = `Realpolitik is a seven-player strategy game of negotiation and simultaneous movement on a ring-shaped continent around an inner sea, with an outer ocean.
 - 35 supply centres; controlling ${WIN_SCS} wins. Each power fields one unit per centre it owns.
 - Units are armies (A, land) or fleets (F, seas and coastal provinces). One unit per province, every unit has strength 1.
 - Each season every unit is ordered to hold, move, support another unit's hold or move (+1 strength, cut if the supporter is attacked from elsewhere), or (fleets at sea) convoy an army.

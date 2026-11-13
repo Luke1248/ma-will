@@ -1,4 +1,4 @@
-// Concordat rules engine: order validation, simultaneous adjudication,
+// Realpolitik rules engine: order validation, simultaneous adjudication,
 // retreats, adjustments and the turn cycle. Pure functions, no DOM.
 import { PROV, IDS, SCS, HOMES, NP, WIN_SCS, adjFor, isSea, isCoast, startingUnits } from './map.js';
 

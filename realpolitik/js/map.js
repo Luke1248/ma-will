@@ -1,4 +1,4 @@
-// Concordat — original map.
+// Realpolitik — original map.
 // A ring continent around an inner sea, with an outer ocean. Seven identical
 // sectors (rotational symmetry) so every power starts from an equal position.
 // Geometry is a Voronoi diagram of hand-placed seeds, so borders and
