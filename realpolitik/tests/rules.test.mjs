@@ -1,6 +1,6 @@
 // node tests/rules.test.mjs
 import assert from 'node:assert/strict';
-import { PROV, IDS } from '../js/map.js';
+import { PROV, IDS, SCS, HOMES, NP, WIN_SCS, setMap } from '../js/map.js';
 import { adjudicate, newGame, stepOrders, stepRetreats, stepBuilds, parseOrder, isValid } from '../js/rules.js';
 
 let n = 0;
@@ -89,5 +89,15 @@ t('turn cycle: capture, build, retreat', () => {
   assert.equal(d.phase, 'retreats');
   ({ state: d } = stepRetreats(d, { GRE: 'HAL' }));
   assert(d.units.HAL.power === 1 && d.phase === 'orders');
+});
+t('Indochina map loads and is consistent', () => {
+  setMap('vietnam');
+  assert.equal(NP, 7); assert.equal(SCS.length, 34); assert.equal(WIN_SCS, 18);
+  for (const id of IDS) { assert(PROV[id].adj.length >= 2, id); for (const o of PROV[id].adj) assert(PROV[o].adj.includes(id)); }
+  for (const h of HOMES) assert.equal(h.length, 3);
+  for (const id of IDS) if (PROV[id].unit === 'F') assert(PROV[id].coastal, id);
+  const s = newGame(); assert.equal(Object.keys(s.units).length, 21);
+  assert(isValid(s, { p: 'HPH', t: 'M', to: 'GTK' }) && !isValid(s, { p: 'HAN', t: 'M', to: 'GTK' }));
+  setMap('ring');
 });
 console.log(`${n} tests passed`);

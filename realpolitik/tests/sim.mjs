@@ -1,9 +1,10 @@
 // node tests/sim.mjs [games] [level] — AI self-play smoke test.
-import { NP } from '../js/map.js';
+import { NP, setMap, POWERS } from '../js/map.js';
 import { newGame, stepOrders, stepRetreats, stepBuilds, scCount, isValid } from '../js/rules.js';
 import { planAll, planRetreats, planBuilds } from '../js/ai.js';
 
 const games = +process.argv[2] || 2, level = process.argv[3] || 'normal';
+setMap(process.argv[4] || 'ring'); const wins = {};
 const stance = Array.from({ length: NP }, () => Array(NP).fill(-0.2));
 for (let g = 0; g < games; g++) {
   let s = newGame(); const t0 = Date.now(); let phases = 0, invalid = 0, ms = 0;
@@ -22,6 +23,8 @@ for (let g = 0; g < games; g++) {
       s = stepBuilds(s, b, d).state;
     }
   }
+  wins[s.winner] = (wins[s.winner] || 0) + 1;
   const scs = Array.from({ length: NP }, (_, k) => scCount(s, k));
   console.log(`game ${g + 1}: ended year ${s.year} winner=${s.winner} scs=${scs.join(',')} units=${Object.keys(s.units).length} invalid=${invalid} avg plan ${(ms / phases).toFixed(0)}ms total ${((Date.now() - t0) / 1000).toFixed(1)}s`);
 }
+console.log('wins:', Object.entries(wins).map(([k, n]) => `${k === 'null' ? 'none' : POWERS[k].name} ${n}`).join(', '));

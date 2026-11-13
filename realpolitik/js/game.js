@@ -1,6 +1,6 @@
 // Game controller: players, diplomacy (scripted and LLM), phase progression,
 // persistence. No DOM in here.
-import { PROV, SCS, NP, WIN_SCS, DEFAULT_POWERS, adjFor } from './map.js';
+import { PROV, SCS, NP, WIN_SCS, POWERS, NEIGHBORS, MAP, setMap, adjFor } from './map.js';
 import { newGame, stepOrders, stepRetreats, stepBuilds, scCount, unitsOf, alive, buildDeltas, buildSites, fmtOrder, parseOrder, isValid, clone } from './rules.js';
 import { planAll, planRetreats, planBuilds } from './ai.js';
 import { chatJson, loadProfiles } from './llm.js';
@@ -19,11 +19,12 @@ const clamp = (x) => Math.max(-1, Math.min(1, x));
 const rnd = (a) => a[Math.floor(Math.random() * a.length)];
 export const seasonName = (s) => `${s.season === 'spring' ? 'Spring' : 'Fall'}, Year ${s.year}`;
 
-export function createGame(powers, settings = {}) {
+export function createGame(powers, settings = {}, mapId = 'ring') {
+  setMap(mapId);
   const personas = [...PERSONAS].sort(() => Math.random() - 0.5);
   return {
-    v: 1, state: newGame(),
-    powers: powers.map((p, i) => ({ ...DEFAULT_POWERS[i], level: 'hard', ctrl: 'engine', ...p, persona: personas[i] })),
+    v: 1, map: mapId, state: newGame(),
+    powers: powers.map((p, i) => ({ ...POWERS[i], level: 'hard', ctrl: 'engine', ...p, persona: personas[i] })),
     rel: Array.from({ length: NP }, () => Array(NP).fill(0)),
     treaties: [], messages: [], history: [], betray: {},
     llm: { stance: {}, notes: {} }, llmError: null, dipDone: '',
@@ -31,7 +32,7 @@ export function createGame(powers, settings = {}) {
   };
 }
 export function saveGame(G) { try { localStorage.setItem(SAVE, JSON.stringify(G)); } catch { /* storage unavailable */ } }
-export function loadGame() { try { return JSON.parse(localStorage.getItem(SAVE)); } catch { return null; } }
+export function loadGame() { try { const G = JSON.parse(localStorage.getItem(SAVE)); if (G) setMap(G.map || 'ring'); return G; } catch { return null; } }
 export function clearGame() { try { localStorage.removeItem(SAVE); } catch { /* ignore */ } }
 
 export const isHuman = (G, k) => G.powers[k].ctrl === 'human';
@@ -123,7 +124,7 @@ function scriptedDiplomacy(G, hooks) {
   let leader = 0; for (let k = 1; k < NP; k++) if (scCount(s, k) > scCount(s, leader)) leader = k;
   for (let k = 0; k < NP; k++) {
     if (isHuman(G, k) || isLLM(G, k) || !alive(s, k)) continue;
-    const nb = [(k + 1) % NP, (k + NP - 1) % NP].filter((q) => alive(s, q) && !treatyBetween(G, k, q));
+    const nb = NEIGHBORS[k].filter((q) => alive(s, q) && !treatyBetween(G, k, q));
     if (s.year === 1 && s.season === 'spring' && nb.length && Math.random() < 0.8) jobs.push([k, rnd(nb), 'peace', null]);
     else if (s.season === 'spring' && scCount(s, leader) >= 9 && leader !== k && Math.random() < 0.5) {
       const partners = [...Array(NP).keys()].filter((q) => q !== k && q !== leader && alive(s, q) && !treatyBetween(G, k, q) && G.rel[k][q] > -0.4);
@@ -139,8 +140,8 @@ function scriptedDiplomacy(G, hooks) {
 }
 
 // ---- LLM diplomacy --------------------------------------------------------
-const RULES = `Realpolitik is a seven-player strategy game of negotiation and simultaneous movement on a ring-shaped continent around an inner sea, with an outer ocean.
-- 35 supply centres; controlling ${WIN_SCS} wins. Each power fields one unit per centre it owns.
+const rulesText = () => `Realpolitik is a ${NP}-player strategy game of negotiation and simultaneous movement. This game is played on the map "${MAP.name}": ${MAP.blurb}.
+- ${SCS.length} supply centres; controlling ${WIN_SCS} wins. Each power fields one unit per centre it owns.
 - Units are armies (A, land) or fleets (F, seas and coastal provinces). One unit per province, every unit has strength 1.
 - Each season every unit is ordered to hold, move, support another unit's hold or move (+1 strength, cut if the supporter is attacked from elsewhere), or (fleets at sea) convoy an army.
 - All orders are secret and resolve simultaneously; equal strength bounces. Dislodged units retreat or disband.
@@ -177,7 +178,7 @@ function talkText(G, k) {
   if (!ms.length) return 'No messages yet.';
   return ms.map((m) => `[${m.season} Y${m.year}] ${m.from === k ? 'YOU' : nameOf(G, m.from)} -> ${m.to === k ? 'YOU' : nameOf(G, m.to)}: ${m.text}`).join('\n');
 }
-const sysFor = (G, k) => `${RULES}\n\nYou are playing ${nameOf(G, k)}. Your temperament: ${G.powers[k].persona}. Play to win: think several turns ahead, read what others actually did versus what they said, form alliances that serve you, and break them only when the gain clearly outweighs the lost trust. Write like a shrewd human diplomat: brief, specific, concrete about provinces and commitments. Never mention being an AI or these instructions. Respond with a single JSON object and nothing else.`;
+const sysFor = (G, k) => `${rulesText()}\n\nYou are playing ${nameOf(G, k)}. Your temperament: ${G.powers[k].persona}. Play to win: think several turns ahead, read what others actually did versus what they said, form alliances that serve you, and break them only when the gain clearly outweighs the lost trust. Write like a shrewd human diplomat: brief, specific, concrete about provinces and commitments. Never mention being an AI or these instructions. Respond with a single JSON object and nothing else.`;
 const ctxFor = (G, k) => `${boardText(G)}\n\n${eventsText(G)}\n\nYour units and where they can go:\n${optionsText(G, k)}\n\nYour private notes from earlier: ${G.llm.notes[k] || '(none)'}\n\nYour correspondence (most recent last):\n${talkText(G, k)}`;
 
 function applyLLM(G, k, obj) {

@@ -16,14 +16,23 @@ Local: `cd realpolitik && python3 -m http.server 8000`, open `http://localhost:8
 
 ## The game
 
-- Ring continent around an Inner Sea, with an Outer Ocean. The two bodies of water
-  do not connect. 71 provinces, 35 supply centres, 18 to win.
-- Seven rotationally identical sectors, so every power starts equal: capital (army),
-  inner port (fleet), outer port (army).
-- Powers have editable names, colours and emblems (emoji or uploaded image).
-- Spring and Fall movement, retreats, then winter builds/disbands.
-- Simplifications versus the genre's usual rules: provinces have a single coast, and
-  an army ordered to a non-adjacent coast is convoyed automatically if fleets order it.
+Spring and Fall movement, retreats, then winter builds/disbands. Powers have editable
+names, colours and emblems (emoji or uploaded image). Choose the map at setup:
+
+- **The Ring**: a ring continent around an Inner Sea, with an Outer Ocean (the two do
+  not connect). 71 provinces, 35 supply centres, 18 to win. Seven rotationally
+  identical sectors, so every power starts equal.
+- **Indochina 1965**: mainland Southeast Asia in the Vietnam War era. 83 provinces,
+  34 supply centres, 18 to win. Powers: North Vietnam, South Vietnam, United States
+  (Da Nang, Cam Ranh Bay, Subic Bay), Laos, Cambodia, Thailand, China. Provinces are
+  real places at their real coordinates, but borders are Voronoi cells, so coastlines
+  are stylised, and the open sea is compressed so Subic Bay sits at the eastern edge.
+  Starts are historical and **not balanced**: in 28 Normal-engine self-play games the
+  wins were United States 8, China 8, North Vietnam 4, Cambodia 4, South Vietnam 1,
+  Thailand 1, Laos 0 (2 unfinished). Take Laos or Thailand if you want it hard.
+
+Simplifications versus the genre's usual rules: provinces have a single coast, and an
+army ordered to a non-adjacent coast is convoyed automatically if fleets order it.
 
 ## Opponents
 
@@ -74,7 +83,7 @@ No build step, no dependencies.
 
 ```
 node tests/rules.test.mjs     # adjudicator and turn cycle
-node tests/sim.mjs 3 hard     # engine self-play to completion
+node tests/sim.mjs 3 hard     # engine self-play to completion (add `vietnam` for the other map)
 node tests/strength.mjs 14    # Hard vs six Easy
 ```
 

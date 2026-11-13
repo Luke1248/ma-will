@@ -1,5 +1,5 @@
 // Realpolitik UI — single-page, touch-first.
-import { PROV, IDS, SCS, NP, W, H, DEFAULT_POWERS, adjFor, isSea, isCoast } from './map.js';
+import { PROV, IDS, SCS, NP, W, H, MAPS, MAP, adjFor, isSea, isCoast } from './map.js';
 import { moveTargets, isValid, fmtOrder, scCount, unitsOf, alive, buildDeltas, buildSites, WIN_SCS } from './rules.js';
 import * as GM from './game.js';
 import { PRESETS, loadProfiles, saveProfiles, listModels, testProfile } from './llm.js';
@@ -38,8 +38,9 @@ function renderHome() {
 
 function renderHelp() {
   app.innerHTML = `<div class="page stack"><div class="row"><button data-act="home">‹ Back</button><h2 style="margin:0">How to play</h2></div>
-  <div class="card"><p><b>Goal.</b> Control ${WIN_SCS} of the 35 supply centres (★). You field one unit per centre you own.</p>
-  <p><b>Units.</b> Armies (square) move on land. Fleets (circle) move on seas and along coasts. The Inner Sea and the Outer Ocean do not connect. One unit per province; every unit has strength 1.</p>
+  <div class="card"><p><b>Goal.</b> Control a majority of the supply centres (★): 18 on either map. You field one unit per centre you own.</p>
+  <p><b>Maps.</b> <i>The Ring</i> gives all seven powers identical starts. <i>Indochina 1965</i> is a Vietnam War-era map with historical, unequal starts.</p>
+  <p><b>Units.</b> Armies (square) move on land. Fleets (circle) move on seas and along coasts. One unit per province; every unit has strength 1.</p>
   <p><b>Orders.</b> Everyone's orders are secret and resolve at once. Tap a unit, then a highlighted province to move. Tap it again to hold. <i>Support</i> adds 1 strength to another unit's move or hold; it is cut if the supporter is attacked from anywhere except the province it is supporting into. <i>Convoy</i>: a fleet at sea carries an army between coasts.</p>
   <p><b>Conflicts.</b> The strongest move wins; ties bounce. A beaten unit must retreat to a free neighbouring province or disband.</p>
   <p><b>Years.</b> Spring and Fall moves. After Fall, whoever occupies a centre owns it; then you build in your own empty home centres, or disband down to your centre count.</p>
@@ -55,6 +56,7 @@ function ctrlOptions(cur) {
 function renderSetup() {
   const s = ui.setup;
   app.innerHTML = `<div class="page stack"><div class="row"><button data-act="home">‹ Back</button><h2 style="margin:0">New game</h2></div>
+  <div class="card"><label style="margin-top:0">Map</label><select data-chg="map">${Object.values(MAPS).map((m) => `<option value="${m.id}" ${m.id === s.map ? 'selected' : ''}>${esc(m.name)}</option>`).join('')}</select><p class="dim small">${esc(MAPS[s.map].blurb.replace(/^./, (c) => c.toUpperCase()))}.</p></div>
   <p class="dim small">Name each power, pick its colour and emblem (type an emoji, or tap the emblem to upload an image), and choose who plays it.</p>
   ${s.powers.map((p, i) => `<div class="card"><div class="setup-row">
       <input class="swatch" type="color" value="${esc(p.color)}" data-chg="pcolor" data-i="${i}">
@@ -135,13 +137,13 @@ function renderMap() {
   let out = '';
   for (const id of IDS) {
     const p = PROV[id], o = s.owners[id];
-    const fill = p.kind === 'sea' ? (id === 'MAW' ? '#235579' : '#2a5f8a') : (p.sc && o != null ? mixColor(G.powers[o].color, 0.55) : '#dccfae');
+    const fill = p.kind === 'sea' ? '#2a5f8a' : (p.sc && o != null ? mixColor(G.powers[o].color, 0.55) : '#dccfae');
     out += `<polygon class="prov ${p.kind}" data-p="${id}" points="${p.poly.map((v) => v[0].toFixed(1) + ',' + v[1].toFixed(1)).join(' ')}" fill="${fill}"/>`;
   }
   for (const id of IDS) {
     const p = PROV[id];
     out += `<text class="plabel ${p.kind}" x="${p.x}" y="${p.y - 13}">${p.sc ? '★ ' : ''}${id}</text>`;
-    if (p.role === 'cap') { const pw = G.powers[p.home]; if (!String(pw.logo).startsWith('data:')) out += `<text x="${p.x + 22}" y="${p.y + 12}" font-size="13" text-anchor="middle" pointer-events="none" opacity=".85">${esc(pw.logo)}</text>`; }
+    if (p.cap) { const pw = G.powers[p.home]; if (!String(pw.logo).startsWith('data:')) out += `<text x="${p.x + 22}" y="${p.y + 12}" font-size="13" text-anchor="middle" pointer-events="none" opacity=".85">${esc(pw.logo)}</text>`; }
   }
   for (const t of targets) out += `<polygon class="hl t" points="${PROV[t].poly.map((v) => v.join(',')).join(' ')}"/>`;
   if (sel) out += `<polygon class="hl" points="${PROV[sel].poly.map((v) => v.join(',')).join(' ')}"/>`;
@@ -385,7 +387,7 @@ function bindMap() {
 }
 
 // ------------------------------------------------------------------ actions
-function newSetup() { ui.setup = { powers: DEFAULT_POWERS.map((p, i) => ({ ...p, sel: i === 0 ? 'human' : 'engine:hard' })), negRounds: 1, llmOrders: true }; }
+function newSetup(map = 'ring', prev) { ui.setup = { map, powers: MAPS[map].powers.map((p, i) => ({ ...p, sel: prev ? prev.powers[i].sel : i === 0 ? 'human' : 'engine:hard' })), negRounds: prev ? prev.negRounds : 1, llmOrders: prev ? prev.llmOrders : true }; }
 function fileToLogo(file) {
   return new Promise((res, rej) => { const img = new Image(), url = URL.createObjectURL(file); img.onload = () => { const c = document.createElement('canvas'); c.width = c.height = 96; const m = Math.min(img.width, img.height); c.getContext('2d').drawImage(img, (img.width - m) / 2, (img.height - m) / 2, m, m, 0, 0, 96, 96); URL.revokeObjectURL(url); res(c.toDataURL('image/png')); }; img.onerror = rej; img.src = url; });
 }
@@ -399,7 +401,7 @@ const A = {
   start() {
     const s = ui.setup;
     const powers = s.powers.map((p) => { const [c, lvl] = p.sel.split(':'); return { name: p.name.trim() || 'Unnamed', color: p.color, logo: p.logo || '●', ctrl: c === 'engine' ? 'engine' : p.sel, level: c === 'engine' ? lvl : 'hard' }; });
-    G = GM.createGame(powers, { negRounds: s.negRounds, llmOrders: s.llmOrders });
+    G = GM.createGame(powers, { negRounds: s.negRounds, llmOrders: s.llmOrders }, s.map);
     ui.screen = 'game'; ui.setup = null; ui.vb = { x: 0, y: 0, w: W, h: H }; app.innerHTML = ''; enterPhase();
   },
   plogo(d) { ui.logoFor = +d.i; $('#logofile').click(); },
@@ -453,6 +455,7 @@ const A = {
   endpact() { GM.cancelTreaty(G, ui.cur, ui.chatWith); GM.saveGame(G); renderPanel(); },
 };
 const C = {
+  map(d, el) { newSetup(el.value, ui.setup); render(); },
   pname(d, el) { ui.setup.powers[d.i].name = el.value; },
   pcolor(d, el) { ui.setup.powers[d.i].color = el.value; render(); },
   plogotxt(d, el) { if (el.value.trim()) { ui.setup.powers[d.i].logo = el.value.trim(); render(); } },

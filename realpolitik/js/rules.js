@@ -82,6 +82,8 @@ export function adjudicate(state, orderList) {
   const UN = 0, GUESS = 1, DONE = 2;
   const st = {}, res = {}; let deps = [];
   for (const p in ord) st[p] = UN;
+  // Orders settled by a backup rule stay settled, even when an enclosing guess is unwound.
+  const fixed = new Set(), unres = (q) => { if (!fixed.has(q)) st[q] = UN; };
 
   function resolve(p) {
     if (st[p] === DONE) return res[p];
@@ -91,12 +93,12 @@ export function adjudicate(state, orderList) {
     const first = adj(p);
     if (deps.length === old) { if (st[p] !== DONE) { res[p] = first; st[p] = DONE; } return res[p]; }
     if (deps[old] !== p) { deps.push(p); res[p] = first; return first; }
-    for (let i = old; i < deps.length; i++) st[deps[i]] = UN;
+    for (let i = old; i < deps.length; i++) unres(deps[i]);
     deps.length = old;
     res[p] = true; st[p] = GUESS;
     const second = adj(p);
     if (first === second) {
-      for (let i = old; i < deps.length; i++) st[deps[i]] = UN;
+      for (let i = old; i < deps.length; i++) unres(deps[i]);
       deps.length = old; res[p] = first; st[p] = DONE; return first;
     }
     // Paradox or circular movement.
@@ -104,8 +106,8 @@ export function adjudicate(state, orderList) {
     deps.length = old;
     const hasConvoy = cyc.some((q) => ord[q].t === 'C');
     let progress = false;
-    const fix = (q, v) => { res[q] = v; st[q] = DONE; progress = true; };
-    for (const q of cyc) st[q] = UN;
+    const fix = (q, v) => { if (fixed.has(q)) return; res[q] = v; st[q] = DONE; fixed.add(q); progress = true; };
+    for (const q of cyc) unres(q);
     for (const q of cyc) {
       if (hasConvoy) {
         // Convoy paradox: the convoyed moves involved fail.
@@ -113,7 +115,7 @@ export function adjudicate(state, orderList) {
         else if (ord[q].t === 'C' && ord[ord[q].from] && ord[ord[q].from].t === 'M' && ord[ord[q].from].convoy) fix(ord[q].from, false);
       } else if (ord[q].t === 'M') fix(q, true); // circular movement
     }
-    if (!progress) fix(p, false);
+    if (!progress) { res[p] = false; st[p] = DONE; fixed.add(p); }
     return resolve(p);
   }
 
